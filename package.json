@@ -1,0 +1,12 @@
+{
+  "name": "site-photographer",
+  "version": "1.0.0",
+  "description": "Премиальный сайт-портфолио фотографа (Production Web Craft)",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx serve public"
+  },
+  "keywords": ["photographer", "portfolio", "landing"],
+  "author": "",
+  "license": "ISC"
+}
