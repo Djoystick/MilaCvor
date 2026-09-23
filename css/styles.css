@@ -334,22 +334,88 @@ input[type="checkbox"], input[type="radio"] {
    LIGHT THEME OVERRIDES (VK Group Cover Palette)
    =================================================== */
 html.light .text-white {
-  color: #1a0a1c !important;
+  color: #160518 !important;
 }
 html.light .text-zinc-100 {
-  color: #261228 !important;
+  color: #240f26 !important;
 }
 html.light .text-zinc-200 {
-  color: #3d2342 !important;
+  color: #381e3c !important;
 }
 html.light .text-zinc-300 {
-  color: #553b59 !important;
+  color: #46284a !important;
 }
 html.light .text-zinc-400 {
-  color: #715575 !important;
+  color: #5e4362 !important;
 }
 html.light .text-zinc-500 {
-  color: #8c7390 !important;
+  color: #755b79 !important;
+}
+
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6 {
+  color: #160518 !important;
+}
+
+/* Light Theme Badges & Pills Color-Correction */
+html.light .bg-pink-950\/60 {
+  background-color: #fae8ef !important;
+  border-color: #f1bfd5 !important;
+  color: #722045 !important;
+  box-shadow: 0 4px 15px rgba(220, 150, 180, 0.16) !important;
+}
+html.light .bg-pink-950\/60 .text-accent-gold {
+  color: #9e4b16 !important;
+  font-weight: 700 !important;
+}
+html.light .bg-pink-950\/60 .text-accent-fairy-pink,
+html.light .bg-pink-950\/60 .bg-accent-fairy-pink {
+  color: #722045 !important;
+  background-color: #722045 !important;
+}
+
+html.light .bg-pink-900\/40 {
+  background-color: #fae6ef !important;
+  color: #8c2656 !important;
+}
+
+html.light .bg-emerald-950\/60 {
+  background-color: #eaf8f0 !important;
+  border-color: #a3e2bc !important;
+  color: #0f6938 !important;
+}
+html.light .bg-emerald-950\/60 .text-emerald-300 {
+  color: #0f6938 !important;
+}
+
+html.light .bg-blue-950\/60 {
+  background-color: #edf5fe !important;
+  border-color: #b3d5fd !important;
+  color: #1656a8 !important;
+}
+html.light .bg-blue-950\/60 .text-blue-300 {
+  color: #1656a8 !important;
+}
+
+/* Accent Colors Contrast in Light Mode */
+html.light .text-accent-gold {
+  color: #9e4b16 !important;
+}
+html.light .text-accent-gold-light {
+  color: #523118 !important;
+}
+html.light .text-accent-rose-gold {
+  color: #a84826 !important;
+}
+html.light .text-accent-fairy-pink {
+  color: #8c2656 !important;
+}
+html.light #calc-total {
+  color: #9e4b16 !important;
 }
 
 html.light .glass-panel {
@@ -368,13 +434,13 @@ html.light .bg-surface {
   background-color: var(--surface) !important;
 }
 html.light .bg-surface\/80 {
-  background-color: rgba(255, 255, 255, 0.92) !important;
+  background-color: rgba(255, 255, 255, 0.94) !important;
 }
 html.light .bg-surface\/95 {
-  background-color: rgba(255, 255, 255, 0.96) !important;
+  background-color: rgba(255, 255, 255, 0.98) !important;
 }
 html.light .bg-surface\/30, html.light .bg-surface\/40 {
-  background-color: rgba(255, 255, 255, 0.45) !important;
+  background-color: rgba(255, 255, 255, 0.5) !important;
 }
 html.light .bg-canvas {
   background-color: var(--canvas) !important;
@@ -384,7 +450,7 @@ html.light .border-white\/10 {
   border-color: var(--border) !important;
 }
 html.light .border-white\/5 {
-  border-color: rgba(180, 110, 145, 0.1) !important;
+  border-color: rgba(180, 110, 145, 0.12) !important;
 }
 
 html.light .btn-ghost {
@@ -413,9 +479,9 @@ html.light textarea::placeholder {
 }
 
 html.light .hero-badge {
-  background: rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
   border-color: rgba(180, 110, 145, 0.3) !important;
-  color: #913963 !important;
+  color: #8c2656 !important;
   box-shadow: 0 8px 25px rgba(240, 180, 205, 0.25) !important;
 }
 
@@ -454,6 +520,19 @@ html.light #portfolio-lightbox button {
 }
 html.light #portfolio-lightbox button:hover {
   background: rgba(0, 0, 0, 0.16) !important;
+}
+
+html.light #admin-floating-status {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(180, 110, 145, 0.35) !important;
+  box-shadow: 0 10px 30px rgba(70, 20, 50, 0.12) !important;
+}
+html.light #admin-floating-status span {
+  color: #1a071c !important;
+}
+html.light #admin-floating-status #admin-reopen-btn {
+  background: #fae8ef !important;
+  color: #8c2656 !important;
 }
 
 /* Mobile Sticky Conversion Bar */

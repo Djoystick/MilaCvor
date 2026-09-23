@@ -59,7 +59,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=1.4.0" />
+  <link rel="stylesheet" href="css/styles.css?v=1.4.1" />
 </head>
 <body class="bg-canvas text-zinc-100 antialiased selection:bg-accent-plum selection:text-white">
 
@@ -404,7 +404,7 @@
                 <span class="text-xs font-semibold uppercase text-accent-fairy-pink">Спецпроект</span>
                 <span class="text-xs text-zinc-400">45-60 мин</span>
               </div>
-              <h3 class="font-serif text-xl font-bold text-white mb-2">Сказочный образ</h3>
+              <h3 id="price-card-title-fairy" class="font-serif text-xl font-bold text-white mb-2">Сказочный образ</h3>
               <p class="text-xs text-zinc-400 mb-6">Детский костюмированный фотопроект по созданию персональной сказки.</p>
               
               <div id="price-card-fairy" class="font-mono text-3xl font-bold text-accent-gold tabular-nums mb-6">
@@ -452,7 +452,7 @@
                 <span class="text-xs font-semibold uppercase text-zinc-400">На природе</span>
                 <span class="text-xs text-zinc-400">1-1.5 часа</span>
               </div>
-              <h3 class="font-serif text-xl font-bold text-white mb-2">Семейная прогулка</h3>
+              <h3 id="price-card-title-family" class="font-serif text-xl font-bold text-white mb-2">Семейная прогулка</h3>
               <p class="text-xs text-zinc-400 mb-6">Теплые искренние кадры родителей и детей на закате или в поле.</p>
               
               <div id="price-card-family" class="font-mono text-3xl font-bold text-white tabular-nums mb-6">
@@ -496,7 +496,7 @@
                 <span class="text-xs font-semibold uppercase text-zinc-400">Индивидуально</span>
                 <span class="text-xs text-zinc-400">1 час</span>
               </div>
-              <h3 class="font-serif text-xl font-bold text-white mb-2">Женский арт-портрет</h3>
+              <h3 id="price-card-title-portrait" class="font-serif text-xl font-bold text-white mb-2">Женский арт-портрет</h3>
               <p class="text-xs text-zinc-400 mb-6">Глубокие кинематографичные портреты, подчеркивающие вашу эстетику.</p>
               
               <div id="price-card-portrait" class="font-mono text-3xl font-bold text-white tabular-nums mb-6">
@@ -540,7 +540,7 @@
                 <span class="text-xs font-semibold uppercase text-zinc-400">Быстрый сет</span>
                 <span class="text-xs text-zinc-400">30 мин</span>
               </div>
-              <h3 class="font-serif text-xl font-bold text-white mb-2">Экспресс / Мини-сет</h3>
+              <h3 id="price-card-title-express" class="font-serif text-xl font-bold text-white mb-2">Экспресс / Мини-сет</h3>
               <p class="text-xs text-zinc-400 mb-6">Быстрая фотосессия для одного образа или обновления контента.</p>
               
               <div id="price-card-express" class="font-mono text-3xl font-bold text-white tabular-nums mb-6">
@@ -602,7 +602,7 @@
                 <div class="flex items-center gap-3">
                   <input type="radio" name="calc-package" value="fairy" checked class="w-4 h-4" />
                   <div>
-                    <span class="text-sm font-semibold text-white block">Сказочный образ 🧚</span>
+                    <span id="calc-name-fairy" class="text-sm font-semibold text-white block">Сказочный образ 🧚</span>
                     <span class="text-xs text-zinc-400">Костюм, грим, реквизит и подарок</span>
                   </div>
                 </div>
@@ -613,7 +613,7 @@
                 <div class="flex items-center gap-3">
                   <input type="radio" name="calc-package" value="family" class="w-4 h-4" />
                   <div>
-                    <span class="text-sm font-semibold text-white block">Семейная прогулка 🌾</span>
+                    <span id="calc-name-family" class="text-sm font-semibold text-white block">Семейная прогулка 🌾</span>
                     <span class="text-xs text-zinc-400">До 5 человек на природе</span>
                   </div>
                 </div>
@@ -624,7 +624,7 @@
                 <div class="flex items-center gap-3">
                   <input type="radio" name="calc-package" value="portrait" class="w-4 h-4" />
                   <div>
-                    <span class="text-sm font-semibold text-white block">Женский арт-портрет ✨</span>
+                    <span id="calc-name-portrait" class="text-sm font-semibold text-white block">Женский арт-портрет ✨</span>
                     <span class="text-xs text-zinc-400">Индивидуальная съемка</span>
                   </div>
                 </div>
@@ -635,7 +635,7 @@
                 <div class="flex items-center gap-3">
                   <input type="radio" name="calc-package" value="express" class="w-4 h-4" />
                   <div>
-                    <span class="text-sm font-semibold text-white block">Экспресс / Мини-сет ⚡</span>
+                    <span id="calc-name-express" class="text-sm font-semibold text-white block">Экспресс / Мини-сет ⚡</span>
                     <span class="text-xs text-zinc-400">30 минут, 1 образ</span>
                   </div>
                 </div>
@@ -661,7 +661,7 @@
               <label class="p-3.5 rounded-xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
                 <div class="flex items-center gap-3">
                   <input type="checkbox" id="calc-addon-cb-studio" class="calc-addon w-4 h-4" data-cost="1800" data-addon-key="studio" data-name="Аренда фотостудии" />
-                  <span class="text-xs sm:text-sm text-zinc-200">Аренда интерьерной студии</span>
+                  <span id="calc-addon-name-studio" class="text-xs sm:text-sm text-zinc-200">Аренда интерьерной студии</span>
                 </div>
                 <span id="calc-badge-studio" class="text-xs font-mono text-zinc-400">+1 800 ₽</span>
               </label>
@@ -669,7 +669,7 @@
               <label class="p-3.5 rounded-xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
                 <div class="flex items-center gap-3">
                   <input type="checkbox" id="calc-addon-cb-travel" class="calc-addon w-4 h-4" data-cost="1000" data-addon-key="travel" data-name="Выезд за город" />
-                  <span class="text-xs sm:text-sm text-zinc-200">Выезд за город (Обнинск, Балабаново)</span>
+                  <span id="calc-addon-name-travel" class="text-xs sm:text-sm text-zinc-200">Выезд за город (Обнинск, Балабаново)</span>
                 </div>
                 <span id="calc-badge-travel" class="text-xs font-mono text-zinc-400">+1 000 ₽</span>
               </label>
@@ -677,7 +677,7 @@
               <label class="p-3.5 rounded-xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
                 <div class="flex items-center gap-3">
                   <input type="checkbox" id="calc-addon-cb-express" class="calc-addon w-4 h-4" data-cost="1500" data-addon-key="express_delivery" data-name="Экспресс-отдача за 48ч" />
-                  <span class="text-xs sm:text-sm text-zinc-200">Экспресс-отдача фото за 48 часов</span>
+                  <span id="calc-addon-name-express" class="text-xs sm:text-sm text-zinc-200">Экспресс-отдача фото за 48 часов</span>
                 </div>
                 <span id="calc-badge-express" class="text-xs font-mono text-zinc-400">+1 500 ₽</span>
               </label>
@@ -685,7 +685,7 @@
               <label class="p-3.5 rounded-xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
                 <div class="flex items-center gap-3">
                   <input type="checkbox" id="calc-addon-cb-photobook" class="calc-addon w-4 h-4" data-cost="3500" data-addon-key="photobook" data-name="Премиум фотокнига" />
-                  <span class="text-xs sm:text-sm text-zinc-200">Премиум фотокнига 20×20 см</span>
+                  <span id="calc-addon-name-photobook" class="text-xs sm:text-sm text-zinc-200">Премиум фотокнига 20×20 см</span>
                 </div>
                 <span id="calc-badge-photobook" class="text-xs font-mono text-zinc-400">+3 500 ₽</span>
               </label>
@@ -1233,35 +1233,59 @@
         <div>
           <label class="text-xs font-semibold uppercase tracking-wider text-accent-gold block mb-3">1. Базовые тарифы съемок</label>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
-              <span class="text-xs font-semibold text-zinc-200 block">Сказочный образ 🧚</span>
-              <div class="flex items-center gap-2">
-                <input type="number" id="adm-price-fairy" min="500" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
-                <span class="text-xs text-zinc-400">₽</span>
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название тарифа</label>
+                <input type="text" id="adm-name-fairy" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="adm-price-fairy" min="500" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <span class="text-xs text-zinc-400">₽</span>
+                </div>
               </div>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
-              <span class="text-xs font-semibold text-zinc-200 block">Семейная прогулка 🌾</span>
-              <div class="flex items-center gap-2">
-                <input type="number" id="adm-price-family" min="500" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
-                <span class="text-xs text-zinc-400">₽</span>
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название тарифа</label>
+                <input type="text" id="adm-name-family" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="adm-price-family" min="500" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <span class="text-xs text-zinc-400">₽</span>
+                </div>
               </div>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
-              <span class="text-xs font-semibold text-zinc-200 block">Женский арт-портрет ✨</span>
-              <div class="flex items-center gap-2">
-                <input type="number" id="adm-price-portrait" min="500" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
-                <span class="text-xs text-zinc-400">₽</span>
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название тарифа</label>
+                <input type="text" id="adm-name-portrait" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="adm-price-portrait" min="500" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <span class="text-xs text-zinc-400">₽</span>
+                </div>
               </div>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
-              <span class="text-xs font-semibold text-zinc-200 block">Экспресс / Мини-сет ⚡</span>
-              <div class="flex items-center gap-2">
-                <input type="number" id="adm-price-express" min="500" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
-                <span class="text-xs text-zinc-400">₽</span>
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название тарифа</label>
+                <input type="text" id="adm-name-express" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="adm-price-express" min="500" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <span class="text-xs text-zinc-400">₽</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1293,35 +1317,59 @@
         <div>
           <label class="text-xs font-semibold uppercase tracking-wider text-accent-gold block mb-3">3. Дополнительные опции</label>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
-              <span class="text-xs font-semibold text-zinc-200 block">Аренда интерьерной студии</span>
-              <div class="flex items-center gap-2">
-                <input type="number" id="adm-addon-studio" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
-                <span class="text-xs text-zinc-400">₽</span>
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название опции</label>
+                <input type="text" id="adm-addon-name-studio" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="adm-addon-studio" min="0" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <span class="text-xs text-zinc-400">₽</span>
+                </div>
               </div>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
-              <span class="text-xs font-semibold text-zinc-200 block">Выезд за город (Обнинск, Балабаново)</span>
-              <div class="flex items-center gap-2">
-                <input type="number" id="adm-addon-travel" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
-                <span class="text-xs text-zinc-400">₽</span>
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название опции</label>
+                <input type="text" id="adm-addon-name-travel" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="adm-addon-travel" min="0" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <span class="text-xs text-zinc-400">₽</span>
+                </div>
               </div>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
-              <span class="text-xs font-semibold text-zinc-200 block">Экспресс-отдача за 48 часов</span>
-              <div class="flex items-center gap-2">
-                <input type="number" id="adm-addon-express" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
-                <span class="text-xs text-zinc-400">₽</span>
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название опции</label>
+                <input type="text" id="adm-addon-name-express" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="adm-addon-express" min="0" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <span class="text-xs text-zinc-400">₽</span>
+                </div>
               </div>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
-              <span class="text-xs font-semibold text-zinc-200 block">Премиум фотокнига 20×20 см</span>
-              <div class="flex items-center gap-2">
-                <input type="number" id="adm-addon-photobook" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
-                <span class="text-xs text-zinc-400">₽</span>
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название опции</label>
+                <input type="text" id="adm-addon-name-photobook" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="adm-addon-photobook" min="0" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <span class="text-xs text-zinc-400">₽</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1367,9 +1415,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <!-- Application Scripts -->
-  <script src="js/portfolio.js?v=1.4.0"></script>
-  <script src="js/app.js?v=1.4.0"></script>
-  <script src="js/animations.js?v=1.4.0"></script>
+  <script src="js/portfolio.js?v=1.4.1"></script>
+  <script src="js/app.js?v=1.4.1"></script>
+  <script src="js/animations.js?v=1.4.1"></script>
 
 </body>
 </html>

@@ -243,6 +243,7 @@ class CostCalculator {
       for (const [key, pkg] of Object.entries(prices.packages)) {
         if (this.packagePrices[key]) {
           this.packagePrices[key].price = Number(pkg.price);
+          if (pkg.name) this.packagePrices[key].name = pkg.name;
         }
       }
     }
@@ -449,26 +450,39 @@ function showToast(message, type = 'info') {
     document.body.appendChild(toast);
   }
 
-  let styleClasses = 'fixed bottom-5 right-5 z-[100005] px-5 py-3.5 rounded-2xl border text-xs sm:text-sm font-medium backdrop-blur-xl shadow-2xl transition-all duration-300 transform translate-y-0 opacity-100 pointer-events-auto max-w-sm flex items-center gap-3 ';
+  const isLight = document.documentElement.classList.contains('light');
 
+  let bgBorderText = '';
   if (type === 'error') {
-    styleClasses += 'border-rose-500/40 bg-rose-950/95 text-rose-200 shadow-rose-950/50';
+    bgBorderText = isLight 
+      ? 'border-rose-400 bg-rose-50 text-rose-950 shadow-rose-200/60'
+      : 'border-rose-500/40 bg-rose-950/95 text-rose-200 shadow-rose-950/50';
   } else if (type === 'success') {
-    styleClasses += 'border-emerald-500/50 bg-[#0d2217]/95 text-emerald-200 shadow-emerald-950/50';
+    bgBorderText = isLight
+      ? 'border-emerald-400 bg-emerald-50 text-emerald-950 shadow-emerald-200/60'
+      : 'border-emerald-500/50 bg-[#0d2217]/95 text-emerald-200 shadow-emerald-950/50';
   } else {
-    styleClasses += 'border-accent-fairy-pink/40 bg-[#1a0c1d]/95 text-zinc-100 shadow-purple-950/50';
+    bgBorderText = isLight
+      ? 'border-pink-300 bg-white/95 text-[#240f26] shadow-pink-100/90'
+      : 'border-accent-fairy-pink/40 bg-[#1a0c1d]/95 text-zinc-100 shadow-purple-950/50';
   }
 
-  toast.className = styleClasses;
+  toast.className = `fixed bottom-6 right-6 z-[100005] px-5 py-3.5 rounded-2xl border text-xs sm:text-sm font-medium backdrop-blur-xl shadow-2xl flex items-center gap-3 max-w-sm transition-all duration-300 ${bgBorderText}`;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateY(0)';
+  toast.style.pointerEvents = 'auto';
+
   toast.innerHTML = `
-    <span class="w-2 h-2 rounded-full ${type === 'error' ? 'bg-rose-400' : type === 'success' ? 'bg-emerald-400 animate-ping' : 'bg-accent-rose-gold'} shrink-0"></span>
-    <span>${message}</span>
+    <span class="w-2.5 h-2.5 rounded-full ${type === 'error' ? 'bg-rose-500' : type === 'success' ? 'bg-emerald-500 animate-ping' : 'bg-accent-rose-gold'} shrink-0"></span>
+    <span class="font-medium">${message}</span>
   `;
 
   clearTimeout(window._toastTimeout);
   window._toastTimeout = setTimeout(() => {
-    toast.className += ' translate-y-10 opacity-0 pointer-events-none';
-  }, 4000);
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(16px)';
+    toast.style.pointerEvents = 'none';
+  }, 3200);
 }
 
 // 6. FAQ Accordion Logic
@@ -785,7 +799,17 @@ class PriceManager {
   applyPricesToDOM(prices) {
     const fmt = this.formatPrice;
 
-    // 1. Pricing cards in #pricing
+    // 1. Pricing cards in #pricing (Titles & Prices)
+    const tFairy = document.getElementById('price-card-title-fairy');
+    const tFamily = document.getElementById('price-card-title-family');
+    const tPortrait = document.getElementById('price-card-title-portrait');
+    const tExpress = document.getElementById('price-card-title-express');
+
+    if (tFairy && prices.packages.fairy.name) tFairy.textContent = prices.packages.fairy.name;
+    if (tFamily && prices.packages.family.name) tFamily.textContent = prices.packages.family.name;
+    if (tPortrait && prices.packages.portrait.name) tPortrait.textContent = prices.packages.portrait.name;
+    if (tExpress && prices.packages.express.name) tExpress.textContent = prices.packages.express.name;
+
     const pFairy = document.getElementById('price-card-fairy');
     const pFamily = document.getElementById('price-card-family');
     const pPortrait = document.getElementById('price-card-portrait');
@@ -796,7 +820,17 @@ class PriceManager {
     if (pPortrait) pPortrait.textContent = fmt(prices.packages.portrait.price);
     if (pExpress) pExpress.textContent = fmt(prices.packages.express.price);
 
-    // 2. Calculator package radio badges
+    // 2. Calculator package radio titles and badges
+    const cNameFairy = document.getElementById('calc-name-fairy');
+    const cNameFamily = document.getElementById('calc-name-family');
+    const cNamePortrait = document.getElementById('calc-name-portrait');
+    const cNameExpress = document.getElementById('calc-name-express');
+
+    if (cNameFairy && prices.packages.fairy.name) cNameFairy.textContent = prices.packages.fairy.name;
+    if (cNameFamily && prices.packages.family.name) cNameFamily.textContent = prices.packages.family.name;
+    if (cNamePortrait && prices.packages.portrait.name) cNamePortrait.textContent = prices.packages.portrait.name;
+    if (cNameExpress && prices.packages.express.name) cNameExpress.textContent = prices.packages.express.name;
+
     const bFairy = document.getElementById('calc-badge-fairy');
     const bFamily = document.getElementById('calc-badge-family');
     const bPortrait = document.getElementById('calc-badge-portrait');
@@ -813,12 +847,12 @@ class PriceManager {
     if (optExtra30) optExtra30.textContent = `Продлить на 30 минут (+${fmt(prices.duration.extra30)})`;
     if (optExtra60) optExtra60.textContent = `Продлить на 1 час (+${fmt(prices.duration.extra60)})`;
 
-    // 4. Calculator addons (checkboxes data-cost and badge labels)
+    // 4. Calculator addons (names, checkboxes data-cost/data-name, and badge labels)
     const addonMap = {
-      studio: { cb: 'calc-addon-cb-studio', badge: 'calc-badge-studio' },
-      travel: { cb: 'calc-addon-cb-travel', badge: 'calc-badge-travel' },
-      express_delivery: { cb: 'calc-addon-cb-express', badge: 'calc-badge-express' },
-      photobook: { cb: 'calc-addon-cb-photobook', badge: 'calc-badge-photobook' }
+      studio: { cb: 'calc-addon-cb-studio', badge: 'calc-badge-studio', label: 'calc-addon-name-studio' },
+      travel: { cb: 'calc-addon-cb-travel', badge: 'calc-badge-travel', label: 'calc-addon-name-travel' },
+      express_delivery: { cb: 'calc-addon-cb-express', badge: 'calc-badge-express', label: 'calc-addon-name-express' },
+      photobook: { cb: 'calc-addon-cb-photobook', badge: 'calc-badge-photobook', label: 'calc-addon-name-photobook' }
     };
 
     for (const [key, mapping] of Object.entries(addonMap)) {
@@ -827,6 +861,11 @@ class PriceManager {
       const cb = document.getElementById(mapping.cb);
       if (cb) {
         cb.setAttribute('data-cost', addon.price);
+        if (addon.name) cb.setAttribute('data-name', addon.name);
+      }
+      const label = document.getElementById(mapping.label);
+      if (label && addon.name) {
+        label.textContent = addon.name;
       }
       const badge = document.getElementById(mapping.badge);
       if (badge) {
@@ -840,10 +879,10 @@ class PriceManager {
     const bOptPortrait = document.getElementById('booking-opt-portrait');
     const bOptExpress = document.getElementById('booking-opt-express');
 
-    if (bOptFairy) bOptFairy.textContent = `Сказочный образ 🧚 (${fmt(prices.packages.fairy.price)})`;
-    if (bOptFamily) bOptFamily.textContent = `Семейная прогулка 🌾 (${fmt(prices.packages.family.price)})`;
-    if (bOptPortrait) bOptPortrait.textContent = `Женский арт-портрет ✨ (${fmt(prices.packages.portrait.price)})`;
-    if (bOptExpress) bOptExpress.textContent = `Экспресс / Мини-сет ⚡ (${fmt(prices.packages.express.price)})`;
+    if (bOptFairy) bOptFairy.textContent = `${prices.packages.fairy.name} (${fmt(prices.packages.fairy.price)})`;
+    if (bOptFamily) bOptFamily.textContent = `${prices.packages.family.name} (${fmt(prices.packages.family.price)})`;
+    if (bOptPortrait) bOptPortrait.textContent = `${prices.packages.portrait.name} (${fmt(prices.packages.portrait.price)})`;
+    if (bOptExpress) bOptExpress.textContent = `${prices.packages.express.name} (${fmt(prices.packages.express.price)})`;
 
     // 6. Sync with CostCalculator
     if (window.costCalculator && typeof window.costCalculator.updatePrices === 'function') {
@@ -949,22 +988,36 @@ class PriceManager {
   populateEditorForm() {
     const f = (id, val) => {
       const el = document.getElementById(id);
-      if (el) el.value = val;
+      if (el && val !== undefined) el.value = val;
     };
-    // Packages
+    // Packages (Names & Prices)
+    f('adm-name-fairy', this.prices.packages.fairy.name);
     f('adm-price-fairy', this.prices.packages.fairy.price);
+
+    f('adm-name-family', this.prices.packages.family.name);
     f('adm-price-family', this.prices.packages.family.price);
+
+    f('adm-name-portrait', this.prices.packages.portrait.name);
     f('adm-price-portrait', this.prices.packages.portrait.price);
+
+    f('adm-name-express', this.prices.packages.express.name);
     f('adm-price-express', this.prices.packages.express.price);
 
     // Duration
     f('adm-extra-30', this.prices.duration.extra30);
     f('adm-extra-60', this.prices.duration.extra60);
 
-    // Addons
+    // Addons (Names & Prices)
+    f('adm-addon-name-studio', this.prices.addons.studio.name);
     f('adm-addon-studio', this.prices.addons.studio.price);
+
+    f('adm-addon-name-travel', this.prices.addons.travel.name);
     f('adm-addon-travel', this.prices.addons.travel.price);
+
+    f('adm-addon-name-express', this.prices.addons.express_delivery.name);
     f('adm-addon-express', this.prices.addons.express_delivery.price);
+
+    f('adm-addon-name-photobook', this.prices.addons.photobook.name);
     f('adm-addon-photobook', this.prices.addons.photobook.price);
   }
 
@@ -1076,12 +1129,34 @@ class PriceManager {
       return isNaN(v) ? fallback : v;
     };
 
+    const gName = (id, fallback) => {
+      const el = document.getElementById(id);
+      const v = el?.value?.trim();
+      return v ? v : fallback;
+    };
+
     const updated = {
       packages: {
-        fairy: { ...this.prices.packages.fairy, price: gVal('adm-price-fairy', 4900) },
-        family: { ...this.prices.packages.family, price: gVal('adm-price-family', 4500) },
-        portrait: { ...this.prices.packages.portrait, price: gVal('adm-price-portrait', 5000) },
-        express: { ...this.prices.packages.express, price: gVal('adm-price-express', 2900) }
+        fairy: {
+          ...this.prices.packages.fairy,
+          name: gName('adm-name-fairy', this.prices.packages?.fairy?.name || 'Сказочный образ 🧚'),
+          price: gVal('adm-price-fairy', 4900)
+        },
+        family: {
+          ...this.prices.packages.family,
+          name: gName('adm-name-family', this.prices.packages?.family?.name || 'Семейная прогулка 🌾'),
+          price: gVal('adm-price-family', 4500)
+        },
+        portrait: {
+          ...this.prices.packages.portrait,
+          name: gName('adm-name-portrait', this.prices.packages?.portrait?.name || 'Женский арт-портрет ✨'),
+          price: gVal('adm-price-portrait', 5000)
+        },
+        express: {
+          ...this.prices.packages.express,
+          name: gName('adm-name-express', this.prices.packages?.express?.name || 'Экспресс / Мини-сет ⚡'),
+          price: gVal('adm-price-express', 2900)
+        }
       },
       duration: {
         standard: 0,
@@ -1089,10 +1164,26 @@ class PriceManager {
         extra60: gVal('adm-extra-60', 3000)
       },
       addons: {
-        studio: { ...this.prices.addons.studio, price: gVal('adm-addon-studio', 1800) },
-        travel: { ...this.prices.addons.travel, price: gVal('adm-addon-travel', 1000) },
-        express_delivery: { ...this.prices.addons.express_delivery, price: gVal('adm-addon-express', 1500) },
-        photobook: { ...this.prices.addons.photobook, price: gVal('adm-addon-photobook', 3500) }
+        studio: {
+          ...this.prices.addons.studio,
+          name: gName('adm-addon-name-studio', this.prices.addons?.studio?.name || 'Аренда интерьерной студии'),
+          price: gVal('adm-addon-studio', 1800)
+        },
+        travel: {
+          ...this.prices.addons.travel,
+          name: gName('adm-addon-name-travel', this.prices.addons?.travel?.name || 'Выезд за пределы города (>15 км)'),
+          price: gVal('adm-addon-travel', 1000)
+        },
+        express_delivery: {
+          ...this.prices.addons.express_delivery,
+          name: gName('adm-addon-name-express', this.prices.addons?.express_delivery?.name || 'Срочная отдача за 48 часов'),
+          price: gVal('adm-addon-express', 1500)
+        },
+        photobook: {
+          ...this.prices.addons.photobook,
+          name: gName('adm-addon-name-photobook', this.prices.addons?.photobook?.name || 'Премиум фотокнига (20x20 см, 10 разворотов)'),
+          price: gVal('adm-addon-photobook', 3500)
+        }
       },
       lastUpdated: new Date().toISOString()
     };
