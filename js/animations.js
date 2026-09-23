@@ -63,7 +63,7 @@ class FairyMagicSystem {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.isMobile = window.innerWidth < 768;
-    this.maxTrail = this.isMobile ? 22 : 45;
+    this.maxTrail = this.isMobile ? 38 : 50;
 
     if (this.bgCanvas) {
       this.bgCanvas.width = this.width;
@@ -123,8 +123,11 @@ class FairyMagicSystem {
         const dy = touch.clientY - this.lastY;
         const dist = Math.hypot(dx, dy);
 
-        if (dist > 12 && this.trailParticles.length < this.maxTrail) {
+        if (dist > 6 && this.trailParticles.length < this.maxTrail) {
           this.spawnWandParticle(touch.clientX, touch.clientY, true);
+          if (dist > 14) {
+            this.spawnWandParticle(touch.clientX + (Math.random() - 0.5) * 14, touch.clientY + (Math.random() - 0.5) * 14, true);
+          }
           this.lastX = touch.clientX;
           this.lastY = touch.clientY;
         }
@@ -138,6 +141,11 @@ class FairyMagicSystem {
         this.lastY = touch.clientY;
         this.spawnCameraFlash(touch.clientX, touch.clientY);
 
+        // Burst of fairy dust under finger
+        for (let k = 0; k < 3; k++) {
+          this.spawnWandParticle(touch.clientX + (Math.random() - 0.5) * 18, touch.clientY + (Math.random() - 0.5) * 18, true);
+        }
+
         // Tactile Haptic Feedback for physical camera shutter sensation
         if (navigator.vibrate) {
           try {
@@ -147,25 +155,43 @@ class FairyMagicSystem {
       }
     }, { passive: true });
 
+    // 6. Scroll-Driven Fairy Dust Starlight Stream (Magic stays visible during scroll)
+    let lastScrollPos = window.scrollY;
+    let scrollSparkCount = 0;
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const scrollDiff = Math.abs(currentScroll - lastScrollPos);
+      lastScrollPos = currentScroll;
+
+      if (scrollDiff > 4) {
+        scrollSparkCount++;
+        if (scrollSparkCount % 2 === 0 && this.trailParticles.length < this.maxTrail) {
+          const randX = Math.random() * this.width;
+          const randY = Math.random() * (this.height * 0.7) + (this.height * 0.15);
+          this.spawnWandParticle(randX, randY, true);
+        }
+      }
+    }, { passive: true });
+
     this.animate();
   }
 
   spawnWandParticle(x, y, isTouch = false) {
-    const isStar = Math.random() > 0.3;
-    const size = isStar ? (Math.random() * 3.5 + 2.5) : (Math.random() * 2 + 1);
+    const isStar = Math.random() > 0.25;
+    const size = isStar ? (Math.random() * 4.5 + 3.0) : (Math.random() * 2.8 + 1.2);
 
     this.trailParticles.push({
       x: x + (Math.random() - 0.5) * 8,
       y: y + (Math.random() - 0.5) * 8,
-      vx: (Math.random() - 0.5) * (isTouch ? 1.2 : 0.8),
-      vy: Math.random() * 0.6 + 0.3,
+      vx: (Math.random() - 0.5) * (isTouch ? 1.6 : 0.8),
+      vy: isTouch ? ((Math.random() - 0.4) * 0.8) : (Math.random() * 0.6 + 0.3),
       size: size,
       isStar: isStar,
       colorBase: this.colors[Math.floor(Math.random() * this.colors.length)],
       alpha: 1.0,
-      decay: isTouch ? (Math.random() * 0.04 + 0.025) : (Math.random() * 0.028 + 0.016),
+      decay: isTouch ? (Math.random() * 0.018 + 0.012) : (Math.random() * 0.025 + 0.014),
       rotation: Math.random() * Math.PI,
-      rotSpeed: (Math.random() - 0.5) * 0.1
+      rotSpeed: (Math.random() - 0.5) * 0.12
     });
   }
 

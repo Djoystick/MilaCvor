@@ -317,6 +317,52 @@ function initPricingButtons() {
   });
 }
 
+// 3.1 Mobile Pricing Quick Tabs & Snap Track Navigation
+function initPricingMobileTabs() {
+  const track = document.getElementById('pricing-cards-track');
+  const tabs = document.querySelectorAll('.pricing-tab-btn');
+  const counter = document.getElementById('pricing-counter');
+  if (!track || !tabs.length) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const index = parseInt(tab.getAttribute('data-index'), 10) || 0;
+      const card = document.getElementById(`price-card-container-${index}`);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+
+      tabs.forEach(t => {
+        t.classList.remove('active', 'bg-accent-gold', 'text-black', 'border-accent-gold');
+        t.classList.add('bg-white/5', 'text-zinc-300', 'border-white/10');
+      });
+      tab.classList.add('active', 'bg-accent-gold', 'text-black', 'border-accent-gold');
+      tab.classList.remove('bg-white/5', 'text-zinc-300', 'border-white/10');
+
+      if (counter) counter.textContent = `${index + 1} / 4`;
+    });
+  });
+
+  // Track scroll observer to update active tab and counter on swipe
+  track.addEventListener('scroll', () => {
+    const scrollLeft = track.scrollLeft;
+    const cardWidth = track.firstElementChild?.offsetWidth || 300;
+    const activeIndex = Math.min(3, Math.max(0, Math.round(scrollLeft / cardWidth)));
+
+    tabs.forEach((t, i) => {
+      if (i === activeIndex) {
+        t.classList.add('active', 'bg-accent-gold', 'text-black', 'border-accent-gold');
+        t.classList.remove('bg-white/5', 'text-zinc-300', 'border-white/10');
+      } else {
+        t.classList.remove('active', 'bg-accent-gold', 'text-black', 'border-accent-gold');
+        t.classList.add('bg-white/5', 'text-zinc-300', 'border-white/10');
+      }
+    });
+
+    if (counter) counter.textContent = `${activeIndex + 1} / 4`;
+  }, { passive: true });
+}
+
 // 4. Booking Form Submission & Modal
 function initBookingForm() {
   const form = document.getElementById('booking-form');
@@ -1250,6 +1296,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.costCalculator = new CostCalculator();
   window.priceManager = new PriceManager();
   initPricingButtons();
+  initPricingMobileTabs();
   initBookingForm();
   initFaqAccordion();
   initMobileNav();

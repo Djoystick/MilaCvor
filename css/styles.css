@@ -78,14 +78,30 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
 }
 
 body {
-  overflow-x: hidden;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
   min-height: 100vh;
   position: relative;
   background: var(--body-bg);
   transition: background 0.3s ease, color 0.3s ease;
+  padding-top: 5rem;
+}
+
+/* Fixed Header Always Pinned on Scroll */
+#main-nav {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 40 !important;
 }
 
 /* Serif font for titles & quotes */
@@ -303,6 +319,7 @@ body {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100010 !important;
 }
 .lightbox-overlay.active {
   opacity: 1;
@@ -541,13 +558,17 @@ html.light #admin-floating-status #admin-reopen-btn {
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100% !important;
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
   z-index: 45;
   background: var(--glass-nav);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid var(--border);
   box-shadow: 0 -10px 35px -5px rgba(0, 0, 0, 0.6);
-  padding: 0.65rem 1rem max(0.65rem, env(safe-area-inset-bottom));
+  padding: 0.5rem 0.65rem max(0.5rem, env(safe-area-inset-bottom)) !important;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
 }
 
@@ -555,6 +576,38 @@ html.light #admin-floating-status #admin-reopen-btn {
   transform: translateY(115%);
   opacity: 0;
   pointer-events: none;
+}
+
+/* Pricing Horizontal Swipe on Mobile */
+.pricing-snap-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+.pricing-snap-track::-webkit-scrollbar {
+  display: none;
+}
+.pricing-snap-card {
+  scroll-snap-align: center;
+  flex-shrink: 0;
+}
+
+/* Portfolio Zoom / Enlarge Badge */
+.portfolio-zoom-badge {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+html.light .portfolio-zoom-badge {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(180, 110, 145, 0.35);
+  color: #722045;
 }
 
 /* Breathing Glow Animation for key visual cards */

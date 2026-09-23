@@ -119,6 +119,8 @@ class PortfolioManager {
     this.currentCategory = 'all';
     this.filteredItems = [...portfolioData];
     this.currentIndex = 0;
+    this.isExpanded = false;
+    this.expandContainer = document.getElementById('portfolio-expand-container');
 
     // Touch gesture state
     this.touchStartX = 0;
@@ -137,7 +139,13 @@ class PortfolioManager {
     if (!this.grid) return;
     this.grid.innerHTML = '';
 
-    this.filteredItems.forEach((item, index) => {
+    const isMobile = window.innerWidth < 768;
+    // On mobile when viewing 'all' and not expanded, show initial 6 curated photos
+    const shouldLimit = isMobile && this.currentCategory === 'all' && !this.isExpanded;
+    const itemsToRender = shouldLimit ? this.filteredItems.slice(0, 6) : this.filteredItems;
+
+    itemsToRender.forEach((item, index) => {
+      const realIndex = this.filteredItems.findIndex(i => i.id === item.id);
       const card = document.createElement('div');
       // UNIFORM ASPECT RATIO (aspect-[3/4]) FOR MATHEMATICALLY PERFECT GRID ALIGNMENT
       card.className = 'portfolio-item group relative overflow-hidden rounded-2xl bg-surface-card border border-white/5 cursor-pointer transition-all duration-300 hover:border-accent-gold/50 hover:-translate-y-1 active:scale-[0.98] aspect-[3/4] w-full shadow-lg';
@@ -153,6 +161,13 @@ class PortfolioManager {
           class="relative z-10 w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
           onload="this.previousElementSibling.style.display='none'"
         />
+
+        <!-- Mobile Zoom Badge (Direct visual cue that photo enlarges on tap) -->
+        <div class="absolute top-2.5 right-2.5 z-20 md:hidden portfolio-zoom-badge px-2 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1 shadow-md">
+          <svg class="w-3 h-3 text-accent-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/></svg>
+          <span>Увеличить</span>
+        </div>
+
         <div class="absolute inset-0 z-20 bg-gradient-to-t from-black/90 via-black/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5">
           <span class="text-[11px] font-semibold uppercase tracking-wider text-accent-gold-light mb-1">${item.categoryLabel}</span>
           <h4 class="text-sm sm:text-base font-serif font-medium text-white leading-snug">${item.title}</h4>
@@ -164,16 +179,63 @@ class PortfolioManager {
         </div>
       `;
 
+      // Reliable tap & click handlers for instant touch response
+      let touchMoved = false;
+      card.addEventListener('touchmove', () => { touchMoved = true; }, { passive: true });
+      card.addEventListener('touchend', (e) => {
+        if (!touchMoved) {
+          e.preventDefault();
+          this.openLightbox(realIndex);
+        }
+        touchMoved = false;
+      });
       card.addEventListener('click', () => {
-        this.openLightbox(index);
+        this.openLightbox(realIndex);
       });
 
       this.grid.appendChild(card);
     });
 
+    this.renderExpandButton(shouldLimit);
+
     if (window.lucide && typeof window.lucide.createIcons === 'function') {
       window.lucide.createIcons();
     }
+  }
+
+  renderExpandButton(isLimited) {
+    if (!this.expandContainer) return;
+
+    if (this.currentCategory !== 'all' || this.filteredItems.length <= 6) {
+      this.expandContainer.innerHTML = '';
+      return;
+    }
+
+    if (isLimited) {
+      this.expandContainer.innerHTML = `
+        <button id="portfolio-expand-btn" type="button" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl btn-ghost border border-accent-fairy-pink/30 text-xs sm:text-sm font-semibold text-zinc-200 hover:text-white shadow-lg active:scale-95 transition-all">
+          <svg class="w-4 h-4 text-accent-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Смотреть все 12 фотографий</span>
+          <span class="px-2 py-0.5 rounded-full bg-accent-fairy-pink/20 text-accent-fairy-pink text-[11px] font-mono">+6</span>
+        </button>
+      `;
+    } else {
+      this.expandContainer.innerHTML = `
+        <button id="portfolio-collapse-btn" type="button" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl btn-ghost border border-white/10 text-xs text-zinc-400 hover:text-white active:scale-95 transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+          <span>Свернуть до 6 фото</span>
+        </button>
+      `;
+    }
+
+    const btn = this.expandContainer.querySelector('button');
+    btn?.addEventListener('click', () => {
+      this.isExpanded = !this.isExpanded;
+      this.renderGrid();
+      if (!this.isExpanded) {
+        document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
   }
 
   bindFilters() {
@@ -253,11 +315,16 @@ class PortfolioManager {
     this.currentIndex = index;
     this.updateLightboxContent();
     this.lightbox.classList.add('active');
+    this.lightbox.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
   }
 
   closeLightbox() {
     this.lightbox.classList.remove('active');
+    this.lightbox.style.display = '';
     document.body.style.overflow = '';
   }
 

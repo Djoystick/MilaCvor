@@ -59,7 +59,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=1.4.1" />
+  <link rel="stylesheet" href="css/styles.css?v=1.5.0" />
 </head>
 <body class="bg-canvas text-zinc-100 antialiased selection:bg-accent-plum selection:text-white">
 
@@ -291,7 +291,10 @@
           <!-- Rendered dynamically by portfolio.js with uniform 3/4 aspect ratio -->
         </div>
 
-        <div class="mt-8 text-center text-xs text-zinc-400">
+        <!-- Dynamic Expand / Collapse for compact mobile view -->
+        <div id="portfolio-expand-container" class="mt-6 text-center"></div>
+
+        <div class="mt-6 text-center text-xs text-zinc-400">
           <span>Нажмите на любую фотографию для полноэкранного просмотра со свайпами</span>
         </div>
 
@@ -392,187 +395,210 @@
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-cards">
+        <!-- Mobile Pricing Quick Segmented Tabs -->
+        <div class="flex md:hidden items-center justify-start gap-1.5 overflow-x-auto pb-2.5 mb-4 scrollbar-none" id="pricing-mobile-tabs">
+          <button type="button" data-index="0" class="pricing-tab-btn active px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-accent-gold text-black border border-accent-gold shrink-0 transition-all">
+            🧚 Сказочный
+          </button>
+          <button type="button" data-index="1" class="pricing-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/5 text-zinc-300 border border-white/10 shrink-0 transition-all">
+            🌾 Семейный
+          </button>
+          <button type="button" data-index="2" class="pricing-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/5 text-zinc-300 border border-white/10 shrink-0 transition-all">
+            ✨ Портрет
+          </button>
+          <button type="button" data-index="3" class="pricing-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/5 text-zinc-300 border border-white/10 shrink-0 transition-all">
+            ⚡ Экспресс
+          </button>
+        </div>
+
+        <div id="pricing-cards-track" class="pricing-snap-track md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 stagger-cards pb-2 md:pb-0">
           
           <!-- Card 1: Сказочный образ (Featured / Hit) -->
-          <div class="relative p-6 rounded-2xl glass-panel border-2 border-accent-fairy-pink/50 flex flex-col justify-between card-hover shadow-2xl fairy-glow-pulse">
-            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-gradient-to-r from-accent-gold to-accent-rose-gold text-black text-[11px] font-bold tracking-wider uppercase shadow-lg">
+          <div id="price-card-container-0" class="pricing-snap-card w-[86vw] max-w-[325px] md:w-auto md:max-w-none relative p-5 sm:p-6 rounded-2xl glass-panel border-2 border-accent-fairy-pink/50 flex flex-col justify-between card-hover shadow-2xl fairy-glow-pulse">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-accent-gold to-accent-rose-gold text-black text-[10px] font-bold tracking-wider uppercase shadow-lg">
               Хит сезона ✨
             </div>
             <div>
-              <div class="flex items-center justify-between mb-4 mt-2">
+              <div class="flex items-center justify-between mb-2 mt-1">
                 <span class="text-xs font-semibold uppercase text-accent-fairy-pink">Спецпроект</span>
                 <span class="text-xs text-zinc-400">45-60 мин</span>
               </div>
-              <h3 id="price-card-title-fairy" class="font-serif text-xl font-bold text-white mb-2">Сказочный образ</h3>
-              <p class="text-xs text-zinc-400 mb-6">Детский костюмированный фотопроект по созданию персональной сказки.</p>
+              <h3 id="price-card-title-fairy" class="font-serif text-lg sm:text-xl font-bold text-white mb-1.5">Сказочный образ</h3>
+              <p class="text-xs text-zinc-400 mb-4 line-clamp-2">Детский костюмированный фотопроект по созданию персональной сказки.</p>
               
-              <div id="price-card-fairy" class="font-mono text-3xl font-bold text-accent-gold tabular-nums mb-6">
+              <div id="price-card-fairy" class="font-mono text-2xl sm:text-3xl font-bold text-accent-gold tabular-nums mb-4">
                 4 900 ₽
               </div>
 
-              <ul class="space-y-3 text-xs text-zinc-300 border-t border-white/10 pt-4 mb-6">
+              <ul class="space-y-2 text-xs text-zinc-300 border-t border-white/10 pt-3 mb-5">
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Сказочный костюм, крылья, венки</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Детский гипоаллергенный аквагрим</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Волшебный реквизит и мини-подарок</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span><strong>15 фото</strong> в авторской арт-ретуши</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Все удачные исходники в цветокоррекции</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Срок готовности: до 10 дней</span>
                 </li>
               </ul>
             </div>
 
-            <button class="select-plan-btn w-full py-3 rounded-xl btn-gold text-xs font-semibold flex items-center justify-center gap-2" data-plan="fairy">
+            <button class="select-plan-btn w-full py-2.5 sm:py-3 rounded-xl btn-gold text-xs font-semibold flex items-center justify-center gap-2" data-plan="fairy">
               <span>Выбрать тариф</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </button>
           </div>
 
           <!-- Card 2: Семейная прогулка -->
-          <div class="p-6 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between card-hover">
+          <div id="price-card-container-1" class="pricing-snap-card w-[86vw] max-w-[325px] md:w-auto md:max-w-none p-5 sm:p-6 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between card-hover">
             <div>
-              <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-semibold uppercase text-zinc-400">На природе</span>
                 <span class="text-xs text-zinc-400">1-1.5 часа</span>
               </div>
-              <h3 id="price-card-title-family" class="font-serif text-xl font-bold text-white mb-2">Семейная прогулка</h3>
-              <p class="text-xs text-zinc-400 mb-6">Теплые искренние кадры родителей и детей на закате или в поле.</p>
+              <h3 id="price-card-title-family" class="font-serif text-lg sm:text-xl font-bold text-white mb-1.5">Семейная прогулка</h3>
+              <p class="text-xs text-zinc-400 mb-4 line-clamp-2">Теплые искренние кадры родителей и детей на закате или в поле.</p>
               
-              <div id="price-card-family" class="font-mono text-3xl font-bold text-white tabular-nums mb-6">
+              <div id="price-card-family" class="font-mono text-2xl sm:text-3xl font-bold text-white tabular-nums mb-4">
                 4 500 ₽
               </div>
 
-              <ul class="space-y-3 text-xs text-zinc-300 border-t border-white/10 pt-4 mb-6">
+              <ul class="space-y-2 text-xs text-zinc-300 border-t border-white/10 pt-3 mb-5">
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>До 5 участников съемки</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Помощь в выборе локации и гардероба</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span><strong>25 фото</strong> в детальной ретуши</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>От 80 кадров в цветокоррекции</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Срок готовности: до 14 дней</span>
                 </li>
               </ul>
             </div>
 
-            <button class="select-plan-btn w-full py-3 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-center gap-2" data-plan="family">
+            <button class="select-plan-btn w-full py-2.5 sm:py-3 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-center gap-2" data-plan="family">
               <span>Выбрать тариф</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </button>
           </div>
 
           <!-- Card 3: Женский арт-портрет -->
-          <div class="p-6 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between card-hover">
+          <div id="price-card-container-2" class="pricing-snap-card w-[86vw] max-w-[325px] md:w-auto md:max-w-none p-5 sm:p-6 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between card-hover">
             <div>
-              <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-semibold uppercase text-zinc-400">Индивидуально</span>
                 <span class="text-xs text-zinc-400">1 час</span>
               </div>
-              <h3 id="price-card-title-portrait" class="font-serif text-xl font-bold text-white mb-2">Женский арт-портрет</h3>
-              <p class="text-xs text-zinc-400 mb-6">Глубокие кинематографичные портреты, подчеркивающие вашу эстетику.</p>
+              <h3 id="price-card-title-portrait" class="font-serif text-lg sm:text-xl font-bold text-white mb-1.5">Женский арт-портрет</h3>
+              <p class="text-xs text-zinc-400 mb-4 line-clamp-2">Глубокие кинематографичные портреты, подчеркивающие вашу эстетику.</p>
               
-              <div id="price-card-portrait" class="font-mono text-3xl font-bold text-white tabular-nums mb-6">
+              <div id="price-card-portrait" class="font-mono text-2xl sm:text-3xl font-bold text-white tabular-nums mb-4">
                 5 000 ₽
               </div>
 
-              <ul class="space-y-3 text-xs text-zinc-300 border-t border-white/10 pt-4 mb-6">
+              <ul class="space-y-2 text-xs text-zinc-300 border-t border-white/10 pt-3 mb-5">
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Студия или природная локация</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Бережная помощь с раскрепощением и позами</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span><strong>20 фото</strong> в журнальной ретуши</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Все исходники в цветокоррекции</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Срок готовности: до 14 дней</span>
                 </li>
               </ul>
             </div>
 
-            <button class="select-plan-btn w-full py-3 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-center gap-2" data-plan="portrait">
+            <button class="select-plan-btn w-full py-2.5 sm:py-3 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-center gap-2" data-plan="portrait">
               <span>Выбрать тариф</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </button>
           </div>
 
           <!-- Card 4: Экспресс / Мини-сет -->
-          <div class="p-6 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between card-hover">
+          <div id="price-card-container-3" class="pricing-snap-card w-[86vw] max-w-[325px] md:w-auto md:max-w-none p-5 sm:p-6 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between card-hover">
             <div>
-              <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-semibold uppercase text-zinc-400">Быстрый сет</span>
                 <span class="text-xs text-zinc-400">30 мин</span>
               </div>
-              <h3 id="price-card-title-express" class="font-serif text-xl font-bold text-white mb-2">Экспресс / Мини-сет</h3>
-              <p class="text-xs text-zinc-400 mb-6">Быстрая фотосессия для одного образа или обновления контента.</p>
+              <h3 id="price-card-title-express" class="font-serif text-lg sm:text-xl font-bold text-white mb-1.5">Экспресс / Мини-сет</h3>
+              <p class="text-xs text-zinc-400 mb-4 line-clamp-2">Быстрая фотосессия для одного образа или обновления контента.</p>
               
-              <div id="price-card-express" class="font-mono text-3xl font-bold text-white tabular-nums mb-6">
+              <div id="price-card-express" class="font-mono text-2xl sm:text-3xl font-bold text-white tabular-nums mb-4">
                 2 900 ₽
               </div>
 
-              <ul class="space-y-3 text-xs text-zinc-300 border-t border-white/10 pt-4 mb-6">
+              <ul class="space-y-2 text-xs text-zinc-300 border-t border-white/10 pt-3 mb-5">
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>1 локация, 1 образ</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span><strong>10 фото</strong> в авторской ретуши</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Все исходники со съемки</span>
                 </li>
                 <li class="flex items-center gap-2">
-                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
                   <span>Срок готовности: до 7 дней</span>
                 </li>
               </ul>
             </div>
 
-            <button class="select-plan-btn w-full py-3 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-center gap-2" data-plan="express">
+            <button class="select-plan-btn w-full py-2.5 sm:py-3 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-center gap-2" data-plan="express">
               <span>Выбрать тариф</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </button>
           </div>
 
+        </div>
+
+        <!-- Mobile Swipe Indicator & Counter -->
+        <div class="flex md:hidden items-center justify-center gap-2 pt-3 text-xs text-zinc-400" id="pricing-swipe-hint">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent-gold"></span>
+          <span>Листайте карточки свайпом</span>
+          <span class="font-mono text-[11px] text-accent-gold-light ml-1 font-semibold" id="pricing-counter">1 / 4</span>
         </div>
 
       </div>
@@ -1148,23 +1174,23 @@
 
   <!-- MOBILE STICKY CONVERSION BAR (Mobile-First Ergonomics) -->
   <aside id="mobile-sticky-bar" class="md:hidden hide-bar" aria-label="Быстрые действия">
-    <div class="flex items-center justify-between gap-2 max-w-lg mx-auto">
+    <div class="flex items-center justify-between gap-1.5 w-full max-w-lg mx-auto">
       
       <!-- VK Messages Quick Action -->
-      <button id="mobile-quick-vk-btn" type="button" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#2787f5] to-[#166ee1] text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-md shadow-blue-950/40 active:scale-95 transition-transform" title="Написать в сообщения сообщества ВКонтакте">
-        <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.98 17.58c-5.5 0-8.64-3.77-8.77-10.05h2.75c.09 4.6 2.12 6.55 3.73 6.95V7.53h2.59v3.97c1.58-.17 3.24-1.98 3.8-3.97h2.59c-.43 2.54-2.28 4.35-3.59 5.12 1.31.62 3.42 2.19 4.21 4.93h-2.86c-.63-1.95-2.2-3.46-4.27-3.66v3.66h-.18z"/></svg>
+      <button id="mobile-quick-vk-btn" type="button" class="flex-1 min-w-0 py-2.5 px-2 rounded-xl bg-gradient-to-r from-[#2787f5] to-[#166ee1] text-white text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 shadow-md shadow-blue-950/40 active:scale-95 transition-transform" title="Написать в сообщения сообщества ВКонтакте">
+        <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.98 17.58c-5.5 0-8.64-3.77-8.77-10.05h2.75c.09 4.6 2.12 6.55 3.73 6.95V7.53h2.59v3.97c1.58-.17 3.24-1.98 3.8-3.97h2.59c-.43 2.54-2.28 4.35-3.59 5.12 1.31.62 3.42 2.19 4.21 4.93h-2.86c-.63-1.95-2.2-3.46-4.27-3.66v3.66h-.18z"/></svg>
         <span class="truncate">Чат в VK</span>
       </button>
 
       <!-- Direct Phone Call Action -->
-      <a href="tel:+79533286104" class="py-2.5 px-3 rounded-xl btn-ghost border border-white/15 text-zinc-200 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-transform" title="Позвонить фотографу">
-        <i data-lucide="phone" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
+      <a href="tel:+79533286104" class="shrink-0 py-2.5 px-2.5 rounded-xl btn-ghost border border-white/15 text-zinc-200 text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 active:scale-95 transition-transform" title="Позвонить фотографу">
+        <i data-lucide="phone" class="w-3 h-3 text-accent-rose-gold shrink-0"></i>
         <span>Звонок</span>
       </a>
 
       <!-- Quick Booking Action -->
-      <a href="#calculator" class="flex-1 py-2.5 px-3 rounded-xl btn-gold text-xs font-semibold flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-transform" title="Перейти к калькулятору и расчету">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5 shrink-0"></i>
+      <a href="#calculator" class="flex-1 min-w-0 py-2.5 px-2 rounded-xl btn-gold text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 shadow-md active:scale-95 transition-transform" title="Перейти к калькулятору и расчету">
+        <i data-lucide="sparkles" class="w-3 h-3 shrink-0"></i>
         <span class="truncate">Записаться</span>
       </a>
 
@@ -1415,9 +1441,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <!-- Application Scripts -->
-  <script src="js/portfolio.js?v=1.4.1"></script>
-  <script src="js/app.js?v=1.4.1"></script>
-  <script src="js/animations.js?v=1.4.1"></script>
+  <script src="js/portfolio.js?v=1.5.0"></script>
+  <script src="js/app.js?v=1.5.0"></script>
+  <script src="js/animations.js?v=1.5.0"></script>
 
 </body>
 </html>
