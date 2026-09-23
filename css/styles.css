@@ -1,0 +1,501 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root, html.dark {
+  /* Royal Velvet Plum & Fairy Rose-Gold Palette (Dark Theme) */
+  --canvas: #09030a;
+  --surface: #140716;
+  --surface-card: #1c0a1e;
+  --surface-elevated: #240d27;
+  
+  --border: rgba(240, 192, 216, 0.12);
+  --border-hover: rgba(240, 192, 216, 0.35);
+  
+  --text-main: #fcf8fa;
+  --text-muted: #bda8be;
+  --text-sub: #8a758b;
+  
+  --accent-gold: #f3d4a0;
+  --accent-gold-light: #fae8ca;
+  --accent-rose-gold: #f0b884;
+  --accent-fairy-pink: #f6c2d9;
+  --accent-plum: #904868;
+  --accent-plum-glow: rgba(168, 72, 110, 0.28);
+  --accent-gold-glow: rgba(240, 184, 132, 0.25);
+
+  --glass-bg: rgba(22, 9, 24, 0.72);
+  --glass-nav: rgba(10, 4, 11, 0.88);
+  --glass-border: rgba(240, 192, 216, 0.12);
+  --card-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(240, 192, 216, 0.1);
+  --body-bg: radial-gradient(ellipse 90% 55% at 50% -10%, rgba(160, 60, 110, 0.32) 0%, transparent 80%),
+             radial-gradient(circle 850px at 10% 35%, rgba(125, 35, 85, 0.22) 0%, transparent 70%),
+             radial-gradient(circle 900px at 90% 65%, rgba(150, 65, 30, 0.18) 0%, transparent 70%),
+             radial-gradient(circle 700px at 50% 90%, rgba(110, 30, 80, 0.2) 0%, transparent 70%),
+             #09030a;
+}
+
+html.light {
+  /* Dawn Pearl & Fairy Peach-Rose Palette (Light Theme - VK Group Banner Colors) */
+  --canvas: #faf4f6;
+  --surface: #ffffff;
+  --surface-card: #ffffff;
+  --surface-elevated: #fcf7f9;
+  
+  --border: rgba(180, 110, 145, 0.16);
+  --border-hover: rgba(180, 110, 145, 0.4);
+  
+  --text-main: #1d0f20;
+  --text-muted: #5e4661;
+  --text-sub: #87718a;
+  
+  --accent-gold: #b36b3f;
+  --accent-gold-light: #523118;
+  --accent-rose-gold: #c87250;
+  --accent-fairy-pink: #913963;
+  --accent-plum: #b24872;
+  --accent-plum-glow: rgba(178, 72, 114, 0.16);
+  --accent-gold-glow: rgba(200, 114, 80, 0.2);
+
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-nav: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(180, 110, 145, 0.18);
+  --card-shadow: 0 15px 35px -10px rgba(70, 20, 50, 0.08), 0 1px 3px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --body-bg: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(248, 205, 222, 0.45) 0%, transparent 80%),
+             radial-gradient(circle 850px at 10% 40%, rgba(255, 224, 204, 0.4) 0%, transparent 70%),
+             radial-gradient(circle 900px at 90% 70%, rgba(240, 215, 245, 0.35) 0%, transparent 70%),
+             #faf4f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--canvas);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+  background: var(--body-bg);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Serif font for titles & quotes */
+.font-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Tabular numbers for Zero-CLS numeric metrics */
+.tabular-nums {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fairy Dust Canvas (Ambient Background) */
+#fairy-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Fairy Magic Canvas (Foreground Wand Trail, Camera Flashes, Touch Starlight) */
+#fairy-magic-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+/* Scroll Progress Bar at the top of viewport */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-gold), var(--accent-rose-gold), var(--accent-fairy-pink));
+  z-index: 100000;
+  pointer-events: none;
+  box-shadow: 0 0 10px var(--accent-gold-glow);
+  transition: width 0.05s ease-out;
+}
+#scroll-progress::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: -3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 10px 2px var(--accent-gold), 0 0 18px 4px var(--accent-fairy-pink);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #0c060d;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(240, 192, 216, 0.2);
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(240, 184, 132, 0.45);
+}
+
+/* Glassmorphism panels */
+.glass-panel {
+  background: rgba(26, 12, 28, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(240, 192, 216, 0.1);
+}
+
+.glass-nav {
+  background: rgba(12, 6, 13, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Card hover glow effect */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover:hover {
+  border-color: rgba(240, 192, 216, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.8), 0 0 30px -5px var(--accent-plum-glow);
+}
+
+/* Rich Fairy Rose-Gold button gradient */
+.btn-gold {
+  background: linear-gradient(135deg, #f3d4a0 0%, #e2a87a 40%, #c47285 100%);
+  color: #150616;
+  font-weight: 700;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 6px 25px rgba(226, 168, 122, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+.btn-gold::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 220%;
+  height: 220%;
+  background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: rotate(35deg) translateX(-100%);
+  transition: transform 0.65s ease;
+}
+.btn-gold:hover::after {
+  transform: rotate(35deg) translateX(100%);
+}
+.btn-gold:hover {
+  background: linear-gradient(135deg, #fae8ca 0%, #e8b388 40%, #d47e90 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(226, 168, 122, 0.45);
+}
+.btn-gold:active {
+  transform: translateY(0);
+}
+
+/* Secondary ghost button */
+.btn-ghost {
+  background: rgba(240, 192, 216, 0.05);
+  border: 1px solid var(--border);
+  color: #fcf9fb;
+  backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-ghost:hover {
+  background: rgba(240, 192, 216, 0.12);
+  border-color: var(--border-hover);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px -5px rgba(144, 72, 104, 0.3);
+}
+.btn-ghost:active {
+  transform: translateY(0);
+}
+
+/* Shimmer animated gradient text */
+.text-shimmer-gold {
+  background: linear-gradient(
+    110deg,
+    #ffffff 0%,
+    #f6c2d9 25%,
+    #f3d4a0 50%,
+    #f6c2d9 75%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shineText 5s linear infinite;
+}
+
+@keyframes shineText {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Skeleton loader for Zero-CLS */
+.skeleton-box {
+  background: linear-gradient(
+    90deg,
+    rgba(240, 192, 216, 0.03) 0%,
+    rgba(240, 192, 216, 0.09) 50%,
+    rgba(240, 192, 216, 0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Soft breathing animation for glowing badges */
+@keyframes fairy-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(240, 192, 216, 0.25);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(0.98);
+    box-shadow: 0 0 25px rgba(240, 184, 132, 0.4);
+  }
+}
+.animate-fairy-pulse {
+  animation: fairy-pulse 3s infinite ease-in-out;
+}
+
+/* Fullscreen Lightbox Styles */
+.lightbox-overlay {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lightbox-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.lightbox-img-container {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Swiper custom styling for rich plum & gold theme */
+.swiper-pagination-bullet {
+  background: rgba(240, 192, 216, 0.3) !important;
+  opacity: 1 !important;
+  transition: all 0.3s ease !important;
+}
+.swiper-pagination-bullet-active {
+  background: var(--accent-gold) !important;
+  width: 24px !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 0 10px var(--accent-gold-glow) !important;
+}
+
+/* Checkbox and radio custom styles */
+input[type="checkbox"], input[type="radio"] {
+  accent-color: var(--accent-rose-gold);
+}
+
+/* ===================================================
+   LIGHT THEME OVERRIDES (VK Group Cover Palette)
+   =================================================== */
+html.light .text-white {
+  color: #1a0a1c !important;
+}
+html.light .text-zinc-100 {
+  color: #261228 !important;
+}
+html.light .text-zinc-200 {
+  color: #3d2342 !important;
+}
+html.light .text-zinc-300 {
+  color: #553b59 !important;
+}
+html.light .text-zinc-400 {
+  color: #715575 !important;
+}
+html.light .text-zinc-500 {
+  color: #8c7390 !important;
+}
+
+html.light .glass-panel {
+  background: var(--glass-bg);
+  border-color: var(--border);
+  box-shadow: var(--card-shadow);
+}
+
+html.light .glass-nav {
+  background: var(--glass-nav);
+  border-color: var(--border);
+  box-shadow: 0 10px 25px -5px rgba(70, 20, 50, 0.06);
+}
+
+html.light .bg-surface {
+  background-color: var(--surface) !important;
+}
+html.light .bg-surface\/80 {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+}
+html.light .bg-surface\/95 {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+}
+html.light .bg-surface\/30, html.light .bg-surface\/40 {
+  background-color: rgba(255, 255, 255, 0.45) !important;
+}
+html.light .bg-canvas {
+  background-color: var(--canvas) !important;
+}
+
+html.light .border-white\/10 {
+  border-color: var(--border) !important;
+}
+html.light .border-white\/5 {
+  border-color: rgba(180, 110, 145, 0.1) !important;
+}
+
+html.light .btn-ghost {
+  background: rgba(240, 192, 216, 0.18);
+  border-color: rgba(180, 110, 145, 0.25);
+  color: #2e1430;
+}
+html.light .btn-ghost:hover {
+  background: rgba(240, 192, 216, 0.35);
+  border-color: rgba(180, 110, 145, 0.45);
+  color: #120414;
+}
+
+html.light input[type="text"],
+html.light input[type="tel"],
+html.light input[type="date"],
+html.light textarea,
+html.light select {
+  background-color: #ffffff !important;
+  color: #1d0f20 !important;
+  border-color: rgba(180, 110, 145, 0.25) !important;
+}
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #9c83a0 !important;
+}
+
+html.light .hero-badge {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(180, 110, 145, 0.3) !important;
+  color: #913963 !important;
+  box-shadow: 0 8px 25px rgba(240, 180, 205, 0.25) !important;
+}
+
+html.light .text-shimmer-gold {
+  background: linear-gradient(
+    110deg,
+    #1d0f20 0%,
+    #b24872 25%,
+    #c87250 50%,
+    #b24872 75%,
+    #1d0f20 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shineText 5s linear infinite;
+}
+
+html.light .card-hover:hover {
+  border-color: rgba(180, 110, 145, 0.4);
+  box-shadow: 0 20px 40px -10px rgba(80, 25, 55, 0.12), 0 0 25px -5px rgba(180, 110, 145, 0.2);
+}
+
+html.light .lightbox-overlay {
+  background: rgba(250, 244, 246, 0.98) !important;
+}
+html.light #portfolio-lightbox .text-white {
+  color: #1e0f21 !important;
+}
+html.light #portfolio-lightbox .text-zinc-300 {
+  color: #553b59 !important;
+}
+html.light #portfolio-lightbox button {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #1e0f21 !important;
+}
+html.light #portfolio-lightbox button:hover {
+  background: rgba(0, 0, 0, 0.16) !important;
+}
+
+/* Mobile Sticky Conversion Bar */
+#mobile-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 45;
+  background: var(--glass-nav);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -10px 35px -5px rgba(0, 0, 0, 0.6);
+  padding: 0.65rem 1rem max(0.65rem, env(safe-area-inset-bottom));
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+
+#mobile-sticky-bar.hide-bar {
+  transform: translateY(115%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Breathing Glow Animation for key visual cards */
+@keyframes fairyPulse {
+  0%, 100% {
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px -3px var(--accent-plum-glow);
+  }
+  50% {
+    box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.8), 0 0 35px 2px var(--accent-gold-glow);
+  }
+}
+
+.fairy-glow-pulse {
+  animation: fairyPulse 3.5s ease-in-out infinite;
+}
+
+/* Mobile Safe Bottom Padding on body */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: max(4.5rem, calc(4rem + env(safe-area-inset-bottom)));
+  }
+}
+

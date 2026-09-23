@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Мила Цвор — Сказочный & Семейный фотограф в Малоярославце | Фотофея</title>
+  
+  <meta name="description" content="Детские сказочные фотопроекты в Малоярославце от фотографа-гримёра Милы Цвор. Авторские костюмы, гипоаллергенный аквагрим, реквизит, подарок ребенку и теплая атмосфера игры. Запись на сезон." />
+  <meta name="keywords" content="фотограф малоярославец, детский фотограф, сказочная фотосессия, фотофея мила, мила цвор, семейный фотограф обнинск" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Мила Цвор — Сказочный & Семейный фотограф | Фотофея" />
+  <meta property="og:description" content="Помогу вашему ребенку побывать в сказке. Детские сказочные фотопроекты, костюмы, аквагрим и бережные семейные съемки в Малоярославце." />
+  <meta property="og:image" content="assets/images/hero_cover.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0c060d" />
+
+  <!-- Zero-Flash Theme Hydration -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('fotofeya-theme');
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      }
+    })();
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            canvas: 'var(--canvas)',
+            surface: 'var(--surface)',
+            'surface-card': 'var(--surface-card)',
+            'surface-elevated': 'var(--surface-elevated)',
+            'accent-gold': 'var(--accent-gold)',
+            'accent-gold-light': 'var(--accent-gold-light)',
+            'accent-rose-gold': 'var(--accent-rose-gold)',
+            'accent-fairy-pink': 'var(--accent-fairy-pink)',
+            'accent-plum': 'var(--accent-plum)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Swiper.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css?v=1.4.0" />
+</head>
+<body class="bg-canvas text-zinc-100 antialiased selection:bg-accent-plum selection:text-white">
+
+  <!-- Top Luxury Scroll Progress Indicator -->
+  <div id="scroll-progress"></div>
+
+  <!-- Interactive Floating Fairy Dust Particles (Ambient Background) -->
+  <canvas id="fairy-particles"></canvas>
+
+  <!-- Foreground Magic Canvas (Fairy Wand Trails, Camera Flashes & Mobile Starlight) -->
+  <canvas id="fairy-magic-canvas"></canvas>
+
+  <!-- 1. STICKY GLASS HEADER -->
+  <header id="main-nav" class="sticky top-0 z-40 w-full glass-nav transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4 xl:gap-8">
+      
+      <!-- Brand Logo -->
+      <a href="#hero" class="flex items-center gap-3 group shrink-0">
+        <div class="w-10 h-10 rounded-full bg-surface border border-accent-fairy-pink/40 flex items-center justify-center text-accent-rose-gold transition-transform group-hover:scale-110 shadow-lg shadow-pink-950/40">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-serif text-lg sm:text-xl font-bold tracking-tight text-white group-hover:text-accent-rose-gold transition-colors">
+            Мила Цвор
+          </span>
+          <span class="text-[10px] sm:text-xs tracking-wider uppercase text-accent-fairy-pink/80 font-medium">
+            Фотофея • Малоярославец
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden lg:flex items-center gap-3.5 xl:gap-6 text-xs xl:text-sm font-medium text-zinc-300 shrink-0">
+        <a href="#portfolio" class="whitespace-nowrap hover:text-accent-rose-gold transition-colors py-1">Портфолио</a>
+        <a href="#about" class="whitespace-nowrap hover:text-accent-rose-gold transition-colors py-1">Обо мне</a>
+        <a href="#pricing" class="whitespace-nowrap hover:text-accent-rose-gold transition-colors py-1">Тарифы</a>
+        <a href="#calculator" class="whitespace-nowrap hover:text-accent-rose-gold transition-colors py-1">Калькулятор</a>
+        <a href="#reviews" class="whitespace-nowrap hover:text-accent-rose-gold transition-colors py-1">Отзывы</a>
+        <a href="#faq" class="whitespace-nowrap hover:text-accent-rose-gold transition-colors py-1">Вопрос-ответ</a>
+      </nav>
+
+      <!-- Header Right CTAs (With Emerald Live Status Visual & Theme Switcher) -->
+      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+        
+        <!-- Theme Switcher Button -->
+        <button id="theme-toggle-btn" type="button" class="p-2 sm:p-2.5 rounded-xl btn-ghost text-accent-rose-gold transition-all hover:scale-110 flex items-center justify-center shrink-0 cursor-pointer" aria-label="Сменить тему оформления" title="Сменить тему (Светлая / Тёмная)">
+          <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+          <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+        </button>
+
+        <!-- Live Status Visual Pill (Restored & Cleanly Separated) -->
+        <a href="#booking" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 text-xs font-medium backdrop-blur-md shadow-md shadow-emerald-950/40 hover:bg-emerald-900/60 hover:border-emerald-400 transition-all whitespace-nowrap shrink-0 group ml-1" title="Нажмите для бронирования съемки">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="group-hover:text-emerald-200 transition-colors">Запись открыта</span>
+        </a>
+
+        <!-- Phone Button -->
+        <a href="tel:+79533286104" class="px-3 py-2 rounded-xl btn-ghost hidden md:flex items-center gap-2 text-xs font-semibold text-zinc-200 whitespace-nowrap shrink-0">
+          <i data-lucide="phone" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
+          <span class="tabular-nums whitespace-nowrap">+7 (953) 328-61-04</span>
+        </a>
+
+        <!-- Fast Booking CTA -->
+        <a href="#booking" class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl btn-gold text-xs sm:text-sm font-semibold flex items-center gap-2 whitespace-nowrap shrink-0">
+          <span>Записаться</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 shrink-0"></i>
+        </a>
+
+        <!-- Mobile Menu Trigger -->
+        <button id="mobile-menu-btn" class="p-2 rounded-xl btn-ghost lg:hidden text-zinc-300 shrink-0" aria-label="Открыть меню">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-drawer" class="hidden lg:hidden border-t border-white/5 bg-surface/95 backdrop-blur-2xl px-4 py-6 space-y-4">
+      <a href="#portfolio" class="block text-base font-medium text-zinc-200 hover:text-accent-rose-gold py-1">Портфолио</a>
+      <a href="#about" class="block text-base font-medium text-zinc-200 hover:text-accent-rose-gold py-1">Обо мне</a>
+      <a href="#pricing" class="block text-base font-medium text-zinc-200 hover:text-accent-rose-gold py-1">Тарифы</a>
+      <a href="#calculator" class="block text-base font-medium text-zinc-200 hover:text-accent-rose-gold py-1">Калькулятор стоимости</a>
+      <a href="#reviews" class="block text-base font-medium text-zinc-200 hover:text-accent-rose-gold py-1">Отзывы клиентов</a>
+      <a href="#faq" class="block text-base font-medium text-zinc-200 hover:text-accent-rose-gold py-1">Частые вопросы</a>
+      <div class="pt-4 border-t border-white/10 flex flex-col gap-3">
+        <!-- Mobile Theme Switcher -->
+        <button id="mobile-theme-toggle-btn" type="button" class="w-full py-2.5 px-4 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-between">
+          <span class="flex items-center gap-2">
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:inline-block text-accent-rose-gold"></i>
+            <i data-lucide="moon" class="w-4 h-4 inline-block dark:hidden text-accent-rose-gold"></i>
+            <span>Тема оформления</span>
+          </span>
+          <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-white/10 dark:block hidden">Темная (Бархат)</span>
+          <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-black/10 dark:hidden block">Светлая (Жемчуг)</span>
+        </button>
+        <a href="tel:+79533286104" class="text-sm font-medium text-accent-gold-light flex items-center gap-2">
+          <i data-lucide="phone" class="w-4 h-4 text-accent-rose-gold"></i>
+          <span>+7 (953) 328-61-04</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10">
+    <!-- 2. CINEMATIC HERO SECTION -->
+    <section id="hero" class="relative pt-12 pb-20 sm:pt-20 sm:pb-28 overflow-hidden">
+      <!-- Ambient light mesh orbs (Berry / Rose-Gold / Amber) -->
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-gradient-to-r from-pink-900/25 via-purple-900/20 to-amber-700/20 blur-[140px] rounded-full pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        <div class="max-w-3xl mx-auto text-center">
+          
+          <!-- Overline Badge -->
+          <div class="hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.05] border border-accent-fairy-pink/30 text-xs font-semibold text-accent-fairy-pink mb-6 backdrop-blur-md shadow-lg shadow-pink-950/30">
+            <i data-lucide="wand-sparkles" class="w-3.5 h-3.5 text-accent-rose-gold animate-spin-slow"></i>
+            <span>Авторский сказочный фотопроект в Малоярославце</span>
+          </div>
+
+          <!-- Main Title with Shimmer -->
+          <h1 class="hero-title font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15] mb-6">
+            Подарите ребенку день, когда он станет главным героем <span class="italic text-shimmer-gold block sm:inline">собственной сказки</span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="hero-sub text-base sm:text-lg text-zinc-300 leading-relaxed max-w-2xl mx-auto mb-8 font-normal">
+            Профессиональные детские и семейные фотосессии под ключ: сказочные костюмы, авторский аквагрим от фотографа, волшебный реквизит, памятный подарок и живая игра без заученных поз.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="hero-cta flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <a href="#calculator" class="w-full sm:w-auto px-8 py-4 rounded-xl btn-gold text-sm font-semibold flex items-center justify-center gap-2 shadow-2xl">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              <span>Рассчитать и забронировать съемку</span>
+            </a>
+            <a href="#portfolio" class="w-full sm:w-auto px-7 py-4 rounded-xl btn-ghost text-sm font-semibold flex items-center justify-center gap-2">
+              <span>Смотреть серии работ</span>
+              <i data-lucide="arrow-down" class="w-4 h-4 text-accent-fairy-pink"></i>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Hero Panoramic Banner (Cleaned up, no overlapping text!) -->
+        <div class="hero-visual relative max-w-5xl mx-auto rounded-3xl overflow-hidden border border-accent-fairy-pink/20 shadow-2xl bg-surface-card aspect-[16/8] sm:aspect-[21/9]">
+          <div class="skeleton-box absolute inset-0 z-0"></div>
+          <img 
+            src="assets/images/hero_cover.jpg" 
+            alt="Мила Цвор — Фотофея сказочные фотопроекты" 
+            class="relative z-10 w-full h-full object-cover object-center"
+            onload="this.previousElementSibling.style.display='none'"
+          />
+        </div>
+
+        <!-- Banner Sub-Bar: Info & Geotag (Separated & Sleek) -->
+        <div class="max-w-5xl mx-auto mt-4 px-5 py-3 rounded-2xl glass-panel border border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-400">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-accent-rose-gold"></span>
+            <span class="text-zinc-200 font-medium">г. Малоярославец & выездные съемки в живописных локациях</span>
+          </div>
+          <div class="text-accent-gold font-semibold flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-accent-rose-gold"></i>
+            <span>Проект «Фотофея» • Костюм + Аквагрим + Фотосессия</span>
+          </div>
+        </div>
+
+        <!-- 4 Quick Trust Pillars -->
+        <div class="hero-trust-cards mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          <div class="p-4 rounded-2xl glass-panel text-center card-hover">
+            <span class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-gold block mb-1" data-target="100" data-suffix="%">100%</span>
+            <span class="text-xs text-zinc-400">Образ под ключ с платьями и реквизитом</span>
+          </div>
+          <div class="p-4 rounded-2xl glass-panel text-center card-hover">
+            <span class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-rose-gold block mb-1" data-target="15" data-suffix="+">15+</span>
+            <span class="text-xs text-zinc-400">Авторских костюмов и крыльев бабочек</span>
+          </div>
+          <div class="p-4 rounded-2xl glass-panel text-center card-hover">
+            <span class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-fairy-pink block mb-1" data-target="48" data-suffix=" ч">48 ч</span>
+            <span class="text-xs text-zinc-400">Возможна экспресс-отдача снимков</span>
+          </div>
+          <div class="p-4 rounded-2xl glass-panel text-center card-hover">
+            <span class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-gold block mb-1" data-target="5.0" data-decimals="1" data-prefix="⭐ ">⭐ 5.0</span>
+            <span class="text-xs text-zinc-400">Официальный рейтинг ВКонтакте</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. INTERACTIVE PORTFOLIO & FULLSCREEN LIGHTBOX -->
+    <section id="portfolio" class="py-16 sm:py-24 border-t border-white/5 relative bg-surface/40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-2xl mx-auto mb-10 reveal-on-scroll">
+          <span class="text-xs font-semibold uppercase tracking-wider text-accent-rose-gold block mb-2">Галерея работ</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            Кадры, хранящие тепло и сказку
+          </h2>
+          <p class="text-sm sm:text-base text-zinc-400">
+            Никаких неестественных поз — только детская непосредственность, живой свет и ощущение настоящего чуда.
+          </p>
+        </div>
+
+        <!-- Filter Chips (Touch scrollable) -->
+        <div class="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none">
+          <button data-filter="all" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-accent-gold text-black border border-accent-gold">
+            Все серии
+          </button>
+          <button data-filter="fairy" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-white/5 text-zinc-300 border border-white/10 hover:border-accent-rose-gold/40">
+            Сказочные образы 🧚
+          </button>
+          <button data-filter="family" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-white/5 text-zinc-300 border border-white/10 hover:border-accent-rose-gold/40">
+            Детские & Семейные 🌾
+          </button>
+          <button data-filter="portrait" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-white/5 text-zinc-300 border border-white/10 hover:border-accent-rose-gold/40">
+            Женский арт-портрет ✨
+          </button>
+          <button data-filter="autumn" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-white/5 text-zinc-300 border border-white/10 hover:border-accent-rose-gold/40">
+            Осенние истории 🍁
+          </button>
+        </div>
+
+        <!-- Portfolio Grid (Strictly uniform aspect-[3/4] for razor-sharp alignment) -->
+        <div id="portfolio-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 min-h-[400px]">
+          <!-- Rendered dynamically by portfolio.js with uniform 3/4 aspect ratio -->
+        </div>
+
+        <div class="mt-8 text-center text-xs text-zinc-400">
+          <span>Нажмите на любую фотографию для полноэкранного просмотра со свайпами</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. ABOUT PHOTOGRAPHER & PHILOSOPHY -->
+    <section id="about" class="py-16 sm:py-24 border-t border-white/5 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          
+          <!-- Photo Column -->
+          <div class="lg:col-span-5 reveal-on-scroll">
+            <div class="relative mx-auto max-w-sm sm:max-w-md rounded-3xl overflow-hidden border border-accent-fairy-pink/30 shadow-2xl bg-surface-card aspect-[4/5] card-hover">
+              <div class="skeleton-box absolute inset-0 z-0"></div>
+              <img 
+                src="assets/images/author_mila.jpg" 
+                alt="Мила Цвор — детский фотограф и гримёр" 
+                loading="lazy" 
+                class="relative z-10 w-full h-full object-cover"
+                onload="this.previousElementSibling.style.display='none'"
+              />
+              <div class="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-6">
+                <span class="font-serif text-xl sm:text-2xl font-bold text-white">Мила Цвор</span>
+                <span class="text-xs text-accent-rose-gold mt-0.5">Фотограф-гримёр • Автор проекта «Фотофея»</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content & Philosophy Column -->
+          <div class="lg:col-span-7 space-y-6 reveal-on-scroll">
+            
+            <span class="text-xs font-semibold uppercase tracking-wider text-accent-rose-gold block">Бережный подход к съемке</span>
+            
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
+              «Ребенок — это главный герой, а не второстепенный персонаж!»
+            </h2>
+
+            <!-- Quotation from Mila's manifesto -->
+            <blockquote class="p-6 rounded-2xl glass-panel border-l-4 border-accent-rose-gold text-zinc-300 text-sm sm:text-base leading-relaxed italic shadow-xl">
+              «Ребёнок чист. У него ещё нет того жизненного опыта, что есть у взрослого человека, — все чувства и эмоции как на ладони. Я всегда даю маленькому человеку возможность играть и никогда не ругаю за эти игры. Ему нужны любовь, интерес и искренняя радость — я даю это и получаю то же самое взамен. А взрослым я помогаю подсветить всё самое ценное и прекрасное в них, бережно и без стеснения».
+            </blockquote>
+
+            <!-- 4 Pillars -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div class="p-4 rounded-xl glass-panel border border-white/5 card-hover">
+                <div class="w-8 h-8 rounded-lg bg-pink-900/40 text-accent-rose-gold flex items-center justify-center mb-2">
+                  <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+                </div>
+                <h4 class="text-sm font-semibold text-white mb-1">Фотограф в роли доброй феи</h4>
+                <p class="text-xs text-zinc-400">Съемка строится как увлекательное путешествие, без принуждения и стресса.</p>
+              </div>
+
+              <div class="p-4 rounded-xl glass-panel border border-white/5 card-hover">
+                <div class="w-8 h-8 rounded-lg bg-pink-900/40 text-accent-rose-gold flex items-center justify-center mb-2">
+                  <i data-lucide="palette" class="w-4 h-4"></i>
+                </div>
+                <h4 class="text-sm font-semibold text-white mb-1">Образ & Аквагрим под ключ</h4>
+                <p class="text-xs text-zinc-400">Использую профессиональные гипоаллергенные краски TAG, свои платья, крылья и венки.</p>
+              </div>
+
+              <div class="p-4 rounded-xl glass-panel border border-white/5 card-hover">
+                <div class="w-8 h-8 rounded-lg bg-pink-900/40 text-accent-rose-gold flex items-center justify-center mb-2">
+                  <i data-lucide="gift" class="w-4 h-4"></i>
+                </div>
+                <h4 class="text-sm font-semibold text-white mb-1">Подарок каждому малышу</h4>
+                <p class="text-xs text-zinc-400">В финале ребенок получает памятный сюрприз из волшебного сундучка.</p>
+              </div>
+
+              <div class="p-4 rounded-xl glass-panel border border-white/5 card-hover">
+                <div class="w-8 h-8 rounded-lg bg-pink-900/40 text-accent-rose-gold flex items-center justify-center mb-2">
+                  <i data-lucide="shield-check" class="w-4 h-4"></i>
+                </div>
+                <h4 class="text-sm font-semibold text-white mb-1">Поддержка от начала до конца</h4>
+                <p class="text-xs text-zinc-400">Помогу с выбором места, одежды, позами и передам снимки через защищенную онлайн-галерею.</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. PRICING PACKAGES -->
+    <section id="pricing" class="py-16 sm:py-24 border-t border-white/5 bg-surface/30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-14 reveal-on-scroll">
+          <span class="text-xs font-semibold uppercase tracking-wider text-accent-rose-gold block mb-2">Пакеты услуг</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            Прозрачные тарифы без скрытых доплат
+          </h2>
+          <p class="text-sm sm:text-base text-zinc-400">
+            В каждый пакет уже включена авторская цветокоррекция, детальная ретушь и помощь на всех этапах.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-cards">
+          
+          <!-- Card 1: Сказочный образ (Featured / Hit) -->
+          <div class="relative p-6 rounded-2xl glass-panel border-2 border-accent-fairy-pink/50 flex flex-col justify-between card-hover shadow-2xl fairy-glow-pulse">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-gradient-to-r from-accent-gold to-accent-rose-gold text-black text-[11px] font-bold tracking-wider uppercase shadow-lg">
+              Хит сезона ✨
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-4 mt-2">
+                <span class="text-xs font-semibold uppercase text-accent-fairy-pink">Спецпроект</span>
+                <span class="text-xs text-zinc-400">45-60 мин</span>
+              </div>
+              <h3 class="font-serif text-xl font-bold text-white mb-2">Сказочный образ</h3>
+              <p class="text-xs text-zinc-400 mb-6">Детский костюмированный фотопроект по созданию персональной сказки.</p>
+              
+              <div id="price-card-fairy" class="font-mono text-3xl font-bold text-accent-gold tabular-nums mb-6">
+                4 900 ₽
+              </div>
+
+              <ul class="space-y-3 text-xs text-zinc-300 border-t border-white/10 pt-4 mb-6">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Сказочный костюм, крылья, венки</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Детский гипоаллергенный аквагрим</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Волшебный реквизит и мини-подарок</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span><strong>15 фото</strong> в авторской арт-ретуши</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Все удачные исходники в цветокоррекции</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Срок готовности: до 10 дней</span>
+                </li>
+              </ul>
+            </div>
+
+            <button class="select-plan-btn w-full py-3 rounded-xl btn-gold text-xs font-semibold flex items-center justify-center gap-2" data-plan="fairy">
+              <span>Выбрать тариф</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <!-- Card 2: Семейная прогулка -->
+          <div class="p-6 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between card-hover">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-semibold uppercase text-zinc-400">На природе</span>
+                <span class="text-xs text-zinc-400">1-1.5 часа</span>
+              </div>
+              <h3 class="font-serif text-xl font-bold text-white mb-2">Семейная прогулка</h3>
+              <p class="text-xs text-zinc-400 mb-6">Теплые искренние кадры родителей и детей на закате или в поле.</p>
+              
+              <div id="price-card-family" class="font-mono text-3xl font-bold text-white tabular-nums mb-6">
+                4 500 ₽
+              </div>
+
+              <ul class="space-y-3 text-xs text-zinc-300 border-t border-white/10 pt-4 mb-6">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>До 5 участников съемки</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Помощь в выборе локации и гардероба</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span><strong>25 фото</strong> в детальной ретуши</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>От 80 кадров в цветокоррекции</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Срок готовности: до 14 дней</span>
+                </li>
+              </ul>
+            </div>
+
+            <button class="select-plan-btn w-full py-3 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-center gap-2" data-plan="family">
+              <span>Выбрать тариф</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <!-- Card 3: Женский арт-портрет -->
+          <div class="p-6 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between card-hover">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-semibold uppercase text-zinc-400">Индивидуально</span>
+                <span class="text-xs text-zinc-400">1 час</span>
+              </div>
+              <h3 class="font-serif text-xl font-bold text-white mb-2">Женский арт-портрет</h3>
+              <p class="text-xs text-zinc-400 mb-6">Глубокие кинематографичные портреты, подчеркивающие вашу эстетику.</p>
+              
+              <div id="price-card-portrait" class="font-mono text-3xl font-bold text-white tabular-nums mb-6">
+                5 000 ₽
+              </div>
+
+              <ul class="space-y-3 text-xs text-zinc-300 border-t border-white/10 pt-4 mb-6">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Студия или природная локация</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Бережная помощь с раскрепощением и позами</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span><strong>20 фото</strong> в журнальной ретуши</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Все исходники в цветокоррекции</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Срок готовности: до 14 дней</span>
+                </li>
+              </ul>
+            </div>
+
+            <button class="select-plan-btn w-full py-3 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-center gap-2" data-plan="portrait">
+              <span>Выбрать тариф</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <!-- Card 4: Экспресс / Мини-сет -->
+          <div class="p-6 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between card-hover">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-semibold uppercase text-zinc-400">Быстрый сет</span>
+                <span class="text-xs text-zinc-400">30 мин</span>
+              </div>
+              <h3 class="font-serif text-xl font-bold text-white mb-2">Экспресс / Мини-сет</h3>
+              <p class="text-xs text-zinc-400 mb-6">Быстрая фотосессия для одного образа или обновления контента.</p>
+              
+              <div id="price-card-express" class="font-mono text-3xl font-bold text-white tabular-nums mb-6">
+                2 900 ₽
+              </div>
+
+              <ul class="space-y-3 text-xs text-zinc-300 border-t border-white/10 pt-4 mb-6">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>1 локация, 1 образ</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span><strong>10 фото</strong> в авторской ретуши</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Все исходники со съемки</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-accent-rose-gold shrink-0"></i>
+                  <span>Срок готовности: до 7 дней</span>
+                </li>
+              </ul>
+            </div>
+
+            <button class="select-plan-btn w-full py-3 rounded-xl btn-ghost text-xs font-semibold flex items-center justify-center gap-2" data-plan="express">
+              <span>Выбрать тариф</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. INTERACTIVE COST CALCULATOR -->
+    <section id="calculator" class="py-16 sm:py-24 border-t border-white/5 relative">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12 reveal-on-scroll">
+          <span class="text-xs font-semibold uppercase tracking-wider text-accent-rose-gold block mb-2">Онлайн-калькулятор</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            Рассчитайте точную стоимость съемки
+          </h2>
+          <p class="text-sm sm:text-base text-zinc-400">
+            Соберите свой персональный комплект услуг — расчет происходит моментально.
+          </p>
+        </div>
+
+        <div class="p-6 sm:p-10 rounded-3xl glass-panel border border-accent-fairy-pink/20 shadow-2xl reveal-on-scroll space-y-8">
+          
+          <!-- Step 1: Package Selection -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-3">1. Выберите формат съемки</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="p-4 rounded-2xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="calc-package" value="fairy" checked class="w-4 h-4" />
+                  <div>
+                    <span class="text-sm font-semibold text-white block">Сказочный образ 🧚</span>
+                    <span class="text-xs text-zinc-400">Костюм, грим, реквизит и подарок</span>
+                  </div>
+                </div>
+                <span id="calc-badge-fairy" class="text-xs font-mono font-semibold text-accent-gold">4 900 ₽</span>
+              </label>
+
+              <label class="p-4 rounded-2xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="calc-package" value="family" class="w-4 h-4" />
+                  <div>
+                    <span class="text-sm font-semibold text-white block">Семейная прогулка 🌾</span>
+                    <span class="text-xs text-zinc-400">До 5 человек на природе</span>
+                  </div>
+                </div>
+                <span id="calc-badge-family" class="text-xs font-mono font-semibold text-accent-gold">4 500 ₽</span>
+              </label>
+
+              <label class="p-4 rounded-2xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="calc-package" value="portrait" class="w-4 h-4" />
+                  <div>
+                    <span class="text-sm font-semibold text-white block">Женский арт-портрет ✨</span>
+                    <span class="text-xs text-zinc-400">Индивидуальная съемка</span>
+                  </div>
+                </div>
+                <span id="calc-badge-portrait" class="text-xs font-mono font-semibold text-accent-gold">5 000 ₽</span>
+              </label>
+
+              <label class="p-4 rounded-2xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="calc-package" value="express" class="w-4 h-4" />
+                  <div>
+                    <span class="text-sm font-semibold text-white block">Экспресс / Мини-сет ⚡</span>
+                    <span class="text-xs text-zinc-400">30 минут, 1 образ</span>
+                  </div>
+                </div>
+                <span id="calc-badge-express" class="text-xs font-mono font-semibold text-accent-gold">2 900 ₽</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Step 2: Duration -->
+          <div>
+            <label for="calc-duration" class="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">2. Длительность съемки</label>
+            <select id="calc-duration" class="w-full px-4 py-3.5 rounded-xl bg-surface border border-white/10 text-sm text-white focus:outline-none focus:border-accent-rose-gold shadow-md">
+              <option id="calc-opt-standard" value="1">Стандартная длительность (по тарифу) — без доплат</option>
+              <option id="calc-opt-extra30" value="1.5">Продлить на 30 минут (+1 500 ₽)</option>
+              <option id="calc-opt-extra60" value="2">Продлить на 1 час (+3 000 ₽)</option>
+            </select>
+          </div>
+
+          <!-- Step 3: Addon Checkboxes -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-3">3. Дополнительные опции</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="p-3.5 rounded-xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
+                <div class="flex items-center gap-3">
+                  <input type="checkbox" id="calc-addon-cb-studio" class="calc-addon w-4 h-4" data-cost="1800" data-addon-key="studio" data-name="Аренда фотостудии" />
+                  <span class="text-xs sm:text-sm text-zinc-200">Аренда интерьерной студии</span>
+                </div>
+                <span id="calc-badge-studio" class="text-xs font-mono text-zinc-400">+1 800 ₽</span>
+              </label>
+
+              <label class="p-3.5 rounded-xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
+                <div class="flex items-center gap-3">
+                  <input type="checkbox" id="calc-addon-cb-travel" class="calc-addon w-4 h-4" data-cost="1000" data-addon-key="travel" data-name="Выезд за город" />
+                  <span class="text-xs sm:text-sm text-zinc-200">Выезд за город (Обнинск, Балабаново)</span>
+                </div>
+                <span id="calc-badge-travel" class="text-xs font-mono text-zinc-400">+1 000 ₽</span>
+              </label>
+
+              <label class="p-3.5 rounded-xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
+                <div class="flex items-center gap-3">
+                  <input type="checkbox" id="calc-addon-cb-express" class="calc-addon w-4 h-4" data-cost="1500" data-addon-key="express_delivery" data-name="Экспресс-отдача за 48ч" />
+                  <span class="text-xs sm:text-sm text-zinc-200">Экспресс-отдача фото за 48 часов</span>
+                </div>
+                <span id="calc-badge-express" class="text-xs font-mono text-zinc-400">+1 500 ₽</span>
+              </label>
+
+              <label class="p-3.5 rounded-xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
+                <div class="flex items-center gap-3">
+                  <input type="checkbox" id="calc-addon-cb-photobook" class="calc-addon w-4 h-4" data-cost="3500" data-addon-key="photobook" data-name="Премиум фотокнига" />
+                  <span class="text-xs sm:text-sm text-zinc-200">Премиум фотокнига 20×20 см</span>
+                </div>
+                <span id="calc-badge-photobook" class="text-xs font-mono text-zinc-400">+3 500 ₽</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Total Display & Action -->
+          <div class="pt-6 border-t border-white/10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div>
+              <span class="text-xs uppercase tracking-wider text-zinc-400 block mb-1">Итоговая стоимость съемки:</span>
+              <div id="calc-total" class="font-mono text-3xl sm:text-4xl font-extrabold text-accent-gold tabular-nums">
+                4 900 ₽
+              </div>
+              <p id="calc-summary-text" class="text-xs text-zinc-400 mt-1 max-w-md">
+                Сказочный образ 🧚 • Стандартная длительность
+              </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+              <!-- Primary Action: Send to VK Messages with pre-filled details -->
+              <button id="calc-vk-btn" type="button" class="px-6 py-4 rounded-xl bg-gradient-to-r from-[#2787f5] to-[#166ee1] hover:from-[#3a94ff] hover:to-[#2279ed] text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 shadow-xl shadow-blue-950/40 transition-all transform hover:scale-[1.02] active:scale-[0.98] group">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current shrink-0" viewBox="0 0 24 24">
+                  <path d="M12.98 17.58c-5.5 0-8.64-3.77-8.77-10.05h2.75c.09 4.6 2.12 6.55 3.73 6.95V7.53h2.59v3.97c1.58-.17 3.24-1.98 3.8-3.97h2.59c-.43 2.54-2.28 4.35-3.59 5.12 1.31.62 3.42 2.19 4.21 4.93h-2.86c-.63-1.95-2.2-3.46-4.27-3.66v3.66h-.18z"/>
+                </svg>
+                <span>Написать в сообщения группы</span>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+              </button>
+
+              <!-- Secondary Option: Заполнить заявку на сайте -->
+              <button id="calc-book-btn" type="button" class="px-4 py-4 rounded-xl btn-ghost text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 text-zinc-300 hover:text-white">
+                <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                <span>Заполнить на сайте</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 7. REVIEWS & VK INTEGRATION -->
+    <section id="reviews" class="py-16 sm:py-24 border-t border-white/5 bg-surface/40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 reveal-on-scroll">
+          <div>
+            <!-- VK Rating Badge -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-950/60 border border-pink-500/30 text-accent-fairy-pink text-xs font-semibold mb-3 shadow-md">
+              <span class="text-accent-gold">⭐ Рейтинг 5.0</span>
+              <span class="w-1 h-1 rounded-full bg-accent-fairy-pink"></span>
+              <span>Официальные отзывы ВКонтакте</span>
+            </div>
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight">
+              Слова благодарности от родителей
+            </h2>
+          </div>
+
+          <!-- VK Group Direct Link -->
+          <a href="https://vk.ru/app6326142_-240592099" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-accent-rose-gold hover:text-white transition-colors">
+            <span>Читать все отзывы в VK</span>
+            <i data-lucide="external-link" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <!-- Reviews Swiper Carousel -->
+        <div class="swiper reviews-swiper relative pb-12">
+          <div class="swiper-wrapper">
+            
+            <!-- Slide 1 -->
+            <div class="swiper-slide p-6 sm:p-7 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between h-auto card-hover shadow-xl">
+              <div class="space-y-4">
+                <div class="flex items-center gap-1 text-accent-gold">
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-sm text-zinc-200 leading-relaxed italic">
+                  «Мила — настоящая фея! Моя дочка обычно очень стесняется незнакомых, но Мила с первых секунд нашла подход через игру. А когда начался аквагрим и надели крылья — глаза горели от счастья! Фотографии получились сказочными, как из дорогой книги сказок. Спасибо огромное!»
+                </p>
+              </div>
+              <div class="pt-6 border-t border-white/5 mt-6 flex items-center justify-between">
+                <div>
+                  <h4 class="text-sm font-semibold text-white">Екатерина Морозова</h4>
+                  <span class="text-xs text-zinc-400">Мама Алисы (5 лет) • Малоярославец</span>
+                </div>
+                <span class="text-[11px] text-accent-rose-gold font-medium">Съемка: «Фея»</span>
+              </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="swiper-slide p-6 sm:p-7 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between h-auto card-hover shadow-xl">
+              <div class="space-y-4">
+                <div class="flex items-center gap-1 text-accent-gold">
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-sm text-zinc-200 leading-relaxed italic">
+                  «Ходили всей семьей на осеннюю фотосессию. Никакого напряжения! Дети бегали, кидали листья, Мила просто ловила искренние моменты. Кадры отдали очень быстро, ретушь бережная и благородная. Обязательно придем еще на новогоднюю сказку!»
+                </p>
+              </div>
+              <div class="pt-6 border-t border-white/5 mt-6 flex items-center justify-between">
+                <div>
+                  <h4 class="text-sm font-semibold text-white">Ольга Васильева</h4>
+                  <span class="text-xs text-zinc-400">Семейная фотопрогулка</span>
+                </div>
+                <span class="text-[11px] text-accent-rose-gold font-medium">Малоярославец</span>
+              </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="swiper-slide p-6 sm:p-7 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between h-auto card-hover shadow-xl">
+              <div class="space-y-4">
+                <div class="flex items-center gap-1 text-accent-gold">
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-sm text-zinc-200 leading-relaxed italic">
+                  «Я шла на индивидуальный портрет с кучей комплексов по поводу внешности после родов. Мила так аккуратно и чутко направляла, подбадривала! Когда я увидела готовые фото, у меня потекли слезы счастья — я увидела себя красивой и женственной. Мила, вы волшебница!»
+                </p>
+              </div>
+              <div class="pt-6 border-t border-white/5 mt-6 flex items-center justify-between">
+                <div>
+                  <h4 class="text-sm font-semibold text-white">Анна Кузнецова</h4>
+                  <span class="text-xs text-zinc-400">Индивидуальная арт-съемка</span>
+                </div>
+                <span class="text-[11px] text-accent-rose-gold font-medium">Обнинск</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Carousel Controls -->
+          <div class="reviews-pagination flex justify-center gap-2 mt-6"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 8. FAQ ACCORDION -->
+    <section id="faq" class="py-16 sm:py-24 border-t border-white/5">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12 reveal-on-scroll">
+          <span class="text-xs font-semibold uppercase tracking-wider text-accent-rose-gold block mb-2">Ответы на вопросы</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            Всё, что важно знать родителям
+          </h2>
+          <p class="text-sm text-zinc-400">
+            Если у вас останутся сомнения, Мила всегда на связи и с радостью всё подробно расскажет.
+          </p>
+        </div>
+
+        <div class="space-y-4 reveal-on-scroll">
+          
+          <div class="faq-item rounded-2xl glass-panel border border-white/10 overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none">
+              <span class="text-sm sm:text-base font-semibold text-white">Что если ребенок застесняется или закапризничает?</span>
+              <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-accent-rose-gold transition-transform duration-300"></i>
+            </button>
+            <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-zinc-300 leading-relaxed border-t border-white/5 pt-3">
+              Это абсолютно естественно! Именно поэтому съемка никогда не начинается «по свистку». Первые 15 минут мы знакомимся, рассматриваем крылышки, выбираем цвета красок для аквагрима. Мила работает в роли доброй сказочницы, превращая процесс в легкую игру. Ребенок увлекается и забывает о камере.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-2xl glass-panel border border-white/10 overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none">
+              <span class="text-sm sm:text-base font-semibold text-white">Безопасен ли аквагрим для нежной детской кожи?</span>
+              <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-accent-rose-gold transition-transform duration-300"></i>
+            </button>
+            <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-zinc-300 leading-relaxed border-t border-white/5 pt-3">
+              Да, на 100%. Используются только сертифицированные профессиональные гипоаллергенные краски на водной основе (TAG, Diamond FX). Они не стягивают кожу, легко смываются обычной теплой водой или детскими салфетками и абсолютно безвредны даже для малышей от 2 лет.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-2xl glass-panel border border-white/10 overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none">
+              <span class="text-sm sm:text-base font-semibold text-white">Нужно ли покупать платья и реквизит самостоятельно?</span>
+              <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-accent-rose-gold transition-transform duration-300"></i>
+            </button>
+            <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-zinc-300 leading-relaxed border-t border-white/5 pt-3">
+              Для тарифа «Сказочный образ» всё уже включено! В наличии большая гардеробная коллекция: пышные платья разных размеров, крылья бабочек и ангелов, цветочные венки, корзинки, фонарики и волшебные палочки. Вам нужно лишь взять удобную базовую обувь.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-2xl glass-panel border border-white/10 overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none">
+              <span class="text-sm sm:text-base font-semibold text-white">Где обычно проходят съемки?</span>
+              <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-accent-rose-gold transition-transform duration-300"></i>
+            </button>
+            <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-zinc-300 leading-relaxed border-t border-white/5 pt-3">
+              Основная локация — живописные парки, ромашковые поля и лесные опушки в Малоярославце и окрестностях. Также возможны выезды в Обнинск, Балабаново или съемка в уютных интерьерных фотостудиях в прохладный сезон.
+            </div>
+          </div>
+
+          <div class="faq-item rounded-2xl glass-panel border border-white/10 overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none">
+              <span class="text-sm sm:text-base font-semibold text-white">Как и в каком виде я получу готовые фотографии?</span>
+              <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-accent-rose-gold transition-transform duration-300"></i>
+            </button>
+            <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-zinc-300 leading-relaxed border-t border-white/5 pt-3">
+              Вы получаете ссылку на красивую персональную онлайн-галерею, защищенную паролем. Все кадры можно скачать в оригинальном качестве для печати и в оптимизированном формате для соцсетей. Доступ к галерее сохраняется бессрочно.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 9. SMART BOOKING FORM -->
+    <section id="booking" class="py-16 sm:py-24 border-t border-white/5 relative">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-xl mx-auto mb-10 reveal-on-scroll">
+          <span class="text-xs font-semibold uppercase tracking-wider text-accent-rose-gold block mb-2">Бронирование даты</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            Забронируйте вашу сказку
+          </h2>
+          <p class="text-sm text-zinc-400">
+            Оставьте контакты — Мила свяжется с вами в течение 30 минут, чтобы обсудить детали и закрепить дату.
+          </p>
+        </div>
+
+        <form id="booking-form" class="p-6 sm:p-10 rounded-3xl glass-panel border border-accent-fairy-pink/20 shadow-2xl reveal-on-scroll space-y-6">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Name -->
+            <div>
+              <label for="booking-name" class="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">Ваше имя *</label>
+              <input 
+                type="text" 
+                id="booking-name" 
+                required 
+                placeholder="Как к вам обращаться" 
+                class="w-full px-4 py-3 rounded-xl bg-surface border border-white/10 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-accent-rose-gold transition-colors"
+              />
+            </div>
+
+            <!-- Phone with Smart Mask -->
+            <div>
+              <label for="booking-phone" class="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">Номер телефона *</label>
+              <input 
+                type="tel" 
+                id="booking-phone" 
+                required 
+                placeholder="+7 (___) ___-__-__" 
+                class="w-full px-4 py-3 rounded-xl bg-surface border border-white/10 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-accent-rose-gold font-mono transition-colors"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Package Selection -->
+            <div>
+              <label for="booking-package" class="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">Тариф съемки</label>
+              <select id="booking-package" class="w-full px-4 py-3 rounded-xl bg-surface border border-white/10 text-sm text-white focus:outline-none focus:border-accent-rose-gold transition-colors">
+                <option id="booking-opt-fairy" value="fairy">Сказочный образ 🧚 (4 900 ₽)</option>
+                <option id="booking-opt-family" value="family">Семейная прогулка 🌾 (4 500 ₽)</option>
+                <option id="booking-opt-portrait" value="portrait">Женский арт-портрет ✨ (5 000 ₽)</option>
+                <option id="booking-opt-express" value="express">Экспресс / Мини-сет ⚡ (2 900 ₽)</option>
+              </select>
+            </div>
+
+            <!-- Date Picker -->
+            <div>
+              <label for="booking-date" class="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">Желаемая дата</label>
+              <input 
+                type="date" 
+                id="booking-date" 
+                class="w-full px-4 py-3 rounded-xl bg-surface border border-white/10 text-sm text-white focus:outline-none focus:border-accent-rose-gold transition-colors"
+              />
+            </div>
+          </div>
+
+          <!-- Notes / Wishes -->
+          <div>
+            <label for="booking-notes" class="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">Пожелания к съемке (возраст ребенка, особый образ, локация)</label>
+            <textarea 
+              id="booking-notes" 
+              rows="3" 
+              placeholder="Например: дочка 4 года, хотим образ лесной феи с крыльями на закате..."
+              class="w-full px-4 py-3 rounded-xl bg-surface border border-white/10 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-accent-rose-gold transition-colors"
+            ></textarea>
+          </div>
+
+          <!-- Quick Connect Chips -->
+          <div class="flex items-center gap-2 text-xs text-zinc-400">
+            <span>Или напишите напрямую:</span>
+            <a href="https://wa.me/79533286104" target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded-lg bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-900/80 transition-colors">
+              WhatsApp ↗
+            </a>
+            <a href="https://vk.ru/club_fotofeya_mila" target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded-lg bg-pink-950/70 border border-pink-500/30 text-accent-fairy-pink hover:bg-pink-900/80 transition-colors">
+              ВКонтакте ↗
+            </a>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            id="booking-submit-btn" 
+            class="w-full py-4 rounded-xl btn-gold text-sm sm:text-base font-semibold flex items-center justify-center gap-2 shadow-2xl"
+          >
+            <span>Забронировать дату съемки</span>
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </button>
+
+          <p class="text-[11px] text-zinc-500 text-center">
+            Нажимая кнопку, вы соглашаетесь на обработку персональных данных для связи с вами по поводу съемки.
+          </p>
+
+        </form>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 10. FOOTER & CONTACTS -->
+  <footer id="contacts" class="border-t border-white/10 bg-canvas py-12 text-zinc-400 text-xs relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        
+        <!-- Brand Info -->
+        <div class="space-y-3 md:col-span-2">
+          <div class="flex items-center gap-2 text-white font-serif text-lg font-bold">
+            <i data-lucide="sparkles" class="w-5 h-5 text-accent-rose-gold"></i>
+            <span>Мила Цвор • Фотофея</span>
+          </div>
+          <p class="text-xs text-zinc-400 max-w-sm leading-relaxed">
+            Авторский сказочный и семейный фотопроект в Малоярославце. Съемки, где каждый ребенок чувствует себя главным героем волшебной истории.
+          </p>
+          <div class="flex items-center gap-3 pt-2">
+            <a href="https://vk.ru/club_fotofeya_mila" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-white/5 border border-white/10 hover:border-accent-rose-gold text-zinc-300 hover:text-white transition-colors" title="Группа ВКонтакте">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
+            <a href="https://wa.me/79533286104" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-white/5 border border-white/10 hover:border-accent-rose-gold text-zinc-300 hover:text-white transition-colors" title="WhatsApp">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Direct Contacts -->
+        <div class="space-y-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-white block mb-1">Связь с фотографом</span>
+          <div>
+            <a href="tel:+79533286104" class="text-sm font-semibold text-accent-gold-light hover:underline block font-mono">
+              +7 (953) 328-61-04
+            </a>
+            <span class="text-[11px] text-zinc-500">Звонки, WhatsApp, Telegram</span>
+          </div>
+          <div class="pt-2">
+            <span class="text-xs text-zinc-300 block">г. Малоярославец</span>
+            <span class="text-[11px] text-zinc-500">Калужская область • Возможен выезд</span>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="space-y-1.5">
+          <span class="text-xs font-semibold uppercase tracking-wider text-white block mb-1">Навигация</span>
+          <a href="#portfolio" class="block hover:text-accent-rose-gold transition-colors">Портфолио</a>
+          <a href="#about" class="block hover:text-accent-rose-gold transition-colors">О подходе</a>
+          <a href="#pricing" class="block hover:text-accent-rose-gold transition-colors">Стоимость</a>
+          <a href="#calculator" class="block hover:text-accent-rose-gold transition-colors">Калькулятор</a>
+          <a href="#reviews" class="block hover:text-accent-rose-gold transition-colors">Отзывы</a>
+        </div>
+
+      </div>
+
+      <div class="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500">
+        <div>
+          <span id="admin-secret-trigger" class="cursor-pointer select-none transition-colors hover:text-zinc-400" title="">©</span> 2026 Мила Цвор. Все права защищены. Фотопроект «Фотофея».
+        </div>
+        <div class="flex items-center gap-4">
+          <span>Сделано по стандарту Production Web Craft</span>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- FULLSCREEN TOUCH LIGHTBOX -->
+  <div id="portfolio-lightbox" class="lightbox-overlay fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6" role="dialog" aria-modal="true">
+    
+    <!-- Lightbox Header -->
+    <div class="flex items-center justify-between text-xs sm:text-sm text-zinc-400 z-10">
+      <div class="flex items-center gap-3">
+        <span id="lightbox-counter" class="font-mono font-bold text-accent-gold tabular-nums text-base">01 / 12</span>
+        <span id="lightbox-category" class="px-3 py-1 rounded-full bg-white/10 text-white text-[11px] font-medium hidden sm:inline-block border border-white/10">Сказочные образы</span>
+      </div>
+      
+      <button id="lightbox-close" class="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors" aria-label="Закрыть">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Lightbox Center Image Container -->
+    <div class="lightbox-backdrop flex-1 flex items-center justify-center relative my-2 overflow-hidden">
+      <!-- Prev Button -->
+      <button id="lightbox-prev" class="absolute left-2 sm:left-4 z-20 p-3.5 rounded-full bg-black/60 hover:bg-black/90 border border-white/10 text-white transition-colors" aria-label="Предыдущее фото">
+        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+      </button>
+
+      <!-- Active Photo -->
+      <div class="lightbox-img-container max-w-full max-h-[75vh] flex items-center justify-center">
+        <img id="lightbox-image" src="" alt="" class="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl transition-all" />
+      </div>
+
+      <!-- Next Button -->
+      <button id="lightbox-next" class="absolute right-2 sm:right-4 z-20 p-3.5 rounded-full bg-black/60 hover:bg-black/90 border border-white/10 text-white transition-colors" aria-label="Следующее фото">
+        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Lightbox Footer Info -->
+    <div class="text-center max-w-xl mx-auto z-10">
+      <h3 id="lightbox-title" class="font-serif text-base sm:text-lg font-bold text-white mb-1"></h3>
+      <p id="lightbox-desc" class="text-xs text-zinc-300 line-clamp-2"></p>
+    </div>
+
+  </div>
+
+  <!-- SUCCESS BOOKING MODAL -->
+  <div id="success-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="p-6 sm:p-8 rounded-3xl glass-panel border border-accent-fairy-pink/40 shadow-2xl max-w-md w-full text-center space-y-4 relative">
+      <div class="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+        <i data-lucide="check-check" class="w-8 h-8"></i>
+      </div>
+      <h3 class="font-serif text-2xl font-bold text-white">Заявка принята!</h3>
+      <p class="text-xs sm:text-sm text-zinc-300">
+        Спасибо за обращение! Мила свяжется с вами в ближайшее время для подтверждения времени и обсуждения сказочного образа.
+      </p>
+
+      <div id="modal-booking-summary" class="p-3.5 rounded-xl bg-surface border border-white/5 text-left"></div>
+
+      <div class="flex flex-col gap-2 pt-2">
+        <a id="modal-vk-btn" href="#" target="_blank" rel="noopener noreferrer" class="py-3.5 rounded-xl bg-gradient-to-r from-[#2787f5] to-[#166ee1] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-blue-950/40 hover:opacity-95 transition-opacity">
+          <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.98 17.58c-5.5 0-8.64-3.77-8.77-10.05h2.75c.09 4.6 2.12 6.55 3.73 6.95V7.53h2.59v3.97c1.58-.17 3.24-1.98 3.8-3.97h2.59c-.43 2.54-2.28 4.35-3.59 5.12 1.31.62 3.42 2.19 4.21 4.93h-2.86c-.63-1.95-2.2-3.46-4.27-3.66v3.66h-.18z"/></svg>
+          <span>Написать в сообщения группы ВК</span>
+        </a>
+        <a id="modal-wa-btn" href="https://wa.me/79533286104" target="_blank" rel="noopener noreferrer" class="py-3.5 rounded-xl btn-gold text-xs font-semibold flex items-center justify-center gap-2">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Написать в WhatsApp</span>
+        </a>
+        <button id="close-modal-btn" class="py-2.5 rounded-xl btn-ghost text-xs text-zinc-400 hover:text-white">
+          Закрыть окно
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE STICKY CONVERSION BAR (Mobile-First Ergonomics) -->
+  <aside id="mobile-sticky-bar" class="md:hidden hide-bar" aria-label="Быстрые действия">
+    <div class="flex items-center justify-between gap-2 max-w-lg mx-auto">
+      
+      <!-- VK Messages Quick Action -->
+      <button id="mobile-quick-vk-btn" type="button" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#2787f5] to-[#166ee1] text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-md shadow-blue-950/40 active:scale-95 transition-transform" title="Написать в сообщения сообщества ВКонтакте">
+        <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12.98 17.58c-5.5 0-8.64-3.77-8.77-10.05h2.75c.09 4.6 2.12 6.55 3.73 6.95V7.53h2.59v3.97c1.58-.17 3.24-1.98 3.8-3.97h2.59c-.43 2.54-2.28 4.35-3.59 5.12 1.31.62 3.42 2.19 4.21 4.93h-2.86c-.63-1.95-2.2-3.46-4.27-3.66v3.66h-.18z"/></svg>
+        <span class="truncate">Чат в VK</span>
+      </button>
+
+      <!-- Direct Phone Call Action -->
+      <a href="tel:+79533286104" class="py-2.5 px-3 rounded-xl btn-ghost border border-white/15 text-zinc-200 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-transform" title="Позвонить фотографу">
+        <i data-lucide="phone" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
+        <span>Звонок</span>
+      </a>
+
+      <!-- Quick Booking Action -->
+      <a href="#calculator" class="flex-1 py-2.5 px-3 rounded-xl btn-gold text-xs font-semibold flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-transform" title="Перейти к калькулятору и расчету">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 shrink-0"></i>
+        <span class="truncate">Записаться</span>
+      </a>
+
+    </div>
+  </aside>
+
+  <!-- ADMIN AUTH MODAL (Hidden by default, triggered only via secret shortcut / triple-tap / #admin) -->
+  <div id="admin-auth-modal" class="fixed inset-0 z-[100001] bg-black/85 backdrop-blur-md hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="p-6 sm:p-8 rounded-3xl glass-panel border border-accent-gold/40 shadow-2xl max-w-sm w-full text-center space-y-4 relative">
+      <div class="w-12 h-12 rounded-full bg-accent-gold/15 text-accent-gold flex items-center justify-center mx-auto border border-accent-gold/30">
+        <i data-lucide="lock" class="w-6 h-6"></i>
+      </div>
+      <h3 class="font-serif text-xl sm:text-2xl font-bold text-white">Вход для администратора</h3>
+      <p class="text-xs text-zinc-400">Введите PIN-код для управления прайс-листом</p>
+      
+      <form id="admin-auth-form" class="space-y-4 pt-2">
+        <div class="relative">
+          <input 
+            type="password" 
+            id="admin-password-input" 
+            placeholder="Введите пароль..." 
+            autocomplete="current-password"
+            class="w-full px-4 py-3 rounded-xl bg-surface border border-white/15 text-sm text-center text-white placeholder-zinc-500 focus:outline-none focus:border-accent-gold transition-colors font-mono tracking-widest"
+            required
+          />
+        </div>
+        <div id="admin-auth-error" class="text-xs text-rose-400 hidden">Неверный пароль. Попробуйте еще раз.</div>
+        
+        <div class="flex gap-2">
+          <button type="button" id="admin-auth-cancel" class="flex-1 py-3 rounded-xl btn-ghost text-xs font-semibold text-zinc-400 hover:text-white">
+            Отмена
+          </button>
+          <button type="submit" id="admin-auth-submit" class="flex-1 py-3 rounded-xl btn-gold text-xs font-semibold flex items-center justify-center gap-1.5 shadow-lg">
+            <span>Войти</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN PRICE EDITOR MODAL (Hidden by default) -->
+  <div id="admin-price-modal" class="fixed inset-0 z-[100001] bg-black/90 backdrop-blur-xl hidden items-center justify-center p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true">
+    <div class="my-auto max-h-[92vh] flex flex-col p-5 sm:p-7 rounded-3xl glass-panel border border-accent-gold/40 shadow-2xl max-w-2xl w-full text-left relative overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-accent-gold/20 text-accent-gold flex items-center justify-center border border-accent-gold/30">
+            <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-serif text-lg sm:text-xl font-bold text-white">Редактор прайс-листа</h3>
+            <span class="text-[11px] text-accent-rose-gold">Режим владельца • Изменения сразу видны всем</span>
+          </div>
+        </div>
+        <button id="admin-price-close" class="p-2 rounded-xl btn-ghost text-zinc-400 hover:text-white" title="Закрыть">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable form) -->
+      <form id="admin-price-form" class="space-y-6 pt-4 overflow-y-auto pr-1 flex-1">
+        
+        <!-- Section 1: Packages Base Prices -->
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-wider text-accent-gold block mb-3">1. Базовые тарифы съемок</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Сказочный образ 🧚</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-price-fairy" min="500" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Семейная прогулка 🌾</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-price-family" min="500" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Женский арт-портрет ✨</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-price-portrait" min="500" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Экспресс / Мини-сет ⚡</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-price-express" min="500" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Duration Extension -->
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-wider text-accent-gold block mb-3">2. Продление времени съемки</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Продлить на 30 минут</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-extra-30" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Продлить на 1 час</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-extra-60" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Addons -->
+        <div>
+          <label class="text-xs font-semibold uppercase tracking-wider text-accent-gold block mb-3">3. Дополнительные опции</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Аренда интерьерной студии</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-addon-studio" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Выезд за город (Обнинск, Балабаново)</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-addon-travel" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Экспресс-отдача за 48 часов</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-addon-express" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
+              <span class="text-xs font-semibold text-zinc-200 block">Премиум фотокнига 20×20 см</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="adm-addon-photobook" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <span class="text-xs text-zinc-400">₽</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+          <button type="button" id="admin-price-reset" class="w-full sm:w-auto px-4 py-2.5 rounded-xl btn-ghost text-xs text-zinc-400 hover:text-rose-300">
+            Сбросить к базовым
+          </button>
+          
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button type="button" id="admin-logout-btn" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl btn-ghost text-xs text-zinc-400 hover:text-white">
+              Выйти
+            </button>
+            <button type="submit" id="admin-price-save" class="flex-1 sm:flex-initial px-6 py-3 rounded-xl btn-gold text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-xl">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Сохранить прайс</span>
+            </button>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- FLOATING ADMIN ACTIVE BADGE (Visible ONLY when admin session is authenticated) -->
+  <div id="admin-floating-status" class="fixed top-24 right-5 z-40 hidden items-center gap-2.5 px-3.5 py-2 rounded-2xl glass-panel border border-accent-gold/40 shadow-2xl text-xs backdrop-blur-xl animate-fade-in">
+    <span class="w-2 h-2 rounded-full bg-accent-gold animate-ping"></span>
+    <span class="text-white font-medium">Админ: Мила</span>
+    <button id="admin-reopen-btn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-accent-gold text-[11px] font-semibold transition-colors">
+      Прайс ⚙️
+    </button>
+    <button id="admin-quick-exit-btn" class="text-zinc-400 hover:text-rose-400 p-1" title="Выйти из админки">
+      <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+    </button>
+  </div>
+
+  <!-- Swiper.js & GSAP CDN Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Application Scripts -->
+  <script src="js/portfolio.js?v=1.4.0"></script>
+  <script src="js/app.js?v=1.4.0"></script>
+  <script src="js/animations.js?v=1.4.0"></script>
+
+</body>
+</html>
