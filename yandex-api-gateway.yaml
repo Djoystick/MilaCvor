@@ -1,0 +1,33 @@
+openapi: "3.0.0"
+info:
+  title: tsvor-gateway
+  version: "1.5.1"
+paths:
+  /:
+    x-yc-apigateway-any-method:
+      summary: Root landing page
+      operationId: getRoot
+      x-yc-apigateway-integration:
+        type: cloud_functions
+        function_id: d4e68pgp6d02tk3a5344
+        service_account_id: ajecfb48l3okvm5t1e4p
+      responses:
+        default:
+          description: Response
+  /{proxy+}:
+    x-yc-apigateway-any-method:
+      summary: Mila Tsvor Portfolio and API
+      operationId: proxyAll
+      parameters:
+        - name: proxy
+          in: path
+          required: false
+          schema:
+            type: string
+      x-yc-apigateway-integration:
+        type: cloud_functions
+        function_id: d4e68pgp6d02tk3a5344
+        service_account_id: ajecfb48l3okvm5t1e4p
+      responses:
+        default:
+          description: Dynamic response

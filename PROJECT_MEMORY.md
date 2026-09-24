@@ -5,8 +5,13 @@
 - **Автор и бренд:** Мила Цвор ([@mila.tsvor](https://vk.com/mila.tsvor)) — фотограф-гримёр сказочных детских образов и эмоциональных индивидуальных/семейных съемок.
 - **Локация:** г. Малоярославец (Калужская область), Калуга, Обнинск, Балабаново, Наро-Фоминск.
 - **Группа ВКонтакте:** [vk.ru/club_fotofeya_mila](https://vk.ru/club_fotofeya_mila) (ID: `club240592099`).
+- **Домен:** `цвор.рф` (Punycode: `xn--b1aygv.xn--p1ai`)
+- **Хостинг / Инфраструктура:** Yandex Cloud Serverless (Folder ID `b1ga1ne6grob01bo1vaj`, Cloud ID `b1goji2f5rqkqjrjjt06`)
+- **API Gateway:** `tsvor-gateway` (ID `d5dflkfo7ps5jo0d0foa`, URL: `https://d5dflkfo7ps5jo0d0foa.nm0huug4.apigw.yandexcloud.net`)
+- **Cloud Function:** `tsvor-api` (ID `d4e68pgp6d02tk3a5344`, Node.js 22, 256 MB)
+- **SSL-сертификат:** Let's Encrypt `tsvor-cert` (ID `fpq5fbhg3m58ek9bdbvg`)
 - **Контакты:** Телефон / WhatsApp: `+7 (953) 328-61-04`.
-- **Стек:** Чистый HTML5 + Tailwind CSS (JIT) + Vanilla JS (ES6+) + Lucide Icons + GSAP (микроанимации) + Swiper.js (карусели) + HTML5 Canvas (Fairy Dust).
+- **Стек:** Чистый HTML5 + Tailwind CSS (JIT) + Vanilla JS (ES6+) + Express/Serverless Backend + Lucide Icons + GSAP + Swiper.js + Canvas (Fairy Dust).
 - **Стандарт качества:** Production Web Craft (швейцарский минимализм, Zero-CLS, Zero-Flash, 60 FPS, нативная мобильная эргономика).
 
 ---
