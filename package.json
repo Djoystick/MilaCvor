@@ -1,10 +1,10 @@
 {
   "name": "fotofeya-mila-portfolio",
-  "version": "1.7.3",
+  "version": "1.8.0",
   "description": "Премиальный сайт-портфолио для фотографа Милы Цвор (Фотофея, Малоярославец) в королевской палитре Royal Velvet Plum & Fairy Rose-Gold по стандарту Production Web Craft",
   "main": "index.html",
   "scripts": {
-    "test": "node -c js/app.js js/portfolio.js js/animations.js server.js api/index.js api/prices.js handler.js",
+    "test": "node -c js/app.js js/portfolio.js js/animations.js server.js api/index.js handler.js",
     "start": "node server.js"
   },
   "author": "Mila Tsvor",

@@ -250,14 +250,14 @@
     }
   </script>
 
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons (Fixed version) -->
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 
   <!-- Swiper.js CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
   <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=1.5.1" />
+  <link rel="stylesheet" href="css/styles.css?v=1.8.0" />
 </head>
 <body class="bg-canvas text-zinc-100 antialiased selection:bg-accent-plum selection:text-white">
 
@@ -1225,9 +1225,18 @@
             <i data-lucide="sparkles" class="w-4 h-4"></i>
           </button>
 
-          <p class="text-[11px] text-zinc-500 text-center">
-            Нажимая кнопку, вы соглашаетесь на обработку персональных данных для связи с вами по поводу съемки.
-          </p>
+          <!-- Mandatory 152-ФЗ Active Opt-In Consent Checkbox -->
+          <div class="flex items-start gap-2.5 pt-1 text-left">
+            <input 
+              type="checkbox" 
+              id="booking-pdn-consent" 
+              required 
+              class="mt-0.5 w-4 h-4 rounded border-white/20 bg-surface text-accent-gold accent-accent-gold focus:ring-accent-gold cursor-pointer shrink-0"
+            />
+            <label for="booking-pdn-consent" class="text-[11px] text-zinc-400 leading-snug cursor-pointer select-none">
+              Я подтверждаю свое <a href="/privacy.html" target="_blank" class="text-accent-rose-gold underline hover:text-white transition-colors">согласие на обработку персональных данных</a> в соответствии с Федеральным законом № 152-ФЗ и принимаю условия <a href="/privacy.html" target="_blank" class="text-accent-rose-gold underline hover:text-white transition-colors">Политики конфиденциальности</a>.
+            </label>
+          </div>
 
         </form>
 
@@ -1295,7 +1304,9 @@
           <span id="admin-secret-trigger" class="cursor-pointer select-none transition-colors hover:text-zinc-400" title="">©</span> 2026 Мила Цвор. Все права защищены. Фотопроект «Фотофея».
         </div>
         <div class="flex items-center gap-4">
-          <span>Сделано по стандарту Production Web Craft</span>
+          <a href="/privacy.html" target="_blank" class="hover:text-accent-rose-gold transition-colors underline">Политика конфиденциальности (152-ФЗ)</a>
+          <span>•</span>
+          <span>Стандарт Production Web Craft</span>
         </div>
       </div>
 
@@ -1786,9 +1797,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <!-- Application Scripts -->
-  <script src="js/portfolio.js?v=1.7.3"></script>
-  <script src="js/app.js?v=1.7.3"></script>
-  <script src="js/animations.js?v=1.7.3"></script>
+  <script src="js/portfolio.js?v=1.8.0"></script>
+  <script src="js/app.js?v=1.8.0"></script>
+  <script src="js/animations.js?v=1.8.0"></script>
 
 </body>
 </html>

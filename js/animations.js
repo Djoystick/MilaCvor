@@ -44,6 +44,11 @@ class FairyMagicSystem {
 
     this.updateThemeColors();
     this.resizeCanvases();
+
+    this.isTabVisible = !document.hidden;
+    this.rafId = null;
+    this.resizeTimer = null;
+
     this.init();
   }
 
@@ -92,16 +97,34 @@ class FairyMagicSystem {
       });
     }
 
-    // 2. Window Resize
-    window.addEventListener('resize', () => this.resizeCanvases(), { passive: true });
+    // 2. Debounced Window Resize (Smooth 60 FPS, prevents canvas buffer thrashing)
+    window.addEventListener('resize', () => {
+      clearTimeout(this.resizeTimer);
+      this.resizeTimer = setTimeout(() => this.resizeCanvases(), 150);
+    }, { passive: true });
+
+    // 2.1. Page Visibility API (Freezes RAF on hidden tabs to preserve battery and CPU)
+    document.addEventListener('visibilitychange', () => {
+      this.isTabVisible = document.hidden !== true;
+      if (this.isTabVisible) {
+        if (!this.rafId) this.animate();
+      } else if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+    });
 
     // 3. Desktop Fairy Wand Cursor Trail
     window.addEventListener('mousemove', (e) => {
+      if (this.isTabVisible && !this.rafId) {
+        this.animate();
+      }
+
       const dx = e.clientX - this.lastX;
       const dy = e.clientY - this.lastY;
       const dist = Math.hypot(dx, dy);
 
-      if (dist > 6 && this.trailParticles.length < this.maxTrail) {
+      if (dist > 4 && this.trailParticles.length < this.maxTrail) {
         this.spawnWandParticle(e.clientX, e.clientY);
         this.lastX = e.clientX;
         this.lastY = e.clientY;
@@ -260,6 +283,11 @@ class FairyMagicSystem {
   }
 
   animate() {
+    if (!this.isTabVisible) {
+      this.rafId = null;
+      return;
+    }
+
     // -------------------------------------------------------------
     // A. Render Ambient Background Canvas (Behind main content)
     // -------------------------------------------------------------
@@ -278,6 +306,19 @@ class FairyMagicSystem {
 
         p.y -= p.speedY;
         p.x += p.speedX;
+
+        // Proximity glow & gentle push: Fireflies illuminate and react when mouse cursor passes nearby
+        if (this.lastX && this.lastY) {
+          const mdx = p.x - this.lastX;
+          const mdy = p.y - this.lastY;
+          const mDist = Math.hypot(mdx, mdy);
+          if (mDist < 90 && mDist > 0) {
+            const influence = (1 - mDist / 90);
+            p.alpha = Math.min(1.0, p.alpha + influence * 0.25);
+            p.x += (mdx / mDist) * influence * 0.75;
+            p.y += (mdy / mDist) * influence * 0.75;
+          }
+        }
 
         if (p.y < -10) {
           p.y = this.height + 10;
@@ -378,7 +419,7 @@ class FairyMagicSystem {
       }
     }
 
-    requestAnimationFrame(() => this.animate());
+    this.rafId = requestAnimationFrame(() => this.animate());
   }
 }
 
@@ -435,11 +476,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.lucide.createIcons();
   }
 
-  // Initialize Fairy Magic System (Foreground + Background)
-  if (!prefersReducedMotion) {
-    window.fairyDustSystem = new FairyMagicSystem();
-    initCardTilt();
-  }
+  // Initialize Fairy Magic System (Foreground + Background) — Always active for brand magic
+  window.fairyDustSystem = new FairyMagicSystem();
+  initCardTilt();
 
   if (prefersReducedMotion || typeof gsap === 'undefined') {
     document.querySelectorAll('.reveal-on-scroll').forEach(el => {

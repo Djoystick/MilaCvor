@@ -403,6 +403,14 @@ function initBookingForm() {
       phoneInput.classList.remove('border-rose-500');
     }
 
+    // 152-ФЗ РФ: Проверка обязательного согласия на обработку ПДн
+    const consentInput = document.getElementById('booking-pdn-consent');
+    if (consentInput && !consentInput.checked) {
+      consentInput.focus();
+      showToast('Пожалуйста, подтвердите согласие на обработку персональных данных (152-ФЗ)', 'error');
+      return;
+    }
+
     // Double submit prevention
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -423,54 +431,67 @@ function initBookingForm() {
       notes: notesInput.value.trim()
     };
 
-    // Simulate network delay / webhook dispatch
-    await new Promise(r => setTimeout(r, 700));
+    try {
+      const res = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
 
-    // Fill success modal info
-    if (modalDetails) {
-      modalDetails.innerHTML = `
-        <div class="text-xs text-zinc-400 space-y-1">
-          <div><strong class="text-zinc-200">Имя:</strong> ${payload.name}</div>
-          <div><strong class="text-zinc-200">Телефон:</strong> ${payload.phone}</div>
-          <div><strong class="text-zinc-200">Тариф:</strong> ${payload.package}</div>
-          <div><strong class="text-zinc-200">Дата:</strong> ${payload.date}</div>
-        </div>
-      `;
-    }
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Ошибка при отправке заявки');
+      }
 
-    // Prepare direct VK message
-    const modalVkBtn = document.getElementById('modal-vk-btn');
-    if (modalVkBtn) {
-      const vkText = `Здравствуйте, Мила! Меня зовут ${payload.name}. Я оставил(а) заявку на сайте на съемку (${payload.package}, желаемая дата: ${payload.date}). Номер: ${payload.phone}${payload.notes ? '\nПожелания: ' + payload.notes : ''}`;
-      modalVkBtn.href = `https://vk.com/im?sel=-240592099&message=${encodeURIComponent(vkText)}`;
-      modalVkBtn.onclick = () => {
-        copyTextToClipboard(vkText);
-        showToast('✨ Переходим в сообщения группы ВК!', 'success');
-      };
-    }
+      // Fill success modal info
+      if (modalDetails) {
+        modalDetails.innerHTML = `
+          <div class="text-xs text-zinc-400 space-y-1">
+            <div><strong class="text-zinc-200">Имя:</strong> ${payload.name}</div>
+            <div><strong class="text-zinc-200">Телефон:</strong> ${payload.phone}</div>
+            <div><strong class="text-zinc-200">Тариф:</strong> ${payload.package}</div>
+            <div><strong class="text-zinc-200">Дата:</strong> ${payload.date}</div>
+          </div>
+        `;
+      }
 
-    // Prepare direct WhatsApp message
-    if (waDirectBtn) {
-      const waText = encodeURIComponent(`Здравствуйте, Мила! Меня зовут ${payload.name}. Я оставил(а) заявку на сайте на съемку (${payload.package}, желаемая дата: ${payload.date}). Номер: ${payload.phone}`);
-      waDirectBtn.href = `https://wa.me/79533286104?text=${waText}`;
-    }
+      // Prepare direct VK message
+      const modalVkBtn = document.getElementById('modal-vk-btn');
+      if (modalVkBtn) {
+        const vkText = `Здравствуйте, Мила! Меня зовут ${payload.name}. Я оставил(а) заявку на сайте на съемку (${payload.package}, желаемая дата: ${payload.date}). Номер: ${payload.phone}${payload.notes ? '\nПожелания: ' + payload.notes : ''}`;
+        modalVkBtn.href = `https://vk.com/im?sel=-240592099&message=${encodeURIComponent(vkText)}`;
+        modalVkBtn.onclick = () => {
+          copyTextToClipboard(vkText);
+          showToast('✨ Переходим в сообщения группы ВК!', 'success');
+        };
+      }
 
-    // Open modal
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
+      // Prepare direct WhatsApp message
+      if (waDirectBtn) {
+        const waText = encodeURIComponent(`Здравствуйте, Мила! Меня зовут ${payload.name}. Я оставил(а) заявку на сайте на съемку (${payload.package}, желаемая дата: ${payload.date}). Номер: ${payload.phone}`);
+        waDirectBtn.href = `https://wa.me/79533286104?text=${waText}`;
+      }
 
-    form.reset();
+      // Open modal only upon verified server confirmation
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
 
-    // Re-enable button
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = `
-        <span>Забронировать дату</span>
-        <i data-lucide="sparkles" class="w-4 h-4 ml-2 inline-block"></i>
-      `;
-      if (window.lucide) window.lucide.createIcons();
+      showToast('🎉 Ваша заявка успешно отправлена Миле!', 'success');
+      form.reset();
+    } catch (err) {
+      showToast(err.message || 'Ошибка отправки заявки. Попробуйте написать в WhatsApp или VK.', 'error');
+    } finally {
+      // Re-enable button
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <span>Забронировать дату съемки</span>
+          <i data-lucide="sparkles" class="w-4 h-4 ml-2 inline-block"></i>
+        `;
+        if (window.lucide) window.lucide.createIcons();
+      }
     }
   });
 
@@ -1087,47 +1108,45 @@ class PriceManager {
       }
     });
 
-    // Auth submit
+    // Auth submit via secure backend endpoint /api/auth/login
     this.authForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const enteredPassword = this.passwordInput?.value?.trim() || '';
-      
-      // Verify password by testing against backend /api/prices
-      let isValid = false;
+      if (!enteredPassword) return;
+
+      const submitBtn = document.getElementById('admin-auth-submit');
+      if (submitBtn) submitBtn.disabled = true;
+
       try {
-        const testRes = await fetch('/api/prices', {
+        const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: enteredPassword, prices: this.prices })
+          body: JSON.stringify({ password: enteredPassword })
         });
-        if (testRes.status === 200) {
-          isValid = true;
-        } else if (testRes.status === 401) {
-          isValid = false;
+
+        const data = await res.json();
+
+        if (res.ok && data.success && data.token) {
+          sessionStorage.setItem('fotofeya_admin_token', data.token);
+          this.closeAuthModal();
+          this.showFloatingBadge();
+          this.openPriceModal();
+          showToast('✨ Доступ разрешен! Открыта панель управления.', 'success');
+          if (window.location.hash === '#admin') {
+            history.replaceState(null, null, ' ');
+          }
         } else {
-          // If server returned another status, test fallback
-          isValid = (enteredPassword === 'mila2026');
+          if (this.authError) {
+            this.authError.textContent = data.error || 'Неверный пароль. Попробуйте еще раз.';
+            this.authError.classList.remove('hidden');
+            this.passwordInput?.classList.add('border-rose-500');
+            setTimeout(() => this.passwordInput?.classList.remove('border-rose-500'), 1500);
+          }
         }
       } catch (err) {
-        // Offline / file:// protocol fallback
-        isValid = (enteredPassword === 'mila2026');
-      }
-
-      if (isValid) {
-        sessionStorage.setItem('fotofeya_admin_token', enteredPassword);
-        this.closeAuthModal();
-        this.showFloatingBadge();
-        this.openPriceModal();
-        showToast('✨ Доступ разрешен! Открыт редактор прайса.', 'success');
-        if (window.location.hash === '#admin') {
-          history.replaceState(null, null, ' ');
-        }
-      } else {
-        if (this.authError) {
-          this.authError.classList.remove('hidden');
-          this.passwordInput?.classList.add('border-rose-500');
-          setTimeout(() => this.passwordInput?.classList.remove('border-rose-500'), 1500);
-        }
+        showToast('Ошибка сетевого соединения с сервером', 'error');
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
 
@@ -1238,14 +1257,17 @@ class PriceManager {
       lastUpdated: new Date().toISOString()
     };
 
-    const token = sessionStorage.getItem('fotofeya_admin_token') || 'mila2026';
+    const token = sessionStorage.getItem('fotofeya_admin_token') || '';
     let savedOnServer = false;
 
     try {
       const res = await fetch('/api/prices', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: token, prices: updated })
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ token, prices: updated })
       });
 
       if (res.ok) {
@@ -1448,14 +1470,17 @@ class PriceManager {
       saveBtn.innerHTML = `<span>Сохранение...</span>`;
     }
 
-    const token = sessionStorage.getItem('fotofeya_admin_token') || 'mila2026';
+    const token = sessionStorage.getItem('fotofeya_admin_token') || '';
     let saved = false;
 
     try {
       const res = await fetch('/api/portfolio', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: token, items: this.adminPortfolioItems })
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ token, items: this.adminPortfolioItems })
       });
       if (res.ok) {
         saved = true;
@@ -1499,7 +1524,7 @@ class PriceManager {
     fetchBtn?.addEventListener('click', async () => {
       const token = tokenInput?.value?.trim() || '';
       const albumUrl = urlInput?.value?.trim() || '';
-      const adminPass = sessionStorage.getItem('fotofeya_admin_token') || 'mila2026';
+      const adminPass = sessionStorage.getItem('fotofeya_admin_token') || '';
 
       if (!token) {
         showToast('Пожалуйста, укажите сервисный токен VK для запроса к API', 'error');
@@ -1515,8 +1540,11 @@ class PriceManager {
       try {
         const res = await fetch('/api/portfolio/sync-vk', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: adminPass, albumUrl, vkToken: token })
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminPass}`
+          },
+          body: JSON.stringify({ token: adminPass, albumUrl, vkToken: token })
         });
 
         const data = await res.json();
@@ -1615,7 +1643,7 @@ class PriceManager {
       const title = titleInput?.value?.trim() || 'Новая фоторабота';
       const category = catInput?.value || 'fairy';
       const description = descInput?.value?.trim() || '';
-      const adminPass = sessionStorage.getItem('fotofeya_admin_token') || 'mila2026';
+      const adminPass = sessionStorage.getItem('fotofeya_admin_token') || '';
 
       if (!file && !imageUrl) {
         showToast('Пожалуйста, выберите файл на устройстве или вставьте ссылку на фото', 'error');
@@ -1638,9 +1666,12 @@ class PriceManager {
 
         const res = await fetch('/api/portfolio/upload', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminPass}`
+          },
           body: JSON.stringify({
-            password: adminPass,
+            token: adminPass,
             base64,
             imageUrl,
             title,
