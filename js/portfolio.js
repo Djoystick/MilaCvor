@@ -3,7 +3,7 @@
  * Standard: Production Web Craft (Zero-CLS, Uniform Alignment, 60fps, Touch-enabled)
  */
 
-const portfolioData = [
+const DEFAULT_PORTFOLIO_ITEMS = [
   {
     id: 1,
     title: "Осенняя сказка: образ маленькой лисички",
@@ -117,7 +117,16 @@ class PortfolioManager {
     this.nextBtn = document.getElementById('lightbox-next');
 
     this.currentCategory = 'all';
-    this.filteredItems = [...portfolioData];
+    
+    // Instant cache hydration
+    let cached = null;
+    try {
+      const raw = localStorage.getItem('fotofeya_portfolio');
+      if (raw) cached = JSON.parse(raw);
+    } catch (e) {}
+
+    this.portfolioItems = Array.isArray(cached) && cached.length > 0 ? cached : [...DEFAULT_PORTFOLIO_ITEMS];
+    this.filteredItems = [...this.portfolioItems];
     this.currentIndex = 0;
     this.isExpanded = false;
     this.expandContainer = document.getElementById('portfolio-expand-container');
@@ -130,9 +139,46 @@ class PortfolioManager {
   }
 
   init() {
+    this.applyCategoryFilter();
     this.renderGrid();
     this.bindFilters();
     this.bindLightbox();
+    this.fetchLatestPortfolio();
+  }
+
+  applyCategoryFilter() {
+    if (this.currentCategory === 'all') {
+      this.filteredItems = [...this.portfolioItems];
+    } else {
+      this.filteredItems = this.portfolioItems.filter(item => item.category === this.currentCategory);
+    }
+  }
+
+  async fetchLatestPortfolio() {
+    try {
+      const res = await fetch('/api/portfolio?t=' + Date.now());
+      if (!res.ok) return;
+      const items = await res.json();
+      if (Array.isArray(items) && items.length > 0) {
+        this.setPortfolioData(items);
+        try {
+          localStorage.setItem('fotofeya_portfolio', JSON.stringify(items));
+        } catch (e) {}
+      }
+    } catch (err) {
+      // Offline fallback: keep current items
+    }
+  }
+
+  setPortfolioData(newItems) {
+    if (!Array.isArray(newItems) || newItems.length === 0) return;
+    this.portfolioItems = newItems;
+    this.applyCategoryFilter();
+    this.renderGrid();
+  }
+
+  reloadPortfolio() {
+    this.fetchLatestPortfolio();
   }
 
   renderGrid() {
@@ -212,11 +258,12 @@ class PortfolioManager {
     }
 
     if (isLimited) {
+      const extraCount = this.filteredItems.length - 6;
       this.expandContainer.innerHTML = `
         <button id="portfolio-expand-btn" type="button" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl btn-ghost border border-accent-fairy-pink/30 text-xs sm:text-sm font-semibold text-zinc-200 hover:text-white shadow-lg active:scale-95 transition-all">
           <svg class="w-4 h-4 text-accent-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          <span>Смотреть все 12 фотографий</span>
-          <span class="px-2 py-0.5 rounded-full bg-accent-fairy-pink/20 text-accent-fairy-pink text-[11px] font-mono">+6</span>
+          <span>Смотреть все ${this.filteredItems.length} фотографий</span>
+          <span class="px-2 py-0.5 rounded-full bg-accent-fairy-pink/20 text-accent-fairy-pink text-[11px] font-mono">+${extraCount}</span>
         </button>
       `;
     } else {
@@ -252,13 +299,8 @@ class PortfolioManager {
         btn.classList.add('bg-accent-gold', 'text-black', 'border-accent-gold');
         btn.classList.remove('bg-white/5', 'text-zinc-300', 'border-white/10');
 
-        // Filter items
-        if (cat === 'all') {
-          this.filteredItems = [...portfolioData];
-        } else {
-          this.filteredItems = portfolioData.filter(item => item.category === cat);
-        }
-
+        // Apply dynamic filter
+        this.applyCategoryFilter();
         this.renderGrid();
       });
     });

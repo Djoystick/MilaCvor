@@ -787,6 +787,10 @@ class PriceManager {
 
     // 4. Bind admin modals and actions
     this.bindModalActions();
+    this.bindTabs();
+    this.bindVkSync();
+    this.bindManualUpload();
+    document.getElementById('adm-gallery-save-btn')?.addEventListener('click', () => this.saveAdminGallery());
 
     // 5. Restore floating badge if admin already authenticated in this session
     if (sessionStorage.getItem('fotofeya_admin_token')) {
@@ -1278,6 +1282,392 @@ class PriceManager {
     } else {
       showToast('✅ Прайс-лист сохранен локально!', 'success');
     }
+  }
+
+  bindTabs() {
+    this.tabPrices = document.getElementById('admin-tab-prices');
+    this.tabGallery = document.getElementById('admin-tab-gallery');
+    this.galleryView = document.getElementById('admin-gallery-view');
+
+    this.tabPrices?.addEventListener('click', () => this.switchTab('prices'));
+    this.tabGallery?.addEventListener('click', () => this.switchTab('gallery'));
+  }
+
+  switchTab(tab) {
+    this.activeTab = tab;
+    if (tab === 'prices') {
+      this.tabPrices?.classList.add('bg-accent-gold', 'text-black', 'shadow-md');
+      this.tabPrices?.classList.remove('bg-white/5', 'text-zinc-300');
+      this.tabGallery?.classList.remove('bg-accent-gold', 'text-black', 'shadow-md');
+      this.tabGallery?.classList.add('bg-white/5', 'text-zinc-300');
+
+      this.priceForm?.classList.remove('hidden');
+      this.galleryView?.classList.add('hidden');
+    } else {
+      this.tabGallery?.classList.add('bg-accent-gold', 'text-black', 'shadow-md');
+      this.tabGallery?.classList.remove('bg-white/5', 'text-zinc-300');
+      this.tabPrices?.classList.remove('bg-accent-gold', 'text-black', 'shadow-md');
+      this.tabPrices?.classList.add('bg-white/5', 'text-zinc-300');
+
+      this.priceForm?.classList.add('hidden');
+      this.galleryView?.classList.remove('hidden');
+
+      this.loadAdminGallery();
+    }
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  async loadAdminGallery() {
+    const listEl = document.getElementById('adm-gallery-items-list');
+    if (!listEl) return;
+    listEl.innerHTML = `<div class="p-4 text-center text-xs text-zinc-400">Загрузка фотографий...</div>`;
+
+    try {
+      const res = await fetch('/api/portfolio?all=1&t=' + Date.now());
+      if (res.ok) {
+        this.adminPortfolioItems = await res.json();
+      } else {
+        this.adminPortfolioItems = window.portfolioManager?.portfolioItems || [];
+      }
+    } catch (e) {
+      this.adminPortfolioItems = window.portfolioManager?.portfolioItems || [];
+    }
+    this.renderAdminGalleryList();
+  }
+
+  renderAdminGalleryList() {
+    const listEl = document.getElementById('adm-gallery-items-list');
+    if (!listEl) return;
+
+    if (!Array.isArray(this.adminPortfolioItems) || this.adminPortfolioItems.length === 0) {
+      listEl.innerHTML = `<div class="p-6 text-center text-xs text-zinc-400 border border-dashed border-white/10 rounded-2xl">В галерее пока нет фотографий. Добавьте новые через VK или файл выше.</div>`;
+      return;
+    }
+
+    const catBadge = {
+      fairy: '🧚 Сказочные',
+      family: '🌾 Семейные',
+      autumn: '🍁 Осенние',
+      portrait: '✨ Портреты'
+    };
+
+    listEl.innerHTML = this.adminPortfolioItems.map((item, idx) => {
+      const isActive = item.isActive !== false;
+      return `
+        <div class="p-3 rounded-2xl bg-surface border ${isActive ? 'border-white/10' : 'border-white/5 opacity-60'} flex items-center justify-between gap-3 group transition-all" data-idx="${idx}">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-12 h-14 rounded-xl overflow-hidden bg-black/40 shrink-0 border border-white/10 relative">
+              <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='assets/images/logo.png'" />
+            </div>
+            <div class="min-w-0">
+              <h5 class="text-xs font-semibold text-white truncate">${item.title}</h5>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-accent-fairy-pink/15 text-accent-fairy-pink font-medium">
+                  ${catBadge[item.category] || item.categoryLabel || item.category}
+                </span>
+                <span class="text-[10px] ${isActive ? 'text-emerald-400' : 'text-zinc-500'} font-medium">
+                  ${isActive ? '● На главной' : '○ Скрыто'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" class="adm-photo-move-up p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Поднять выше" data-idx="${idx}">
+              <i data-lucide="chevron-up" class="w-4 h-4"></i>
+            </button>
+            <button type="button" class="adm-photo-move-down p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Опустить ниже" data-idx="${idx}">
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </button>
+            <button type="button" class="adm-photo-toggle-vis p-1.5 rounded-lg btn-ghost ${isActive ? 'text-emerald-400 hover:text-emerald-300' : 'text-zinc-500 hover:text-zinc-300'}" title="${isActive ? 'Скрыть с главной' : 'Показать на главной'}" data-idx="${idx}">
+              <i data-lucide="${isActive ? 'eye' : 'eye-off'}" class="w-4 h-4"></i>
+            </button>
+            <button type="button" class="adm-photo-delete p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-rose-400" title="Удалить" data-idx="${idx}">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    if (window.lucide) window.lucide.createIcons();
+
+    // Bind item actions
+    listEl.querySelectorAll('.adm-photo-move-up').forEach(b => {
+      b.addEventListener('click', () => {
+        const i = Number(b.dataset.idx);
+        if (i > 0) {
+          const temp = this.adminPortfolioItems[i];
+          this.adminPortfolioItems[i] = this.adminPortfolioItems[i - 1];
+          this.adminPortfolioItems[i - 1] = temp;
+          this.renderAdminGalleryList();
+        }
+      });
+    });
+
+    listEl.querySelectorAll('.adm-photo-move-down').forEach(b => {
+      b.addEventListener('click', () => {
+        const i = Number(b.dataset.idx);
+        if (i < this.adminPortfolioItems.length - 1) {
+          const temp = this.adminPortfolioItems[i];
+          this.adminPortfolioItems[i] = this.adminPortfolioItems[i + 1];
+          this.adminPortfolioItems[i + 1] = temp;
+          this.renderAdminGalleryList();
+        }
+      });
+    });
+
+    listEl.querySelectorAll('.adm-photo-toggle-vis').forEach(b => {
+      b.addEventListener('click', () => {
+        const i = Number(b.dataset.idx);
+        const item = this.adminPortfolioItems[i];
+        if (item) {
+          item.isActive = (item.isActive === false);
+          this.renderAdminGalleryList();
+        }
+      });
+    });
+
+    listEl.querySelectorAll('.adm-photo-delete').forEach(b => {
+      b.addEventListener('click', () => {
+        const i = Number(b.dataset.idx);
+        if (confirm(`Удалить фотоработу «${this.adminPortfolioItems[i]?.title}»?`)) {
+          this.adminPortfolioItems.splice(i, 1);
+          this.renderAdminGalleryList();
+          showToast('Фотография удалена из списка. Нажмите «Сохранить галерею».', 'info');
+        }
+      });
+    });
+  }
+
+  async saveAdminGallery() {
+    const saveBtn = document.getElementById('adm-gallery-save-btn');
+    const originalText = saveBtn?.innerHTML;
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = `<span>Сохранение...</span>`;
+    }
+
+    const token = sessionStorage.getItem('fotofeya_admin_token') || 'mila2026';
+    let saved = false;
+
+    try {
+      const res = await fetch('/api/portfolio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: token, items: this.adminPortfolioItems })
+      });
+      if (res.ok) {
+        saved = true;
+      }
+    } catch (err) {
+      console.warn('Portfolio save fallback', err);
+    }
+
+    // Always update local cache & live manager
+    localStorage.setItem('fotofeya_portfolio', JSON.stringify(this.adminPortfolioItems));
+    if (window.portfolioManager) {
+      window.portfolioManager.setPortfolioData(this.adminPortfolioItems.filter(i => i.isActive !== false));
+    }
+
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = originalText;
+    }
+
+    if (saved) {
+      showToast('🎉 Галерея успешно обновлена на сервере и видна всем!', 'success');
+    } else {
+      showToast('✅ Галерея обновлена локально!', 'success');
+    }
+  }
+
+  bindVkSync() {
+    const tokenInput = document.getElementById('adm-vk-token');
+    const urlInput = document.getElementById('adm-vk-url');
+    const fetchBtn = document.getElementById('adm-vk-fetch-btn');
+    const resultsContainer = document.getElementById('adm-vk-results-container');
+    const resultsCount = document.getElementById('adm-vk-results-count');
+    const photosGrid = document.getElementById('adm-vk-photos-grid');
+    const importBtn = document.getElementById('adm-vk-import-selected');
+    const batchCat = document.getElementById('adm-vk-batch-category');
+
+    // Restore saved token
+    const savedToken = localStorage.getItem('fotofeya_vk_token');
+    if (savedToken && tokenInput) tokenInput.value = savedToken;
+
+    fetchBtn?.addEventListener('click', async () => {
+      const token = tokenInput?.value?.trim() || '';
+      const albumUrl = urlInput?.value?.trim() || '';
+      const adminPass = sessionStorage.getItem('fotofeya_admin_token') || 'mila2026';
+
+      if (!token) {
+        showToast('Пожалуйста, укажите сервисный токен VK для запроса к API', 'error');
+        tokenInput?.focus();
+        return;
+      }
+
+      localStorage.setItem('fotofeya_vk_token', token);
+
+      fetchBtn.disabled = true;
+      fetchBtn.innerHTML = `<span>Синхронизация...</span>`;
+
+      try {
+        const res = await fetch('/api/portfolio/sync-vk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: adminPass, albumUrl, vkToken: token })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          this.fetchedVkPhotos = data.photos || [];
+          if (resultsContainer) resultsContainer.classList.remove('hidden');
+          if (resultsCount) resultsCount.textContent = `Найдено фото в VK: ${this.fetchedVkPhotos.length}`;
+
+          if (photosGrid) {
+            photosGrid.innerHTML = this.fetchedVkPhotos.map((p, idx) => `
+              <div class="relative rounded-xl overflow-hidden bg-surface border border-white/10 group aspect-[3/4]">
+                <img src="${p.imageUrl}" alt="${p.text || 'VK Photo'}" class="w-full h-full object-cover" />
+                <label class="absolute top-2 left-2 z-10 cursor-pointer flex items-center justify-center w-6 h-6 rounded-lg bg-black/70 border border-white/30 text-white">
+                  <input type="checkbox" class="adm-vk-cb w-4 h-4 accent-amber-400 cursor-pointer" data-idx="${idx}" ${idx < 6 ? 'checked' : ''} />
+                </label>
+                <div class="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/90 to-transparent text-[10px] text-zinc-300 truncate">
+                  ${p.text ? p.text : 'Фото #' + (idx + 1)}
+                </div>
+              </div>
+            `).join('');
+          }
+          showToast(`✨ Получено ${this.fetchedVkPhotos.length} фотографий из ВКонтакте!`, 'success');
+        } else {
+          showToast(data.error || 'Ошибка синхронизации с VK', 'error');
+        }
+      } catch (err) {
+        showToast('Ошибка сетевого соединения с сервером', 'error');
+      } finally {
+        fetchBtn.disabled = false;
+        fetchBtn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>Загрузить фото из VK</span>`;
+        if (window.lucide) window.lucide.createIcons();
+      }
+    });
+
+    importBtn?.addEventListener('click', async () => {
+      const checkboxes = document.querySelectorAll('.adm-vk-cb:checked');
+      if (checkboxes.length === 0) {
+        showToast('Выберите хотя бы одно фото для импорта', 'info');
+        return;
+      }
+
+      const selectedCategory = batchCat?.value || 'fairy';
+      const catLabels = {
+        fairy: 'Сказочные образы',
+        family: 'Детские & Семейные',
+        autumn: 'Осенние истории',
+        portrait: 'Женский арт-портрет'
+      };
+
+      let nextId = this.adminPortfolioItems.length > 0 
+        ? Math.max(...this.adminPortfolioItems.map(p => Number(p.id) || 0)) + 1 
+        : 1;
+
+      const imported = [];
+      checkboxes.forEach(cb => {
+        const idx = Number(cb.dataset.idx);
+        const p = this.fetchedVkPhotos[idx];
+        if (p) {
+          imported.push({
+            id: nextId++,
+            title: p.text ? p.text.slice(0, 60) : `Фотосессия Фотофеи #${nextId}`,
+            category: selectedCategory,
+            categoryLabel: catLabels[selectedCategory],
+            image: p.imageUrl,
+            description: p.text || 'Авторская работа фотографа Милы Цвор',
+            isActive: true,
+            sortOrder: 0,
+            dateAdded: p.date || new Date().toISOString()
+          });
+        }
+      });
+
+      this.adminPortfolioItems.unshift(...imported);
+      await this.saveAdminGallery();
+      this.renderAdminGalleryList();
+      if (resultsContainer) resultsContainer.classList.add('hidden');
+      showToast(`🎉 Импортировано ${imported.length} новых фото в галерею!`, 'success');
+    });
+  }
+
+  bindManualUpload() {
+    const fileInput = document.getElementById('adm-upload-file');
+    const urlInput = document.getElementById('adm-upload-url');
+    const titleInput = document.getElementById('adm-upload-title');
+    const catInput = document.getElementById('adm-upload-cat');
+    const descInput = document.getElementById('adm-upload-desc');
+    const submitBtn = document.getElementById('adm-upload-submit-btn');
+
+    submitBtn?.addEventListener('click', async () => {
+      const file = fileInput?.files?.[0];
+      const imageUrl = urlInput?.value?.trim();
+      const title = titleInput?.value?.trim() || 'Новая фоторабота';
+      const category = catInput?.value || 'fairy';
+      const description = descInput?.value?.trim() || '';
+      const adminPass = sessionStorage.getItem('fotofeya_admin_token') || 'mila2026';
+
+      if (!file && !imageUrl) {
+        showToast('Пожалуйста, выберите файл на устройстве или вставьте ссылку на фото', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>Загрузка...</span>`;
+
+      try {
+        let base64 = null;
+        if (file) {
+          base64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        }
+
+        const res = await fetch('/api/portfolio/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            password: adminPass,
+            base64,
+            imageUrl,
+            title,
+            category,
+            description
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast('🎉 Фоторабота успешно добавлена в галерею!', 'success');
+          if (fileInput) fileInput.value = '';
+          if (urlInput) urlInput.value = '';
+          if (titleInput) titleInput.value = '';
+          if (descInput) descInput.value = '';
+
+          await this.loadAdminGallery();
+          if (window.portfolioManager) {
+            window.portfolioManager.reloadPortfolio();
+          }
+        } else {
+          showToast(data.error || 'Ошибка загрузки фото', 'error');
+        }
+      } catch (err) {
+        showToast('Сбой отправки данных на сервер', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i><span>Опубликовать в галерее</span>`;
+        if (window.lucide) window.lucide.createIcons();
+      }
+    });
   }
 
   logout() {

@@ -1420,23 +1420,35 @@
     </div>
   </div>
 
-  <!-- ADMIN PRICE EDITOR MODAL (Hidden by default) -->
+  <!-- ADMIN PRICE & GALLERY EDITOR MODAL (Hidden by default) -->
   <div id="admin-price-modal" class="fixed inset-0 z-[100001] bg-black/90 backdrop-blur-xl hidden items-center justify-center p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true">
     <div class="my-auto max-h-[92vh] flex flex-col p-5 sm:p-7 rounded-3xl glass-panel border border-accent-gold/40 shadow-2xl max-w-2xl w-full text-left relative overflow-hidden">
       
       <!-- Modal Header -->
-      <div class="flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 shrink-0">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl bg-accent-gold/20 text-accent-gold flex items-center justify-center border border-accent-gold/30">
-            <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="font-serif text-lg sm:text-xl font-bold text-white">Редактор прайс-листа</h3>
-            <span class="text-[11px] text-accent-rose-gold">Режим владельца • Изменения сразу видны всем</span>
+            <h3 class="font-serif text-lg sm:text-xl font-bold text-white">Панель управления Фотофеи</h3>
+            <span class="text-[11px] text-accent-rose-gold">Режим владельца • Управление прайсом и галереей</span>
           </div>
         </div>
         <button id="admin-price-close" class="p-2 rounded-xl btn-ghost text-zinc-400 hover:text-white" title="Закрыть">
           <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Tabs (Прайс vs Галерея) -->
+      <div class="flex items-center gap-2 pt-3 pb-2 border-b border-white/10 shrink-0">
+        <button type="button" id="admin-tab-prices" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-accent-gold text-black transition-all flex items-center gap-1.5 shadow-md">
+          <i data-lucide="tag" class="w-3.5 h-3.5"></i>
+          <span>Тарифы и цены</span>
+        </button>
+        <button type="button" id="admin-tab-gallery" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 transition-all flex items-center gap-1.5">
+          <i data-lucide="images" class="w-3.5 h-3.5"></i>
+          <span>Галерея и VK</span>
         </button>
       </div>
 
@@ -1608,6 +1620,139 @@
 
       </form>
 
+      <!-- TAB 2: GALLERY & VK SYNCHRONIZATION VIEW -->
+      <div id="admin-gallery-view" class="space-y-6 pt-4 overflow-y-auto pr-1 flex-1 hidden">
+        
+        <!-- VK Group Sync Card -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-blue-950/40 via-surface to-surface border border-blue-500/30 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-[#2787f5]/20 text-[#2787f5] flex items-center justify-center border border-[#2787f5]/30">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M15.684 0H8.316C3.592 0 0 3.592 0 8.316v7.368C0 20.408 3.592 24 8.316 24h7.368C20.408 24 24 20.408 24 15.684V8.316C24 3.592 20.408 0 15.684 0zm3.602 17.513h-2.115c-.798 0-1.043-.635-2.477-2.072-1.251-1.226-1.808-1.385-2.115-1.385-.429 0-.552.123-.552.706v1.942c0 .522-.169.809-1.534.809-2.27 0-4.786-1.38-6.565-3.957-2.699-3.804-3.436-6.657-3.436-7.24 0-.307.123-.583.706-.583h2.115c.522 0 .736.245.951.828 1.043 3.006 2.792 5.645 3.528 5.645.276 0 .4-.123.4-.828V9.186c-.092-1.472-.859-1.595-.859-2.116 0-.246.215-.491.552-.491h3.314c.46 0 .614.246.614.798v4.295c0 .46.215.614.337.614.276 0 .522-.153 1.043-.675 1.595-1.779 2.73-4.48 2.73-4.48.153-.307.4-.522.92-.522h2.117c.644 0 .798.338.644.828-.276 1.258-2.945 4.97-3.099 5.247-.245.368-.337.522 0 .982.245.337 1.043 1.043 1.595 1.687 1.012 1.166 1.779 2.147 1.994 2.822.215.645-.123.982-.767.982z"/></svg>
+              </div>
+              <div>
+                <h4 class="text-sm font-semibold text-white">Синхронизация с ВКонтакте</h4>
+                <p class="text-[11px] text-zinc-400">Группа Милы: <a href="https://vk.ru/club_fotofeya_mila" target="_blank" class="text-blue-400 hover:underline">club_fotofeya_mila</a> (ID: 240592099)</p>
+              </div>
+            </div>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-mono">VK API</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Ссылка на альбом или стену VK</label>
+              <input type="text" id="adm-vk-url" placeholder="https://vk.com/album-240592099_... (или пусто для стены)" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-400" />
+            </div>
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Сервисный ключ доступа VK (Token)</label>
+              <input type="password" id="adm-vk-token" placeholder="Вставьте VK Service Token..." class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-400 font-mono" />
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+            <span class="text-[10px] text-zinc-500">Токен сохраняется в браузере и не передается третьим лицам</span>
+            <button type="button" id="adm-vk-fetch-btn" class="px-4 py-2.5 rounded-xl bg-[#2787f5] hover:bg-[#166ee1] text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-lg active:scale-95 transition-all">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Загрузить фото из VK</span>
+            </button>
+          </div>
+
+          <!-- VK Fetched Photos Container (Hidden until loaded) -->
+          <div id="adm-vk-results-container" class="hidden pt-3 border-t border-white/10 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span id="adm-vk-results-count" class="text-xs font-semibold text-zinc-200">Найдено фото: 0</span>
+              <div class="flex items-center gap-2">
+                <select id="adm-vk-batch-category" class="px-2.5 py-1.5 rounded-lg bg-black/50 border border-white/15 text-xs text-white">
+                  <option value="fairy">🧚 Сказочные образы</option>
+                  <option value="family">🌾 Детские & Семейные</option>
+                  <option value="autumn">🍁 Осенние истории</option>
+                  <option value="portrait">✨ Женский арт-портрет</option>
+                </select>
+                <button type="button" id="adm-vk-import-selected" class="px-3.5 py-1.5 rounded-xl btn-gold text-xs font-semibold flex items-center gap-1.5 shadow-md">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Импортировать выбранные</span>
+                </button>
+              </div>
+            </div>
+            <div id="adm-vk-photos-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-h-60 overflow-y-auto p-1 border border-white/5 rounded-xl bg-black/30">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Manual Upload / Add by URL Card -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-surface border border-white/10 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-lg bg-accent-gold/20 text-accent-gold flex items-center justify-center">
+                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+              </div>
+              <h4 class="text-sm font-semibold text-white">Добавить фотоработу вручную</h4>
+            </div>
+            <span class="text-[10px] text-zinc-400">С компьютера, телефона или по URL</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Выберите файл изображения</label>
+              <input type="file" id="adm-upload-file" accept="image/*" class="w-full text-xs text-zinc-300 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 cursor-pointer" />
+            </div>
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Или прямая ссылка на изображение</label>
+              <input type="url" id="adm-upload-url" placeholder="https://..." class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название фотоработы</label>
+              <input type="text" id="adm-upload-title" placeholder="Например: Маленькая принцесса в осеннем парке" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+            </div>
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Категория</label>
+              <select id="adm-upload-cat" class="w-full px-3 py-1.5 rounded-lg bg-[#140716] border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold">
+                <option value="fairy">🧚 Сказочные образы</option>
+                <option value="family">🌾 Детские & Семейные</option>
+                <option value="autumn">🍁 Осенние истории</option>
+                <option value="portrait">✨ Женский арт-портрет</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Описание сюжета (для карточки и SEO)</label>
+            <input type="text" id="adm-upload-desc" placeholder="Костюм, локация, настроение съемки..." class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+          </div>
+
+          <div class="flex justify-end pt-1">
+            <button type="button" id="adm-upload-submit-btn" class="px-5 py-2.5 rounded-xl btn-gold text-xs font-semibold flex items-center gap-1.5 shadow-lg active:scale-95 transition-all">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+              <span>Опубликовать в галерее</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Current Gallery Items Management -->
+        <div class="space-y-3 pb-2">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h4 class="text-sm font-semibold text-white">Текущие фотографии в галерее</h4>
+              <p class="text-[11px] text-zinc-400">Управляйте видимостью, порядком и составом работ на главной странице</p>
+            </div>
+            <button type="button" id="adm-gallery-save-btn" class="px-4 py-2 rounded-xl btn-gold text-xs font-semibold flex items-center justify-center gap-1.5 shadow-md">
+              <i data-lucide="save" class="w-3.5 h-3.5"></i>
+              <span>Сохранить галерею</span>
+            </button>
+          </div>
+
+          <!-- Items list container -->
+          <div id="adm-gallery-items-list" class="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 
@@ -1616,7 +1761,7 @@
     <span class="w-2 h-2 rounded-full bg-accent-gold animate-ping"></span>
     <span class="text-white font-medium">Админ: Мила</span>
     <button id="admin-reopen-btn" class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-accent-gold text-[11px] font-semibold transition-colors">
-      Прайс ⚙️
+      Управление ⚙️
     </button>
     <button id="admin-quick-exit-btn" class="text-zinc-400 hover:text-rose-400 p-1" title="Выйти из админки">
       <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
@@ -1629,9 +1774,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <!-- Application Scripts -->
-  <script src="js/portfolio.js?v=1.5.1"></script>
-  <script src="js/app.js?v=1.5.1"></script>
-  <script src="js/animations.js?v=1.5.1"></script>
+  <script src="js/portfolio.js?v=1.7.0"></script>
+  <script src="js/app.js?v=1.7.0"></script>
+  <script src="js/animations.js?v=1.7.0"></script>
 
 </body>
 </html>

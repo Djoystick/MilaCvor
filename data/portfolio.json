@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "title": "Осенняя сказка: образ маленькой лисички",
+    "category": "fairy",
+    "categoryLabel": "Сказочные образы",
+    "image": "assets/images/fairy_autumn_fox.jpg",
+    "description": "Авторский костюм, тематический аквагрим от Милы Цвор, золотая листва и живой взгляд маленькой героини.",
+    "isActive": true,
+    "sortOrder": 1,
+    "dateAdded": "2026-09-20T12:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "title": "Маленький ангел: щелчок затвора останавливает время",
+    "category": "fairy",
+    "categoryLabel": "Сказочные образы",
+    "image": "assets/images/photo_16.jpg",
+    "description": "Нежный воздушный образ ангела с перьевыми крыльями и мягким рассеянным закатным светом на холме.",
+    "isActive": true,
+    "sortOrder": 2,
+    "dateAdded": "2026-09-20T12:05:00.000Z"
+  },
+  {
+    "id": 3,
+    "title": "Тепло сестринской любви: в сказочном лесу",
+    "category": "family",
+    "categoryLabel": "Детские & Семейные",
+    "image": "assets/images/photo_04.jpg",
+    "description": "Искренние детские эмоции и живой смех без заученных поз на мшистом пеньке в лесу.",
+    "isActive": true,
+    "sortOrder": 3,
+    "dateAdded": "2026-09-20T12:10:00.000Z"
+  },
+  {
+    "id": 4,
+    "title": "Осенняя кружка-лисичка: тепло в золотой листве",
+    "category": "autumn",
+    "categoryLabel": "Осенние истории",
+    "image": "assets/images/photo_08.jpg",
+    "description": "Уютный образ с тематическим реквизитом, венком из осенних цветов и золотым сиянием солнца.",
+    "isActive": true,
+    "sortOrder": 4,
+    "dateAdded": "2026-09-20T12:15:00.000Z"
+  },
+  {
+    "id": 5,
+    "title": "Маленькая фея в розовом платье",
+    "category": "fairy",
+    "categoryLabel": "Сказочные образы",
+    "image": "assets/images/photo_07.jpg",
+    "description": "Воздушное фатиновое платье, мерцающие крылья и любимая плюшевая игрушка в руках юной принцессы.",
+    "isActive": true,
+    "sortOrder": 5,
+    "dateAdded": "2026-09-20T12:20:00.000Z"
+  },
+  {
+    "id": 6,
+    "title": "Лесная нимфа: нежные крылья и мягкий закат",
+    "category": "fairy",
+    "categoryLabel": "Сказочные образы",
+    "image": "assets/images/album_-240592099_457239246.jpg",
+    "description": "Полное погружение в сказочный сюжет: венки ручной работы, сказочные аксессуары и естественный свет.",
+    "isActive": true,
+    "sortOrder": 6,
+    "dateAdded": "2026-09-20T12:25:00.000Z"
+  },
+  {
+    "id": 7,
+    "title": "Сказка на лесной поляне: белый наряд феи",
+    "category": "fairy",
+    "categoryLabel": "Сказочные образы",
+    "image": "assets/images/album_-240592099_457239263.jpg",
+    "description": "Легкость, чистота и искреннее удивление ребенка окружающему миру среди зелени леса.",
+    "isActive": true,
+    "sortOrder": 7,
+    "dateAdded": "2026-09-20T12:30:00.000Z"
+  },
+  {
+    "id": 8,
+    "title": "Сестрички-феи: фотопрогулка в парке",
+    "category": "family",
+    "categoryLabel": "Детские & Семейные",
+    "image": "assets/images/photo_12.jpg",
+    "description": "Парная сказочная фотосессия сестер: нежные платья, парные крылья и теплая дружба.",
+    "isActive": true,
+    "sortOrder": 8,
+    "dateAdded": "2026-09-20T12:35:00.000Z"
+  },
+  {
+    "id": 9,
+    "title": "Цветочные венки и сказочные бабочки",
+    "category": "family",
+    "categoryLabel": "Детские & Семейные",
+    "image": "assets/images/photo_13.jpg",
+    "description": "Крупный план детской искренности. Детали авторских украшений и сияющие глаза.",
+    "isActive": true,
+    "sortOrder": 9,
+    "dateAdded": "2026-09-20T12:40:00.000Z"
+  },
+  {
+    "id": 10,
+    "title": "Синий василек и ромашковый берег",
+    "category": "family",
+    "categoryLabel": "Детские & Семейные",
+    "image": "assets/images/photo_14.jpg",
+    "description": "Иллюстрация к песне о родных просторах. Синее льняное платье и букет алых маков.",
+    "isActive": true,
+    "sortOrder": 10,
+    "dateAdded": "2026-09-20T12:45:00.000Z"
+  },
+  {
+    "id": 11,
+    "title": "Иллюстрация «Россиянка я»",
+    "category": "portrait",
+    "categoryLabel": "Женский арт-портрет",
+    "image": "assets/images/photo_15.jpg",
+    "description": "Стилизованный портрет с традиционными акцентами: белая, синяя и красная бусины на открытых ладонях.",
+    "isActive": true,
+    "sortOrder": 11,
+    "dateAdded": "2026-09-20T12:50:00.000Z"
+  },
+  {
+    "id": 12,
+    "title": "Солнечные одуванчики: чистая радость",
+    "category": "family",
+    "categoryLabel": "Детские & Семейные",
+    "image": "assets/images/album_-240592099_457239256.jpg",
+    "description": "Весенне-летняя беззаботность: мягкие пушистые одуванчики, венок из цветов и солнечные блики.",
+    "isActive": true,
+    "sortOrder": 12,
+    "dateAdded": "2026-09-20T12:55:00.000Z"
+  }
+]
