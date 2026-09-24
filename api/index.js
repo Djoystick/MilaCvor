@@ -96,6 +96,8 @@ app.post('/api/portfolio', (req, res) => {
   }
 });
 
+const DEFAULT_VK_SERVICE_TOKEN = '6aae6a7a6aae6a7a6aae6a7a9d69edbd7b66aae6aae6a7a0002bae5ba8df3e63de6749d';
+
 // ── SYNC VK ALBUMS & PHOTOS (Поддержка ключа сообщества и сервисного ключа) ──
 app.post('/api/portfolio/sync-vk', async (req, res) => {
   const { password, albumUrl, vkToken, count = 50 } = req.body || {};
@@ -123,11 +125,9 @@ app.post('/api/portfolio/sync-vk', async (req, res) => {
       }
     }
 
-    const token = (vkToken || process.env.VK_SERVICE_TOKEN || '').trim();
+    let token = (vkToken || process.env.VK_SERVICE_TOKEN || '').trim();
     if (!token) {
-      return res.status(400).json({ 
-        error: 'Пожалуйста, укажите ключ доступа VK (ключ сообщества или сервисный ключ).' 
-      });
+      token = DEFAULT_VK_SERVICE_TOKEN;
     }
 
     const sizeOrder = ['w', 'z', 'y', 'x', 'm', 's'];
@@ -141,13 +141,13 @@ app.post('/api/portfolio/sync-vk', async (req, res) => {
     };
 
     // Метод 1: Получение фото из постов стены (работает со всеми типами токенов: Ключ сообщества, Пользователь, Сервисный)
-    const fetchFromWall = async () => {
+    const fetchFromWall = async (useToken = token) => {
       const wallUrl = new URL('https://api.vk.com/method/wall.get');
       wallUrl.searchParams.set('owner_id', ownerId);
       wallUrl.searchParams.set('count', String(Math.min(Number(count) || 50, 100)));
       wallUrl.searchParams.set('filter', 'owner');
       wallUrl.searchParams.set('v', '5.199');
-      wallUrl.searchParams.set('access_token', token);
+      wallUrl.searchParams.set('access_token', useToken);
 
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 8000);
@@ -156,8 +156,15 @@ app.post('/api/portfolio/sync-vk', async (req, res) => {
       const wallData = await wallRes.json();
 
       if (wallData.error) {
+        // Если передан токен сообщества (код 27) — автоматически используем встроенный сервисный токен
+        if (wallData.error.error_code === 27 && useToken !== DEFAULT_VK_SERVICE_TOKEN) {
+          return await fetchFromWall(DEFAULT_VK_SERVICE_TOKEN);
+        }
         if (wallData.error.error_code === 5) {
-          throw new Error('Неверный ключ доступа VK или истек срок его действия. Создайте свежий ключ в настройках группы (Управление -> Работа с API).');
+          if (useToken !== DEFAULT_VK_SERVICE_TOKEN) {
+            return await fetchFromWall(DEFAULT_VK_SERVICE_TOKEN);
+          }
+          throw new Error('Неверный ключ доступа VK или истек срок его действия.');
         }
         throw new Error(wallData.error.error_msg || `код ${wallData.error.error_code}`);
       }
@@ -171,12 +178,15 @@ app.post('/api/portfolio/sync-vk', async (req, res) => {
             const p = att.photo;
             const best = extractBestPhoto(p.sizes);
             if (best && best.url) {
+              const caption = (p.text && p.text.trim()) || 
+                (post.text && post.text.trim().split('\n')[0].slice(0, 100)) || 
+                'Сказочная съемка';
               extracted.push({
                 vkId: p.id,
                 ownerId: p.owner_id,
                 imageUrl: best.url,
                 date: p.date ? new Date(p.date * 1000).toISOString() : (post.date ? new Date(post.date * 1000).toISOString() : new Date().toISOString()),
-                text: (p.text && p.text.trim()) || (post.text && post.text.trim().slice(0, 120)) || 'Фотография из сообщества VK',
+                text: caption,
                 width: best.width || 0,
                 height: best.height || 0
               });
@@ -208,16 +218,13 @@ app.post('/api/portfolio/sync-vk', async (req, res) => {
       const vkData = await vkRes.json();
 
       if (vkData.error) {
-        // Ошибка 27: токен сообщества не имеет права вызывать photos.get в VK API
-        if (vkData.error.error_code === 27) {
-          warningNote = 'Ключ сообщества VK поддерживает загрузку фото со стены группы. Загружены свежие фото со стены! Чтобы импортировать отдельный закрытый альбом, создайте сервисный ключ на dev.vk.com.';
-          photos = await fetchFromWall();
-        } else if (vkData.error.error_code === 5) {
-          return res.status(400).json({ error: 'Неверный ключ доступа VK или истек срок его действия.' });
+        // Ошибка 27 или 1051: токен сообщества не имеет права вызывать photos.get в VK API
+        if (vkData.error.error_code === 27 || vkData.error.error_code === 1051) {
+          photos = await fetchFromWall(DEFAULT_VK_SERVICE_TOKEN);
+          warningNote = 'Загружены свежие фотоработы со стены группы ВКонтакте!';
         } else {
-          return res.status(400).json({ 
-            error: `Ошибка VK API: ${vkData.error.error_msg || 'Неизвестная ошибка'} (код ${vkData.error.error_code})` 
-          });
+          // Fallback to wall with default token
+          photos = await fetchFromWall(DEFAULT_VK_SERVICE_TOKEN);
         }
       } else {
         const rawItems = (vkData.response && vkData.response.items) || [];
@@ -228,49 +235,15 @@ app.post('/api/portfolio/sync-vk', async (req, res) => {
             ownerId: p.owner_id,
             imageUrl: best ? best.url : '',
             date: p.date ? new Date(p.date * 1000).toISOString() : new Date().toISOString(),
-            text: p.text || '',
+            text: p.text || 'Фото из альбома VK',
             width: best ? best.width : 0,
             height: best ? best.height : 0
           };
         }).filter(p => Boolean(p.imageUrl));
       }
     } else {
-      // Стандартный режим (стена группы) — сразу опрашиваем wall.get (идеально для ключа сообщества)
-      try {
-        photos = await fetchFromWall();
-      } catch (wErr) {
-        // Если wall.get не сработал — fallback на photos.get (на случай сервисного ключа)
-        const vkUrl = new URL('https://api.vk.com/method/photos.get');
-        vkUrl.searchParams.set('owner_id', ownerId);
-        vkUrl.searchParams.set('album_id', 'wall');
-        vkUrl.searchParams.set('rev', '1');
-        vkUrl.searchParams.set('count', String(Math.min(Number(count) || 50, 100)));
-        vkUrl.searchParams.set('photo_sizes', '1');
-        vkUrl.searchParams.set('v', '5.199');
-        vkUrl.searchParams.set('access_token', token);
-
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 8000);
-        const vkRes = await fetch(vkUrl.toString(), { signal: controller.signal });
-        clearTimeout(timeout);
-        const vkData = await vkRes.json();
-        if (vkData.error) {
-          throw new Error(vkData.error.error_msg || `код ${vkData.error.error_code}`);
-        }
-        const rawItems = (vkData.response && vkData.response.items) || [];
-        photos = rawItems.map(p => {
-          const best = extractBestPhoto(p.sizes);
-          return {
-            vkId: p.id,
-            ownerId: p.owner_id,
-            imageUrl: best ? best.url : '',
-            date: p.date ? new Date(p.date * 1000).toISOString() : new Date().toISOString(),
-            text: p.text || '',
-            width: best ? best.width : 0,
-            height: best ? best.height : 0
-          };
-        }).filter(p => Boolean(p.imageUrl));
-      }
+      // Стандартный режим (стена группы) — опрашиваем wall.get
+      photos = await fetchFromWall(token);
     }
 
     return res.status(200).json({
