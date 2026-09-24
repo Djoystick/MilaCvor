@@ -75,8 +75,8 @@ app.get('/sitemap.xml', (req, res) => {
   res.sendFile(path.join(ROOT_DIR, 'sitemap.xml'));
 });
 
-// Root landing
-app.get(['/', '/index.html'], (req, res) => {
+// Root landing & regional contacts alias
+app.get(['/', '/index.html', '/contacts', '/contacts.html'], (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=300');
   res.sendFile(path.join(ROOT_DIR, 'index.html'));
