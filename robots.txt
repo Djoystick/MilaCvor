@@ -1,0 +1,23 @@
+# robots.txt for цвор.рф / xn--b1aygv.xn--p1ai
+# Фотограф Мила Цвор (Фотофея) — Малоярославец, Обнинск, Калуга
+
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+Disallow: /api/
+Disallow: /backups/
+
+User-agent: Yandex
+Allow: /
+Allow: /index.html
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+Disallow: /api/
+Disallow: /backups/
+
+Host: https://xn--b1aygv.xn--p1ai
+Sitemap: https://xn--b1aygv.xn--p1ai/sitemap.xml

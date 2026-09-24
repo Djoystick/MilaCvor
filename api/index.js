@@ -62,6 +62,19 @@ app.use('/css', express.static(path.join(ROOT_DIR, 'css'), { maxAge: '1d' }));
 app.use('/js', express.static(path.join(ROOT_DIR, 'js'), { maxAge: '1d' }));
 app.use('/data', express.static(path.join(ROOT_DIR, 'data'), { maxAge: '1m' }));
 
+// SEO Routes
+app.get('/robots.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(ROOT_DIR, 'robots.txt'));
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(ROOT_DIR, 'sitemap.xml'));
+});
+
 // Root landing
 app.get(['/', '/index.html'], (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
