@@ -1538,7 +1538,11 @@ class PriceManager {
               </div>
             `).join('');
           }
-          showToast(`✨ Получено ${this.fetchedVkPhotos.length} фотографий из ВКонтакте!`, 'success');
+          if (data.warning) {
+            showToast(data.warning, 'info');
+          } else {
+            showToast(`✨ Загружено ${this.fetchedVkPhotos.length} фотографий из ВКонтакте!`, 'success');
+          }
         } else {
           showToast(data.error || 'Ошибка синхронизации с VK', 'error');
         }

@@ -96,9 +96,9 @@ app.post('/api/portfolio', (req, res) => {
   }
 });
 
-// ── SYNC VK ALBUMS & PHOTOS ─────────────────────────────────────────────────
+// ── SYNC VK ALBUMS & PHOTOS (Поддержка ключа сообщества и сервисного ключа) ──
 app.post('/api/portfolio/sync-vk', async (req, res) => {
-  const { password, albumUrl, vkToken, count = 40 } = req.body || {};
+  const { password, albumUrl, vkToken, count = 50 } = req.body || {};
   if (password !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Неверный пароль администратора' });
   }
@@ -106,72 +106,177 @@ app.post('/api/portfolio/sync-vk', async (req, res) => {
   try {
     let ownerId = '-240592099'; // Default group ID: club_fotofeya_mila
     let albumId = 'wall';
+    let isSpecificAlbum = false;
 
     if (albumUrl) {
-      const match = String(albumUrl).match(/album(-?\d+)_(\d+|wall|profile|saved)/i);
-      if (match) {
-        ownerId = match[1];
-        albumId = match[2];
+      const albumMatch = String(albumUrl).match(/album(-?\d+)_(\d+|wall|profile|saved)/i);
+      const clubMatch = String(albumUrl).match(/(?:club|public)(-?\d+)/i);
+      if (albumMatch) {
+        const rawOwner = albumMatch[1];
+        ownerId = rawOwner.startsWith('-') ? rawOwner : `-${rawOwner}`;
+        albumId = albumMatch[2];
+        if (albumId !== 'wall') isSpecificAlbum = true;
+      } else if (clubMatch) {
+        const rawOwner = clubMatch[1];
+        ownerId = rawOwner.startsWith('-') ? rawOwner : `-${rawOwner}`;
+        albumId = 'wall';
       }
     }
 
-    const token = vkToken || process.env.VK_SERVICE_TOKEN;
+    const token = (vkToken || process.env.VK_SERVICE_TOKEN || '').trim();
     if (!token) {
       return res.status(400).json({ 
-        error: 'Для синхронизации требуется сервисный токен VK (VK Service Token). Укажите его в форме.' 
+        error: 'Пожалуйста, укажите ключ доступа VK (ключ сообщества или сервисный ключ).' 
       });
     }
 
-    const vkUrl = new URL('https://api.vk.com/method/photos.get');
-    vkUrl.searchParams.set('owner_id', ownerId);
-    vkUrl.searchParams.set('album_id', albumId);
-    vkUrl.searchParams.set('rev', '1');
-    vkUrl.searchParams.set('count', String(Math.min(Number(count) || 40, 100)));
-    vkUrl.searchParams.set('photo_sizes', '1');
-    vkUrl.searchParams.set('v', '5.199');
-    vkUrl.searchParams.set('access_token', token);
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-
-    const vkRes = await fetch(vkUrl.toString(), { signal: controller.signal });
-    clearTimeout(timeout);
-
-    const vkData = await vkRes.json();
-    if (vkData.error) {
-      return res.status(400).json({ 
-        error: `Ошибка VK API: ${vkData.error.error_msg || 'Неизвестная ошибка'} (код ${vkData.error.error_code})` 
-      });
-    }
-
-    const rawItems = (vkData.response && vkData.response.items) || [];
     const sizeOrder = ['w', 'z', 'y', 'x', 'm', 's'];
-    const photos = rawItems.map(p => {
-      let bestSize = null;
-      if (Array.isArray(p.sizes)) {
-        for (const t of sizeOrder) {
-          bestSize = p.sizes.find(s => s.type === t);
-          if (bestSize) break;
+    const extractBestPhoto = (sizes) => {
+      if (!Array.isArray(sizes) || sizes.length === 0) return null;
+      for (const t of sizeOrder) {
+        const found = sizes.find(s => s.type === t);
+        if (found) return found;
+      }
+      return sizes[sizes.length - 1];
+    };
+
+    // Метод 1: Получение фото из постов стены (работает со всеми типами токенов: Ключ сообщества, Пользователь, Сервисный)
+    const fetchFromWall = async () => {
+      const wallUrl = new URL('https://api.vk.com/method/wall.get');
+      wallUrl.searchParams.set('owner_id', ownerId);
+      wallUrl.searchParams.set('count', String(Math.min(Number(count) || 50, 100)));
+      wallUrl.searchParams.set('filter', 'owner');
+      wallUrl.searchParams.set('v', '5.199');
+      wallUrl.searchParams.set('access_token', token);
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const wallRes = await fetch(wallUrl.toString(), { signal: controller.signal });
+      clearTimeout(timeout);
+      const wallData = await wallRes.json();
+
+      if (wallData.error) {
+        if (wallData.error.error_code === 5) {
+          throw new Error('Неверный ключ доступа VK или истек срок его действия. Создайте свежий ключ в настройках группы (Управление -> Работа с API).');
         }
-        if (!bestSize && p.sizes.length > 0) {
-          bestSize = p.sizes[p.sizes.length - 1];
-        }
+        throw new Error(wallData.error.error_msg || `код ${wallData.error.error_code}`);
       }
 
-      return {
-        vkId: p.id,
-        ownerId: p.owner_id,
-        imageUrl: bestSize ? bestSize.url : '',
-        date: p.date ? new Date(p.date * 1000).toISOString() : new Date().toISOString(),
-        text: p.text || '',
-        width: bestSize ? bestSize.width : 0,
-        height: bestSize ? bestSize.height : 0
-      };
-    }).filter(p => Boolean(p.imageUrl));
+      const items = (wallData.response && wallData.response.items) || [];
+      const extracted = [];
+      for (const post of items) {
+        if (!Array.isArray(post.attachments)) continue;
+        for (const att of post.attachments) {
+          if (att.type === 'photo' && att.photo) {
+            const p = att.photo;
+            const best = extractBestPhoto(p.sizes);
+            if (best && best.url) {
+              extracted.push({
+                vkId: p.id,
+                ownerId: p.owner_id,
+                imageUrl: best.url,
+                date: p.date ? new Date(p.date * 1000).toISOString() : (post.date ? new Date(post.date * 1000).toISOString() : new Date().toISOString()),
+                text: (p.text && p.text.trim()) || (post.text && post.text.trim().slice(0, 120)) || 'Фотография из сообщества VK',
+                width: best.width || 0,
+                height: best.height || 0
+              });
+            }
+          }
+        }
+      }
+      return extracted;
+    };
+
+    let photos = [];
+    let warningNote = null;
+
+    // Если запрошен конкретный закрытый/отдельный альбом — пробуем photos.get
+    if (isSpecificAlbum) {
+      const vkUrl = new URL('https://api.vk.com/method/photos.get');
+      vkUrl.searchParams.set('owner_id', ownerId);
+      vkUrl.searchParams.set('album_id', albumId);
+      vkUrl.searchParams.set('rev', '1');
+      vkUrl.searchParams.set('count', String(Math.min(Number(count) || 50, 100)));
+      vkUrl.searchParams.set('photo_sizes', '1');
+      vkUrl.searchParams.set('v', '5.199');
+      vkUrl.searchParams.set('access_token', token);
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const vkRes = await fetch(vkUrl.toString(), { signal: controller.signal });
+      clearTimeout(timeout);
+      const vkData = await vkRes.json();
+
+      if (vkData.error) {
+        // Ошибка 27: токен сообщества не имеет права вызывать photos.get в VK API
+        if (vkData.error.error_code === 27) {
+          warningNote = 'Ключ сообщества VK поддерживает загрузку фото со стены группы. Загружены свежие фото со стены! Чтобы импортировать отдельный закрытый альбом, создайте сервисный ключ на dev.vk.com.';
+          photos = await fetchFromWall();
+        } else if (vkData.error.error_code === 5) {
+          return res.status(400).json({ error: 'Неверный ключ доступа VK или истек срок его действия.' });
+        } else {
+          return res.status(400).json({ 
+            error: `Ошибка VK API: ${vkData.error.error_msg || 'Неизвестная ошибка'} (код ${vkData.error.error_code})` 
+          });
+        }
+      } else {
+        const rawItems = (vkData.response && vkData.response.items) || [];
+        photos = rawItems.map(p => {
+          const best = extractBestPhoto(p.sizes);
+          return {
+            vkId: p.id,
+            ownerId: p.owner_id,
+            imageUrl: best ? best.url : '',
+            date: p.date ? new Date(p.date * 1000).toISOString() : new Date().toISOString(),
+            text: p.text || '',
+            width: best ? best.width : 0,
+            height: best ? best.height : 0
+          };
+        }).filter(p => Boolean(p.imageUrl));
+      }
+    } else {
+      // Стандартный режим (стена группы) — сразу опрашиваем wall.get (идеально для ключа сообщества)
+      try {
+        photos = await fetchFromWall();
+      } catch (wErr) {
+        // Если wall.get не сработал — fallback на photos.get (на случай сервисного ключа)
+        const vkUrl = new URL('https://api.vk.com/method/photos.get');
+        vkUrl.searchParams.set('owner_id', ownerId);
+        vkUrl.searchParams.set('album_id', 'wall');
+        vkUrl.searchParams.set('rev', '1');
+        vkUrl.searchParams.set('count', String(Math.min(Number(count) || 50, 100)));
+        vkUrl.searchParams.set('photo_sizes', '1');
+        vkUrl.searchParams.set('v', '5.199');
+        vkUrl.searchParams.set('access_token', token);
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+        const vkRes = await fetch(vkUrl.toString(), { signal: controller.signal });
+        clearTimeout(timeout);
+        const vkData = await vkRes.json();
+        if (vkData.error) {
+          throw new Error(vkData.error.error_msg || `код ${vkData.error.error_code}`);
+        }
+        const rawItems = (vkData.response && vkData.response.items) || [];
+        photos = rawItems.map(p => {
+          const best = extractBestPhoto(p.sizes);
+          return {
+            vkId: p.id,
+            ownerId: p.owner_id,
+            imageUrl: best ? best.url : '',
+            date: p.date ? new Date(p.date * 1000).toISOString() : new Date().toISOString(),
+            text: p.text || '',
+            width: best ? best.width : 0,
+            height: best ? best.height : 0
+          };
+        }).filter(p => Boolean(p.imageUrl));
+      }
+    }
 
     return res.status(200).json({
       success: true,
       count: photos.length,
+      warning: warningNote,
       photos
     });
   } catch (err) {
