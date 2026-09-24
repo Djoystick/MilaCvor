@@ -75,6 +75,11 @@ app.get('/sitemap.xml', (req, res) => {
   res.sendFile(path.join(ROOT_DIR, 'sitemap.xml'));
 });
 
+app.get('/google6a6aa1a658ed51f0.html', (req, res) => {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.sendFile(path.join(ROOT_DIR, 'google6a6aa1a658ed51f0.html'));
+});
+
 // Root landing & regional contacts alias
 app.get(['/', '/index.html', '/contacts', '/contacts.html'], (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
