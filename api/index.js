@@ -254,6 +254,25 @@ app.use('/css', express.static(path.join(ROOT_DIR, 'css'), { maxAge: '1d' }));
 app.use('/js', express.static(path.join(ROOT_DIR, 'js'), { maxAge: '1d' }));
 app.use('/data', express.static(path.join(ROOT_DIR, 'data'), { maxAge: '1m' }));
 
+// Favicon & Touch Icon direct routes (for search engine crawlers and browsers)
+app.get(['/favicon.ico'], (req, res) => {
+  res.setHeader('Content-Type', 'image/x-icon');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(ROOT_DIR, 'assets', 'images', 'favicon.ico'));
+});
+
+app.get(['/apple-touch-icon.png', '/apple-touch-icon-precomposed.png'], (req, res) => {
+  res.setHeader('Content-Type', 'image/png');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(ROOT_DIR, 'assets', 'images', 'apple-touch-icon.png'));
+});
+
+app.get(['/logo.png'], (req, res) => {
+  res.setHeader('Content-Type', 'image/png');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(ROOT_DIR, 'assets', 'images', 'logo.png'));
+});
+
 // SEO Routes
 app.get('/robots.txt', (req, res) => {
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
