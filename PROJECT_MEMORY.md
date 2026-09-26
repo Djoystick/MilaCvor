@@ -13,6 +13,8 @@
 - **Контакты:** Телефон / WhatsApp: `+7 (953) 328-61-04`.
 - **Стек:** Чистый HTML5 + Tailwind CSS (JIT) + Vanilla JS (ES6+) + Express/Serverless Backend + Lucide Icons + GSAP + Swiper.js + Canvas (Fairy Dust).
 - **Стандарт качества:** Production Web Craft (швейцарский минимализм, Zero-CLS, Zero-Flash, 60 FPS, нативная мобильная эргономика).
+- **Quality Gate (E2E Test Harness Фазы 1-3):** `npm run test:harness` (LCP < 1.0s, CLS = 0.0001, DCL < 1000ms, отсутствие горизонтального скролла на 375px, аудит тач-таргетов 44×44px, OpenGraph/SEO с Schema.org, Synthetic Booking flow с проверкой `#success-modal`, скриншот-захват десктопа и мобилки с поддержкой **Visual Settlement Protocol** — ожидание загрузки веб-шрифтов `document.fonts.ready`, полной непрозрачности `opacity >= 0.95` и GPU-стабилизации перед снимком экрана).
+- **One-Click Smart Release:** `npm run release` (`scripts/release.ps1`) — сквозной конвейер Quality Gate Harness -> Version Bump -> POSIX ZIP (`tsvor-function-posix.zip`) -> Yandex Cloud Deploy (`tsvor-api`) -> Git Commit -> Live Health Check (`цвор.рф`) -> Telegram рапорт со скриншотом в реальном времени.
 
 ---
 
@@ -299,4 +301,35 @@
 - [x] Локальные резервные копии: создание `.bak` перед изменением любого файла.
 - [x] Глобальные бекапы: создание ZIP-архивов релизов.
 
+---
+
+## 🔍 VISUAL REGRESSION TESTING (Pixelmatch)
+
+### Архитектурное решение
+Система попиксельного сравнения скриншотов «до/после» для обнаружения непреднамеренных визуальных изменений перед деплоем.
+
+**Ключевые файлы:**
+- `scripts/visual-regression.js` — VRT скрипт (копия из Production Web Craft Skill)
+- `.test-artifacts/baseline/desktop-preview.png` — эталон Desktop (1440x900)
+- `.test-artifacts/baseline/mobile-preview.png` — эталон Mobile (375x812)
+- `.test-artifacts/diff-desktop.png` — diff с красной подсветкой изменений
+- `.test-artifacts/diff-mobile.png` — diff Mobile
+
+### Команды
+| Команда | Действие |
+|---------|---------|
+| `npm run visual:baseline` | Сохранить текущие скриншоты как эталонные |
+| `npm run visual:check` | Сравнить с эталоном |
+| `node scripts/visual-regression.js` | Авто-режим |
+
+### Интеграция в Test Harness
+- Вызов через `spawnSync` в конце `runHarness()` перед финальным выводом
+- Статус: **WARN-only** — деплой НЕ блокируется при регрессии
+- Порог: > 2% изменённых пикселей → WARN (pixelmatch) / > 3% по размеру файла → WARN (fallback)
+
+### Установка pixel-level diff
+```sh
+npm install pixelmatch pngjs --save-dev
+```
+Без этих пакетов используется fallback по размеру файла.
 

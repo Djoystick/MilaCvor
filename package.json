@@ -1,11 +1,15 @@
 {
   "name": "fotofeya-mila-portfolio",
-  "version": "1.8.0",
+  "version": "1.8.2",
   "description": "Премиальный сайт-портфолио для фотографа Милы Цвор (Фотофея, Малоярославец) в королевской палитре Royal Velvet Plum & Fairy Rose-Gold по стандарту Production Web Craft",
   "main": "index.html",
   "scripts": {
-    "test": "node -c js/app.js js/portfolio.js js/animations.js server.js api/index.js handler.js",
-    "start": "node server.js"
+    "test": "node -c js/app.js js/portfolio.js js/animations.js server.js api/index.js handler.js && node scripts/test-harness.js",
+    "test:harness": "node scripts/test-harness.js",
+    "release": "powershell -ExecutionPolicy Bypass -File scripts/release.ps1",
+    "start": "node server.js",
+    "visual:baseline": "node scripts/visual-regression.js baseline",
+    "visual:check": "node scripts/visual-regression.js check"
   },
   "author": "Mila Tsvor",
   "license": "UNLICENSED",
@@ -13,5 +17,8 @@
   "dependencies": {
     "express": "^5.2.1",
     "serverless-http": "^4.0.0"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.12.0"
   }
 }

@@ -587,6 +587,12 @@ html.light #admin-floating-status #admin-reopen-btn {
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-behavior: smooth;
+  padding-top: 1rem;
+}
+@media (min-width: 768px) {
+  .pricing-snap-track {
+    overflow: visible;
+  }
 }
 .pricing-snap-track::-webkit-scrollbar {
   display: none;

@@ -168,6 +168,16 @@ app.post('/api/booking', async (req, res) => {
     return res.status(400).json({ error: 'Пожалуйста, укажите полный номер телефона' });
   }
 
+  // Synthetic Test Harness bypass: instant response without polluting storage or dispatching notifications
+  const isTestBooking = digits === '79990000000' || req.headers['x-test-harness'] === 'true';
+  if (isTestBooking) {
+    return res.status(200).json({
+      success: true,
+      id: `test_lead_${Date.now()}`,
+      message: 'Тестовая заявка успешно обработана'
+    });
+  }
+
   const newLead = {
     id: `lead_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,
     createdAt: new Date().toISOString(),
