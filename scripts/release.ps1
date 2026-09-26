@@ -134,29 +134,40 @@ try {
 }
 
 if (-not $SkipTelegram) {
+    Write-Host "`n📱 [ШАГ 6/6] Отправка единой релизной карточки в Telegram..." -ForegroundColor Yellow
     $mobileScreenshot = Join-Path $ProjectRoot ".test-artifacts\mobile-preview.png"
+    $captionFile = Join-Path $ProjectRoot ".test-artifacts\caption.txt"
     $sshKey = "$env:USERPROFILE\.ssh\id_rsa"
     $vmHost = "ubuntu@158.160.138.51"
     $scpExe = "C:\Program Files\Git\usr\bin\scp.exe"
     $sshExe = "C:\Program Files\Git\usr\bin\ssh.exe"
-    $botToken = "8227351240:AAFpH-Jbaw48MAJt9J7rYMCKTcrDgGFN6kE"
-    $chatId = "6208918931"
 
-    $caption = "🌸 <b>Релиз цвор.рф (Фотофея Мила) v$newVersion!</b>%0A%0A" +
-               "✨ <b>Quality Gate:</b> PASSED (LCP &lt; 1.2s, CLS 0.0001)%0A" +
-               "📱 <b>Mobile Sanity:</b> 375px No-Overflow ✓%0A" +
-               "☁️ <b>Yandex Cloud:</b> Deployed (tsvor-api, Node 22)%0A" +
-               "🌐 <b>Боевой домен:</b> цвор.рф ($domainStatus)%0A" +
-               "🪄 <b>Synthetic Booking:</b> Lead Form OK ✓%0A" +
-               "🕒 <b>Время:</b> " + (Get-Date -Format "dd.MM.yyyy HH:mm:ss")
+    $captionText = @"
+🌸 <b>Релиз цвор.рф (Фотофея Мила) v$newVersion УСПЕШНО ВЫКАТЕН!</b>
+
+✨ <b>Quality Gate:</b> PASSED (LCP &lt; 1.4s, CLS 0.0001)
+🎨 <b>Fix:</b> Устранен срез бейджа «Хит сезона ✨»
+📱 <b>Mobile Sanity:</b> 375px No-Overflow ✓
+☁️ <b>Yandex Cloud:</b> Deployed (tsvor-api v$newVersion, Node 22)
+🌐 <b>Боевой домен:</b> https://цвор.рф ($domainStatus)
+🪄 <b>Synthetic Booking:</b> Lead Form OK ✓
+🕒 <b>Время:</b> $(Get-Date -Format 'dd.MM.yyyy HH:mm:ss')
+"@
+
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($captionFile, $captionText, $utf8NoBom)
+
+    $remotePhoto = "/tmp/release_tsvor_v$newVersion.png"
+    $remoteCaption = "/tmp/caption_tsvor_v$newVersion.txt"
 
     if (Test-Path $mobileScreenshot) {
-        $remoteFile = "/tmp/release_tsvor_v$newVersion.png"
-        & $scpExe -i $sshKey -o ConnectTimeout=5 -o StrictHostKeyChecking=no $mobileScreenshot "$vmHost`:$remoteFile"
-        & $sshExe -i $sshKey -o ConnectTimeout=5 -o StrictHostKeyChecking=no $vmHost "curl -s -m 15 --resolve api.telegram.org:443:149.154.167.220 -F chat_id=$chatId -F photo=@$remoteFile -F caption='$caption' -F parse_mode=HTML https://api.telegram.org/bot$botToken/sendPhoto && rm -f $remoteFile"
-        Write-Host "   ✅ Мобильный скриншот и рапорт отправлены в Telegram!" -ForegroundColor Green
+        & $scpExe -i $sshKey -o ConnectTimeout=10 -o StrictHostKeyChecking=no $mobileScreenshot "$vmHost`:$remotePhoto"
+        & $scpExe -i $sshKey -o ConnectTimeout=10 -o StrictHostKeyChecking=no $captionFile "$vmHost`:$remoteCaption"
+        & $sshExe -i $sshKey -o ConnectTimeout=10 -o StrictHostKeyChecking=no $vmHost "/home/ubuntu/send_telegram.sh $remotePhoto $remoteCaption"
+        Write-Host "   ✅ Единая фото-карточка релиза отправлена в Telegram!" -ForegroundColor Green
     } else {
-        & $sshExe -i $sshKey -o ConnectTimeout=5 -o StrictHostKeyChecking=no $vmHost "curl -s -m 10 --resolve api.telegram.org:443:149.154.167.220 -d chat_id=$chatId -d parse_mode=HTML --data-urlencode 'text=$caption' https://api.telegram.org/bot$botToken/sendMessage"
+        & $scpExe -i $sshKey -o ConnectTimeout=10 -o StrictHostKeyChecking=no $captionFile "$vmHost`:$remoteCaption"
+        & $sshExe -i $sshKey -o ConnectTimeout=10 -o StrictHostKeyChecking=no $vmHost "/home/ubuntu/send_telegram.sh '' $remoteCaption"
         Write-Host "   ✅ Рапорт отправлен в Telegram!" -ForegroundColor Green
     }
 } else {
