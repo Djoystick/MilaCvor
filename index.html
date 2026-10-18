@@ -318,9 +318,9 @@
         </a>
 
         <!-- Phone Button -->
-        <a href="tel:+79533286104" class="px-3 py-2 rounded-xl btn-ghost hidden md:flex items-center gap-2 text-xs font-semibold text-zinc-200 whitespace-nowrap shrink-0">
+        <a id="header-phone-link" href="tel:+79533286104" class="px-3 py-2 rounded-xl btn-ghost hidden md:flex items-center gap-2 text-xs font-semibold text-zinc-200 whitespace-nowrap shrink-0">
           <i data-lucide="phone" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
-          <span class="tabular-nums whitespace-nowrap">+7 (953) 328-61-04</span>
+          <span id="header-phone-text" class="tabular-nums whitespace-nowrap">+7 (953) 328-61-04</span>
         </a>
 
         <!-- Fast Booking CTA -->
@@ -356,9 +356,9 @@
           <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-white/10 dark:block hidden">Темная (Бархат)</span>
           <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-black/10 dark:hidden block">Светлая (Жемчуг)</span>
         </button>
-        <a href="tel:+79533286104" class="text-sm font-medium text-accent-gold-light flex items-center gap-2">
+        <a id="drawer-phone-link" href="tel:+79533286104" class="text-sm font-medium text-accent-gold-light flex items-center gap-2">
           <i data-lucide="phone" class="w-4 h-4 text-accent-rose-gold"></i>
-          <span>+7 (953) 328-61-04</span>
+          <span id="drawer-phone-text">+7 (953) 328-61-04</span>
         </a>
       </div>
     </div>
@@ -377,16 +377,16 @@
           <!-- Overline Badge -->
           <div class="hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.05] border border-accent-fairy-pink/30 text-xs font-semibold text-accent-fairy-pink mb-6 backdrop-blur-md shadow-lg shadow-pink-950/30">
             <i data-lucide="wand-sparkles" class="w-3.5 h-3.5 text-accent-rose-gold animate-spin-slow"></i>
-            <span>Авторский сказочный фотопроект в Малоярославце</span>
+            <span id="hero-badge-text">Авторский сказочный фотопроект в Малоярославце</span>
           </div>
 
           <!-- Main Title with Shimmer -->
-          <h1 class="hero-title font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15] mb-6">
+          <h1 id="hero-main-title" class="hero-title font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15] mb-6">
             Подарите ребенку день, когда он станет главным героем <span class="italic text-shimmer-gold block sm:inline">собственной сказки</span>
           </h1>
 
           <!-- Subtitle -->
-          <p class="hero-sub text-base sm:text-lg text-zinc-300 leading-relaxed max-w-2xl mx-auto mb-8 font-normal">
+          <p id="hero-sub-text" class="hero-sub text-base sm:text-lg text-zinc-300 leading-relaxed max-w-2xl mx-auto mb-8 font-normal">
             Профессиональные детские и семейные фотосессии под ключ: сказочные костюмы, авторский аквагрим от фотографа, волшебный реквизит, памятный подарок и живая игра без заученных поз.
           </p>
 
@@ -408,6 +408,7 @@
         <div class="hero-visual relative max-w-5xl mx-auto rounded-3xl overflow-hidden border border-accent-fairy-pink/20 shadow-2xl bg-surface-card aspect-[16/8] sm:aspect-[21/9]">
           <div class="skeleton-box absolute inset-0 z-0"></div>
           <img 
+            id="hero-cover-img"
             src="assets/images/hero_cover.jpg" 
             alt="Мила Цвор — Фотофея сказочные фотопроекты" 
             class="relative z-10 w-full h-full object-cover object-center"
@@ -419,7 +420,7 @@
         <div class="max-w-5xl mx-auto mt-4 px-5 py-3 rounded-2xl glass-panel border border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-400">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-accent-rose-gold"></span>
-            <span class="text-zinc-200 font-medium">г. Малоярославец & выездные съемки в живописных локациях</span>
+            <span id="hero-geotag-text" class="text-zinc-200 font-medium">г. Малоярославец & выездные съемки в живописных локациях</span>
           </div>
           <div class="text-accent-gold font-semibold flex items-center gap-1.5">
             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-accent-rose-gold"></i>
@@ -430,20 +431,20 @@
         <!-- 4 Quick Trust Pillars -->
         <div class="hero-trust-cards mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
           <div class="p-4 rounded-2xl glass-panel text-center card-hover">
-            <span class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-gold block mb-1" data-target="100" data-suffix="%">100%</span>
-            <span class="text-xs text-zinc-400">Образ под ключ с платьями и реквизитом</span>
+            <span id="hero-stat-val-1" class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-gold block mb-1" data-target="100" data-suffix="%">100%</span>
+            <span id="hero-stat-lbl-1" class="text-xs text-zinc-400">Образ под ключ с платьями и реквизитом</span>
           </div>
           <div class="p-4 rounded-2xl glass-panel text-center card-hover">
-            <span class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-rose-gold block mb-1" data-target="15" data-suffix="+">15+</span>
-            <span class="text-xs text-zinc-400">Авторских костюмов и крыльев бабочек</span>
+            <span id="hero-stat-val-2" class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-rose-gold block mb-1" data-target="15" data-suffix="+">15+</span>
+            <span id="hero-stat-lbl-2" class="text-xs text-zinc-400">Авторских костюмов и крыльев бабочек</span>
           </div>
           <div class="p-4 rounded-2xl glass-panel text-center card-hover">
-            <span class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-fairy-pink block mb-1" data-target="48" data-suffix=" ч">48 ч</span>
-            <span class="text-xs text-zinc-400">Возможна экспресс-отдача снимков</span>
+            <span id="hero-stat-val-3" class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-fairy-pink block mb-1" data-target="48" data-suffix=" ч">48 ч</span>
+            <span id="hero-stat-lbl-3" class="text-xs text-zinc-400">Возможна экспресс-отдача снимков</span>
           </div>
           <div class="p-4 rounded-2xl glass-panel text-center card-hover">
-            <span class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-gold block mb-1" data-target="5.0" data-decimals="1" data-prefix="⭐ ">⭐ 5.0</span>
-            <span class="text-xs text-zinc-400">Официальный рейтинг ВКонтакте</span>
+            <span id="hero-stat-val-4" class="stat-counter font-serif text-2xl sm:text-3xl font-bold text-accent-gold block mb-1" data-target="5.0" data-decimals="1" data-prefix="⭐ ">⭐ 5.0</span>
+            <span id="hero-stat-lbl-4" class="text-xs text-zinc-400">Официальный рейтинг ВКонтакте</span>
           </div>
         </div>
 
@@ -510,6 +511,7 @@
             <div class="relative mx-auto max-w-sm sm:max-w-md rounded-3xl overflow-hidden border border-accent-fairy-pink/30 shadow-2xl bg-surface-card aspect-[4/5] card-hover">
               <div class="skeleton-box absolute inset-0 z-0"></div>
               <img 
+                id="about-author-img"
                 src="assets/images/author_mila.jpg" 
                 alt="Мила Цвор — детский фотограф и гримёр" 
                 loading="lazy" 
@@ -517,8 +519,8 @@
                 onload="this.previousElementSibling.style.display='none'"
               />
               <div class="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-6">
-                <span class="font-serif text-xl sm:text-2xl font-bold text-white">Мила Цвор</span>
-                <span class="text-xs text-accent-rose-gold mt-0.5">Фотограф-гримёр • Автор проекта «Фотофея»</span>
+                <span id="about-author-name" class="font-serif text-xl sm:text-2xl font-bold text-white">Мила Цвор</span>
+                <span id="about-author-role" class="text-xs text-accent-rose-gold mt-0.5">Фотограф-гримёр • Автор проекта «Фотофея»</span>
               </div>
             </div>
           </div>
@@ -526,14 +528,14 @@
           <!-- Content & Philosophy Column -->
           <div class="lg:col-span-7 space-y-6 reveal-on-scroll">
             
-            <span class="text-xs font-semibold uppercase tracking-wider text-accent-rose-gold block">Бережный подход к съемке</span>
+            <span id="about-section-badge" class="text-xs font-semibold uppercase tracking-wider text-accent-rose-gold block">Бережный подход к съемке</span>
             
-            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
+            <h2 id="about-section-title" class="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
               «Ребенок — это главный герой, а не второстепенный персонаж!»
             </h2>
 
             <!-- Quotation from Mila's manifesto -->
-            <blockquote class="p-6 rounded-2xl glass-panel border-l-4 border-accent-rose-gold text-zinc-300 text-sm sm:text-base leading-relaxed italic shadow-xl">
+            <blockquote id="about-quote-text" class="p-6 rounded-2xl glass-panel border-l-4 border-accent-rose-gold text-zinc-300 text-sm sm:text-base leading-relaxed italic shadow-xl">
               «Ребёнок чист. У него ещё нет того жизненного опыта, что есть у взрослого человека, — все чувства и эмоции как на ладони. Я всегда даю маленькому человеку возможность играть и никогда не ругаю за эти игры. Ему нужны любовь, интерес и искренняя радость — я даю это и получаю то же самое взамен. А взрослым я помогаю подсветить всё самое ценное и прекрасное в них, бережно и без стеснения».
             </blockquote>
 
@@ -543,32 +545,32 @@
                 <div class="w-8 h-8 rounded-lg bg-pink-900/40 text-accent-rose-gold flex items-center justify-center mb-2">
                   <i data-lucide="heart-handshake" class="w-4 h-4"></i>
                 </div>
-                <h4 class="text-sm font-semibold text-white mb-1">Фотограф в роли доброй феи</h4>
-                <p class="text-xs text-zinc-400">Съемка строится как увлекательное путешествие, без принуждения и стресса.</p>
+                <h4 id="about-pillar-title-1" class="text-sm font-semibold text-white mb-1">Фотограф в роли доброй феи</h4>
+                <p id="about-pillar-desc-1" class="text-xs text-zinc-400">Съемка строится как увлекательное путешествие, без принуждения и стресса.</p>
               </div>
 
               <div class="p-4 rounded-xl glass-panel border border-white/5 card-hover">
                 <div class="w-8 h-8 rounded-lg bg-pink-900/40 text-accent-rose-gold flex items-center justify-center mb-2">
                   <i data-lucide="palette" class="w-4 h-4"></i>
                 </div>
-                <h4 class="text-sm font-semibold text-white mb-1">Образ & Аквагрим под ключ</h4>
-                <p class="text-xs text-zinc-400">Использую профессиональные гипоаллергенные краски TAG, свои платья, крылья и венки.</p>
+                <h4 id="about-pillar-title-2" class="text-sm font-semibold text-white mb-1">Образ & Аквагрим под ключ</h4>
+                <p id="about-pillar-desc-2" class="text-xs text-zinc-400">Использую профессиональные гипоаллергенные краски TAG, свои платья, крылья и венки.</p>
               </div>
 
               <div class="p-4 rounded-xl glass-panel border border-white/5 card-hover">
                 <div class="w-8 h-8 rounded-lg bg-pink-900/40 text-accent-rose-gold flex items-center justify-center mb-2">
                   <i data-lucide="gift" class="w-4 h-4"></i>
                 </div>
-                <h4 class="text-sm font-semibold text-white mb-1">Подарок каждому малышу</h4>
-                <p class="text-xs text-zinc-400">В финале ребенок получает памятный сюрприз из волшебного сундучка.</p>
+                <h4 id="about-pillar-title-3" class="text-sm font-semibold text-white mb-1">Подарок каждому малышу</h4>
+                <p id="about-pillar-desc-3" class="text-xs text-zinc-400">В финале ребенок получает памятный сюрприз из волшебного сундучка.</p>
               </div>
 
               <div class="p-4 rounded-xl glass-panel border border-white/5 card-hover">
                 <div class="w-8 h-8 rounded-lg bg-pink-900/40 text-accent-rose-gold flex items-center justify-center mb-2">
                   <i data-lucide="shield-check" class="w-4 h-4"></i>
                 </div>
-                <h4 class="text-sm font-semibold text-white mb-1">Поддержка от начала до конца</h4>
-                <p class="text-xs text-zinc-400">Помогу с выбором места, одежды, позами и передам снимки через защищенную онлайн-галерею.</p>
+                <h4 id="about-pillar-title-4" class="text-sm font-semibold text-white mb-1">Поддержка от начала до конца</h4>
+                <p id="about-pillar-desc-4" class="text-xs text-zinc-400">Помогу с выбором места, одежды, позами и передам снимки через защищенную онлайн-галерею.</p>
               </div>
             </div>
 
@@ -903,7 +905,7 @@
                   <input type="checkbox" id="calc-addon-cb-express" class="calc-addon w-4 h-4" data-cost="1500" data-addon-key="express_delivery" data-name="Экспресс-отдача за 48ч" />
                   <span id="calc-addon-name-express" class="text-xs sm:text-sm text-zinc-200">Экспресс-отдача фото за 48 часов</span>
                 </div>
-                <span id="calc-badge-express" class="text-xs font-mono text-zinc-400">+1 500 ₽</span>
+                <span id="calc-addon-badge-express" class="text-xs font-mono text-zinc-400">+1 500 ₽</span>
               </label>
 
               <label class="p-3.5 rounded-xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
@@ -977,7 +979,7 @@
 
         <!-- Reviews Swiper Carousel -->
         <div class="swiper reviews-swiper relative pb-12">
-          <div class="swiper-wrapper">
+          <div class="swiper-wrapper" id="reviews-swiper-wrapper">
             
             <!-- Slide 1 -->
             <div class="swiper-slide p-6 sm:p-7 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between h-auto card-hover shadow-xl">
@@ -1071,7 +1073,7 @@
           </p>
         </div>
 
-        <div class="space-y-4 reveal-on-scroll">
+        <div class="space-y-4 reveal-on-scroll" id="faq-items-container">
           
           <div class="faq-item rounded-2xl glass-panel border border-white/10 overflow-hidden">
             <button class="faq-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none">
@@ -1445,7 +1447,7 @@
 
   <!-- ADMIN PRICE & GALLERY EDITOR MODAL (Hidden by default) -->
   <div id="admin-price-modal" class="fixed inset-0 z-[100001] bg-black/90 backdrop-blur-xl hidden items-center justify-center p-3 sm:p-4 overflow-y-auto" role="dialog" aria-modal="true">
-    <div class="my-auto max-h-[92vh] flex flex-col p-5 sm:p-7 rounded-3xl glass-panel border border-accent-gold/40 shadow-2xl max-w-2xl w-full text-left relative overflow-hidden">
+    <div class="my-auto max-h-[92vh] flex flex-col p-5 sm:p-7 rounded-3xl glass-panel border border-accent-gold/40 shadow-2xl max-w-3xl lg:max-w-4xl w-full text-left relative overflow-hidden">
       
       <!-- Modal Header -->
       <div class="flex items-center justify-between pb-3 border-b border-white/10 shrink-0">
@@ -1454,8 +1456,8 @@
             <i data-lucide="sparkles" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="font-serif text-lg sm:text-xl font-bold text-white">Панель управления Фотофеи</h3>
-            <span class="text-[11px] text-accent-rose-gold">Режим владельца • Управление прайсом и галереей</span>
+            <h3 class="font-serif text-lg sm:text-xl font-bold text-white">Панель управления сайтом Фотофеи</h3>
+            <span class="text-[11px] text-accent-rose-gold">Режим владельца • Управление всеми текстами, фото и ценами</span>
           </div>
         </div>
         <button id="admin-price-close" class="p-2 rounded-xl btn-ghost text-zinc-400 hover:text-white" title="Закрыть">
@@ -1463,20 +1465,32 @@
         </button>
       </div>
 
-      <!-- Navigation Tabs (Прайс vs Галерея) -->
-      <div class="flex items-center gap-2 pt-3 pb-2 border-b border-white/10 shrink-0">
-        <button type="button" id="admin-tab-prices" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-accent-gold text-black transition-all flex items-center gap-1.5 shadow-md">
+      <!-- Navigation Tabs (5 Разделов CMS) -->
+      <div class="flex items-center gap-1.5 pt-3 pb-2 border-b border-white/10 shrink-0 overflow-x-auto scrollbar-none">
+        <button type="button" id="admin-tab-prices" class="admin-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-accent-gold text-black transition-all flex items-center gap-1.5 shadow-md shrink-0">
           <i data-lucide="tag" class="w-3.5 h-3.5"></i>
           <span>Тарифы и цены</span>
         </button>
-        <button type="button" id="admin-tab-gallery" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 transition-all flex items-center gap-1.5">
+        <button type="button" id="admin-tab-gallery" class="admin-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 transition-all flex items-center gap-1.5 shrink-0">
           <i data-lucide="images" class="w-3.5 h-3.5"></i>
           <span>Галерея и VK</span>
+        </button>
+        <button type="button" id="admin-tab-content" class="admin-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 transition-all flex items-center gap-1.5 shrink-0">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Главная & Обо мне</span>
+        </button>
+        <button type="button" id="admin-tab-reviews-faq" class="admin-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 transition-all flex items-center gap-1.5 shrink-0">
+          <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+          <span>Отзывы & FAQ</span>
+        </button>
+        <button type="button" id="admin-tab-contacts" class="admin-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 transition-all flex items-center gap-1.5 shrink-0">
+          <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+          <span>Контакты & Сети</span>
         </button>
       </div>
 
       <!-- Modal Body (Scrollable form) -->
-      <form id="admin-price-form" class="space-y-6 pt-4 overflow-y-auto pr-1 flex-1">
+      <form id="admin-price-form" novalidate class="space-y-6 pt-4 overflow-y-auto pr-1 flex-1">
         
         <!-- Section 1: Packages Base Prices -->
         <div>
@@ -1490,7 +1504,7 @@
               <div>
                 <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
                 <div class="flex items-center gap-2">
-                  <input type="number" id="adm-price-fairy" min="500" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <input type="number" id="adm-price-fairy" min="0" step="any" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                   <span class="text-xs text-zinc-400">₽</span>
                 </div>
               </div>
@@ -1504,7 +1518,7 @@
               <div>
                 <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
                 <div class="flex items-center gap-2">
-                  <input type="number" id="adm-price-family" min="500" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <input type="number" id="adm-price-family" min="0" step="any" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                   <span class="text-xs text-zinc-400">₽</span>
                 </div>
               </div>
@@ -1518,7 +1532,7 @@
               <div>
                 <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
                 <div class="flex items-center gap-2">
-                  <input type="number" id="adm-price-portrait" min="500" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <input type="number" id="adm-price-portrait" min="0" step="any" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                   <span class="text-xs text-zinc-400">₽</span>
                 </div>
               </div>
@@ -1532,7 +1546,7 @@
               <div>
                 <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
                 <div class="flex items-center gap-2">
-                  <input type="number" id="adm-price-express" min="500" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <input type="number" id="adm-price-express" min="0" step="any" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                   <span class="text-xs text-zinc-400">₽</span>
                 </div>
               </div>
@@ -1547,7 +1561,7 @@
             <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
               <span class="text-xs font-semibold text-zinc-200 block">Продлить на 30 минут</span>
               <div class="flex items-center gap-2">
-                <input type="number" id="adm-extra-30" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <input type="number" id="adm-extra-30" min="0" step="any" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                 <span class="text-xs text-zinc-400">₽</span>
               </div>
             </div>
@@ -1555,7 +1569,7 @@
             <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-1.5">
               <span class="text-xs font-semibold text-zinc-200 block">Продлить на 1 час</span>
               <div class="flex items-center gap-2">
-                <input type="number" id="adm-extra-60" min="0" step="100" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                <input type="number" id="adm-extra-60" min="0" step="any" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                 <span class="text-xs text-zinc-400">₽</span>
               </div>
             </div>
@@ -1574,7 +1588,7 @@
               <div>
                 <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
                 <div class="flex items-center gap-2">
-                  <input type="number" id="adm-addon-studio" min="0" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <input type="number" id="adm-addon-studio" min="0" step="any" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                   <span class="text-xs text-zinc-400">₽</span>
                 </div>
               </div>
@@ -1588,7 +1602,7 @@
               <div>
                 <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
                 <div class="flex items-center gap-2">
-                  <input type="number" id="adm-addon-travel" min="0" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <input type="number" id="adm-addon-travel" min="0" step="any" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                   <span class="text-xs text-zinc-400">₽</span>
                 </div>
               </div>
@@ -1602,7 +1616,7 @@
               <div>
                 <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
                 <div class="flex items-center gap-2">
-                  <input type="number" id="adm-addon-express" min="0" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <input type="number" id="adm-addon-express" min="0" step="any" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                   <span class="text-xs text-zinc-400">₽</span>
                 </div>
               </div>
@@ -1616,7 +1630,7 @@
               <div>
                 <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
                 <div class="flex items-center gap-2">
-                  <input type="number" id="adm-addon-photobook" min="0" step="100" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
+                  <input type="number" id="adm-addon-photobook" min="0" step="any" class="w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-sm font-mono text-accent-gold focus:outline-none focus:border-accent-gold" />
                   <span class="text-xs text-zinc-400">₽</span>
                 </div>
               </div>
@@ -1772,6 +1786,239 @@
           <div id="adm-gallery-items-list" class="space-y-2.5 max-h-80 overflow-y-auto pr-1">
             <!-- Dynamically populated -->
           </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 3: SITE CONTENT VIEW (Hero & About) -->
+      <div id="admin-content-view" class="space-y-6 pt-4 overflow-y-auto pr-1 flex-1 hidden">
+        
+        <!-- Section 1: Hero Section -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-surface border border-white/10 space-y-4">
+          <div class="flex items-center gap-2 pb-2 border-b border-white/10">
+            <i data-lucide="sparkles" class="w-4 h-4 text-accent-gold"></i>
+            <h4 class="text-sm font-semibold text-white">1. Главный экран (Первый экран сайта)</h4>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Верхний бейдж над заголовком</label>
+              <input type="text" id="adm-hero-badge" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+            </div>
+
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Главный заголовок страницы (H1)</label>
+              <input type="text" id="adm-hero-title" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold font-serif" />
+            </div>
+
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Подзаголовок (описание фотопроекта)</label>
+              <textarea id="adm-hero-subtitle" rows="3" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold resize-none"></textarea>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Главная фотография (Баннер)</label>
+              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div class="w-24 h-14 rounded-xl overflow-hidden bg-black/40 border border-white/15 shrink-0 relative">
+                  <img id="adm-hero-cover-preview" src="assets/images/hero_cover.jpg" alt="Hero Preview" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex-1 w-full space-y-2">
+                  <input type="text" id="adm-hero-cover-url" placeholder="Ссылка на фото или загрузите файл..." class="w-full px-3 py-1.5 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+                  <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-white font-medium cursor-pointer transition-all active:scale-[0.97]">
+                    <i data-lucide="upload" class="w-3.5 h-3.5 text-accent-rose-gold"></i>
+                    <span>Выбрать фото с телефона / ПК</span>
+                    <input type="file" id="adm-hero-cover-file" accept="image/*" class="hidden" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Подпись под баннером (город и локации)</label>
+              <input type="text" id="adm-hero-geotag" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: About Section -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-surface border border-white/10 space-y-4">
+          <div class="flex items-center gap-2 pb-2 border-b border-white/10">
+            <i data-lucide="user" class="w-4 h-4 text-accent-gold"></i>
+            <h4 class="text-sm font-semibold text-white">2. Раздел «О фотографе» (Мила Цвор)</h4>
+          </div>
+
+          <div class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Имя автора</label>
+                <input type="text" id="adm-about-name" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Роль / Специализация</label>
+                <input type="text" id="adm-about-role" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+              </div>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Портретная фотография автора</label>
+              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div class="w-16 h-20 rounded-xl overflow-hidden bg-black/40 border border-white/15 shrink-0 relative">
+                  <img id="adm-about-photo-preview" src="assets/images/author_mila.jpg" alt="Author Preview" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex-1 w-full space-y-2">
+                  <input type="text" id="adm-about-photo-url" placeholder="Ссылка на фото автора..." class="w-full px-3 py-1.5 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+                  <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-white font-medium cursor-pointer transition-all active:scale-[0.97]">
+                    <i data-lucide="upload" class="w-3.5 h-3.5 text-accent-rose-gold"></i>
+                    <span>Загрузить новый портрет</span>
+                    <input type="file" id="adm-about-photo-file" accept="image/*" class="hidden" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Заголовок / Девиз раздела</label>
+              <input type="text" id="adm-about-title" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold font-serif" />
+            </div>
+
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Слова и манифест Милы (Цитата)</label>
+              <textarea id="adm-about-quote" rows="4" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold resize-none italic"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Actions -->
+        <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-3">
+          <button type="button" id="adm-content-reset-btn" class="px-4 py-2.5 rounded-xl btn-ghost text-xs text-zinc-400 hover:text-rose-300">
+            Сбросить к исходным
+          </button>
+          <button type="button" id="adm-content-save-btn" class="px-6 py-3 rounded-xl btn-gold text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-xl active:scale-[0.97]">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Сохранить тексты и фото</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- TAB 4: REVIEWS & FAQ VIEW -->
+      <div id="admin-reviews-faq-view" class="space-y-6 pt-4 overflow-y-auto pr-1 flex-1 hidden">
+        
+        <!-- Reviews Section -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-surface border border-white/10 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-white/10">
+            <div class="flex items-center gap-2">
+              <i data-lucide="star" class="w-4 h-4 text-accent-gold"></i>
+              <h4 class="text-sm font-semibold text-white">Отзывы клиентов (Слайдер на главной)</h4>
+            </div>
+            <button type="button" id="adm-add-review-btn" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-accent-gold flex items-center gap-1 active:scale-[0.97]">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Добавить отзыв</span>
+            </button>
+          </div>
+
+          <!-- Reviews List -->
+          <div id="adm-reviews-list" class="space-y-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-surface border border-white/10 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-white/10">
+            <div class="flex items-center gap-2">
+              <i data-lucide="help-circle" class="w-4 h-4 text-accent-gold"></i>
+              <h4 class="text-sm font-semibold text-white">Часто задаваемые вопросы (FAQ)</h4>
+            </div>
+            <button type="button" id="adm-add-faq-btn" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-accent-gold flex items-center gap-1 active:scale-[0.97]">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Добавить вопрос</span>
+            </button>
+          </div>
+
+          <!-- FAQ List -->
+          <div id="adm-faq-list" class="space-y-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-3">
+          <button type="button" id="adm-reviews-faq-reset-btn" class="px-4 py-2.5 rounded-xl btn-ghost text-xs text-zinc-400 hover:text-rose-300">
+            Сбросить к исходным
+          </button>
+          <button type="button" id="adm-reviews-faq-save-btn" class="px-6 py-3 rounded-xl btn-gold text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-xl active:scale-[0.97]">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Сохранить отзывы и FAQ</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- TAB 5: CONTACTS & SOCIALS VIEW -->
+      <div id="admin-contacts-view" class="space-y-6 pt-4 overflow-y-auto pr-1 flex-1 hidden">
+        
+        <div class="p-4 sm:p-5 rounded-2xl bg-surface border border-white/10 space-y-4">
+          <div class="flex items-center gap-2 pb-2 border-b border-white/10">
+            <i data-lucide="phone-call" class="w-4 h-4 text-accent-gold"></i>
+            <h4 class="text-sm font-semibold text-white">Контакты и прямые каналы связи</h4>
+          </div>
+
+          <div class="space-y-3.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Отображаемый номер телефона</label>
+                <input type="text" id="adm-contact-phone" placeholder="+7 (953) 328-61-04" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold font-mono" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Номер для звонков (без пробелов)</label>
+                <input type="text" id="adm-contact-phone-digits" placeholder="+79533286104" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold font-mono" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Номер для сообщений WhatsApp (только цифры)</label>
+                <input type="text" id="adm-contact-wa" placeholder="79533286104" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold font-mono" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Ссылка на Telegram фотографа</label>
+                <input type="text" id="adm-contact-tg" placeholder="https://t.me/milatsvor" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold font-mono" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Ссылка на группу ВКонтакте</label>
+                <input type="text" id="adm-contact-vk-url" placeholder="https://vk.ru/club_fotofeya_mila" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold font-mono" />
+              </div>
+              <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">ID группы ВКонтакте (для сообщений)</label>
+                <input type="text" id="adm-contact-vk-id" placeholder="240592099" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold font-mono" />
+              </div>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Город и географическая зона съемок</label>
+              <input type="text" id="adm-contact-city" placeholder="г. Малоярославец & выездные съемки (Обнинск, Балабаново, Калуга)" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+            </div>
+
+            <div>
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">График работы / Время приема заявок</label>
+              <input type="text" id="adm-contact-hours" placeholder="Ежедневно с 09:00 до 21:00" class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-accent-gold" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Contacts Actions -->
+        <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-3">
+          <button type="button" id="adm-contacts-reset-btn" class="px-4 py-2.5 rounded-xl btn-ghost text-xs text-zinc-400 hover:text-rose-300">
+            Сбросить к исходным
+          </button>
+          <button type="button" id="adm-contacts-save-btn" class="px-6 py-3 rounded-xl btn-gold text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-xl active:scale-[0.97]">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Сохранить контакты</span>
+          </button>
         </div>
 
       </div>

@@ -9,6 +9,7 @@ const app = express();
 const ROOT_DIR = path.join(__dirname, '..');
 const PRICES_FILE = path.join(ROOT_DIR, 'data', 'prices.json');
 const PORTFOLIO_FILE = path.join(ROOT_DIR, 'data', 'portfolio.json');
+const CONTENT_FILE = path.join(ROOT_DIR, 'data', 'content.json');
 const LEADS_FILE = path.join(ROOT_DIR, 'data', 'leads.json');
 
 // Telegram Notification configuration (Optional environment variables)
@@ -254,9 +255,11 @@ app.post('/api/booking', async (req, res) => {
 const TMP_DATA_DIR = path.join('/tmp', 'fotofeya_data');
 const TMP_PRICES_FILE = path.join(TMP_DATA_DIR, 'prices.json');
 const TMP_PORTFOLIO_FILE = path.join(TMP_DATA_DIR, 'portfolio.json');
+const TMP_CONTENT_FILE = path.join(TMP_DATA_DIR, 'content.json');
 
 let memoryPricesCache = null;
 let memoryPortfolioCache = null;
+let memoryContentCache = null;
 
 function loadStoredPrices() {
   if (memoryPricesCache) return memoryPricesCache;
@@ -329,6 +332,67 @@ function persistStoredPortfolio(items) {
     }
   }
 }
+
+function loadStoredContent() {
+  if (memoryContentCache) return memoryContentCache;
+  if (fs.existsSync(TMP_CONTENT_FILE)) {
+    try {
+      memoryContentCache = JSON.parse(fs.readFileSync(TMP_CONTENT_FILE, 'utf8'));
+      return memoryContentCache;
+    } catch (_) {}
+  }
+  if (fs.existsSync(CONTENT_FILE)) {
+    try {
+      memoryContentCache = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
+      return memoryContentCache;
+    } catch (_) {}
+  }
+  return null;
+}
+
+function persistStoredContent(newContent) {
+  memoryContentCache = newContent;
+  try {
+    fs.writeFileSync(CONTENT_FILE, JSON.stringify(newContent, null, 2), 'utf8');
+    return true;
+  } catch (err) {
+    try {
+      if (!fs.existsSync(TMP_DATA_DIR)) {
+        fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
+      }
+      fs.writeFileSync(TMP_CONTENT_FILE, JSON.stringify(newContent, null, 2), 'utf8');
+      return true;
+    } catch (tmpErr) {
+      console.warn('Persistent storage warning (content):', tmpErr.message);
+      return false;
+    }
+  }
+}
+
+// ── SITE CONTENT CMS API ───────────────────────────────────────────────────
+app.get('/api/content', (req, res) => {
+  try {
+    const content = loadStoredContent();
+    if (content) {
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+      return res.status(200).json(content);
+    }
+    return res.status(404).json({ error: 'content.json not found' });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to read content' });
+  }
+});
+
+app.post('/api/content', requireAdminAuth, (req, res) => {
+  const { content } = req.body || {};
+  if (content && typeof content === 'object') {
+    content.lastUpdated = new Date().toISOString();
+    persistStoredContent(content);
+    return res.status(200).json({ success: true, message: 'Контент сайта успешно обновлен' });
+  }
+  return res.status(400).json({ error: 'Не переданы данные контента' });
+});
 
 // ── PRICES API ──────────────────────────────────────────────────────────────
 app.get('/api/prices', (req, res) => {
@@ -612,6 +676,44 @@ app.post('/api/portfolio/upload', requireAdminAuth, (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: `Ошибка добавления фото: ${err.message}` });
   }
+});
+
+// ── UNIVERSAL IMAGE UPLOAD (For CMS Sections: Hero, About, Reviews) ─────────
+app.post('/api/upload-image', requireAdminAuth, (req, res) => {
+  const { base64 } = req.body || {};
+  if (!base64 || typeof base64 !== 'string') {
+    return res.status(400).json({ error: 'Не переданы данные изображения (base64)' });
+  }
+
+  if (base64.length > 14 * 1024 * 1024) {
+    return res.status(413).json({ error: 'Размер файла превышает допустимый лимит (максимум 10 МБ)' });
+  }
+
+  const uploadDir = path.join(ROOT_DIR, 'assets', 'images', 'uploads');
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
+  const cleanBase64 = base64.replace(/^data:image\/[a-zA-Z0-9+]+;base64,/, '');
+  const fileBuffer = Buffer.from(cleanBase64, 'base64');
+
+  const detectedExt = detectImageExtension(fileBuffer);
+  if (!detectedExt) {
+    return res.status(400).json({ error: 'Недопустимый формат файла. Разрешены только форматы JPEG, PNG, WebP.' });
+  }
+
+  const randomSuffix = crypto.randomBytes(4).toString('hex');
+  const uniqueName = `cms_${Date.now()}_${randomSuffix}.${detectedExt}`;
+  const filePath = path.join(uploadDir, uniqueName);
+
+  try {
+    fs.writeFileSync(filePath, fileBuffer);
+  } catch (wErr) {
+    // Read-only serverless fallback
+  }
+
+  const finalUrl = `assets/images/uploads/${uniqueName}`;
+  return res.status(200).json({ success: true, url: finalUrl });
 });
 
 // Static assets

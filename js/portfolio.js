@@ -147,10 +147,11 @@ class PortfolioManager {
   }
 
   applyCategoryFilter() {
+    const activeItems = this.portfolioItems.filter(item => item.isActive !== false);
     if (this.currentCategory === 'all') {
-      this.filteredItems = [...this.portfolioItems];
+      this.filteredItems = [...activeItems];
     } else {
-      this.filteredItems = this.portfolioItems.filter(item => item.category === this.currentCategory);
+      this.filteredItems = activeItems.filter(item => item.category === this.currentCategory);
     }
   }
 

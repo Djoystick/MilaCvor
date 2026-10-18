@@ -597,7 +597,7 @@ function initMobileNav() {
 // 8. Swiper Reviews Carousel Initialization
 function initReviewsSwiper() {
   if (typeof Swiper !== 'undefined' && document.querySelector('.reviews-swiper')) {
-    new Swiper('.reviews-swiper', {
+    window.reviewsSwiperInstance = new Swiper('.reviews-swiper', {
       slidesPerView: 1,
       spaceBetween: 20,
       loop: true,
@@ -761,9 +761,104 @@ const DEFAULT_PRICES = {
   }
 };
 
+const DEFAULT_SITE_CONTENT = {
+  hero: {
+    badge: "Авторский сказочный фотопроект в Малоярославце",
+    title: "Подарите ребенку день, когда он станет главным героем собственной сказки",
+    subtitle: "Профессиональные детские и семейные фотосессии под ключ: сказочные костюмы, авторский аквагрим от фотографа, волшебный реквизит, памятный подарок и живая игра без заученных поз.",
+    coverImage: "assets/images/hero_cover.jpg",
+    bannerText: "г. Малоярославец & выездные съемки в живописных локациях",
+    stats: [
+      { value: "100%", label: "Образ под ключ с платьями и реквизитом" },
+      { value: "15+", label: "Авторских костюмов и крыльев бабочек" },
+      { value: "48 ч", label: "Возможна экспресс-отдача снимков" },
+      { value: "⭐ 5.0", label: "Официальный рейтинг ВКонтакте" }
+    ]
+  },
+  about: {
+    name: "Мила Цвор",
+    role: "Фотограф-гримёр • Автор проекта «Фотофея»",
+    photo: "assets/images/author_mila.jpg",
+    sectionBadge: "Бережный подход к съемке",
+    sectionTitle: "«Ребенок — это главный герой, а не второстепенный персонаж!»",
+    quote: "«Ребёнок чист. У него ещё нет того жизненного опыта, что есть у взрослого человека, — все чувства и эмоции как на ладони. Я всегда даю маленькому человеку возможность играть и никогда не ругаю за эти игры. Ему нужны любовь, интерес и искренняя радость — я даю это и получаю то же самое взамен. А взрослым я помогаю подсветить всё самое ценное и прекрасное в них, бережно и без стеснения».",
+    pillars: [
+      { title: "Фотограф в роли доброй феи", description: "Съемка строится как увлекательное путешествие, без принуждения и стресса." },
+      { title: "Образ & Аквагрим под ключ", description: "Использую профессиональные гипоаллергенные краски TAG, свои платья, крылья и венки." },
+      { title: "Подарок каждому малышу", description: "В финале ребенок получает памятный сюрприз из волшебного сундучка." },
+      { title: "Поддержка от начала до конца", description: "Помогу с выбором места, одежды, позами и передам снимки через защищенную онлайн-галерею." }
+    ]
+  },
+  contacts: {
+    phone: "+7 (953) 328-61-04",
+    phoneDigits: "+79533286104",
+    telegram: "https://t.me/milatsvor",
+    whatsapp: "79533286104",
+    vkGroupUrl: "https://vk.ru/club_fotofeya_mila",
+    vkGroupId: "240592099",
+    city: "г. Малоярославец & выездные съемки (Обнинск, Балабаново, Калуга)",
+    workHours: "Ежедневно с 09:00 до 21:00"
+  },
+  reviews: [
+    {
+      id: 1,
+      author: "Екатерина Морозова",
+      subtitle: "Мама Алисы (5 лет) • Малоярославец",
+      tag: "Съемка: «Фея»",
+      rating: 5,
+      text: "Мила — настоящая фея! Моя дочка обычно очень стесняется незнакомых, но Мила с первых секунд нашла подход через игру. А когда начался аквагрим и надели крылья — глаза горели от счастья! Фотографии получились сказочными, как из дорогой книги сказок. Спасибо огромное!"
+    },
+    {
+      id: 2,
+      author: "Ольга Васильева",
+      subtitle: "Семейная фотопрогулка",
+      tag: "Малоярославец",
+      rating: 5,
+      text: "Ходили всей семьей на осеннюю фотосессию. Никакого напряжения! Дети бегали, кидали листья, Мила просто ловила искренние моменты. Кадры отдали очень быстро, ретушь бережная и благородная. Обязательно придем еще на новогоднюю сказку!"
+    },
+    {
+      id: 3,
+      author: "Анна Кузнецова",
+      subtitle: "Индивидуальная арт-съемка",
+      tag: "Обнинск",
+      rating: 5,
+      text: "Я шла на индивидуальный портрет с кучей комплексов по поводу внешности после родов. Мила так аккуратно и чутко направляла, подбадривала! Когда я увидела готовые фото, у меня потекли слезы счастья — я увидела себя красивой и женственной. Мила, вы волшебница!"
+    }
+  ],
+  faq: [
+    {
+      id: 1,
+      question: "Что если ребенок застесняется или закапризничает?",
+      answer: "Это абсолютно естественно! Именно поэтому съемка никогда не начинается «по свистку». Первые 15 минут мы знакомимся, рассматриваем крылышки, выбираем цвета красок для аквагрима. Мила работает в роли доброй сказочницы, превращая процесс в легкую игру. Ребенок увлекается и забывает о камере."
+    },
+    {
+      id: 2,
+      question: "Безопасен ли аквагрим для нежной детской кожи?",
+      answer: "Да, на 100%. Используются только сертифицированные профессиональные гипоаллергенные краски на водной основе (TAG, Diamond FX). Они не стягивают кожу, легко смываются обычной теплой водой или детскими салфетками и абсолютно безвредны даже для малышей от 2 лет."
+    },
+    {
+      id: 3,
+      question: "Нужно ли покупать платья и реквизит самостоятельно?",
+      answer: "Для тарифа «Сказочный образ» всё уже включено! В наличии большая гардеробная коллекция: пышные платья разных размеров, крылья бабочек и ангелов, цветочные венки, корзинки, фонарики и волшебные палочки. Вам нужно лишь взять удобную базовую обувь."
+    },
+    {
+      id: 4,
+      question: "Где обычно проходят съемки?",
+      answer: "Основная локация — живописные парки, ромашковые поля и лесные опушки в Малоярославце и окрестностях. Также возможны выезды в Обнинск, Балабаново или съемка в уютных интерьерных фотостудиях в прохладный сезон."
+    },
+    {
+      id: 5,
+      question: "Как и в каком виде я получу готовые фотографии?",
+      answer: "Вы получаете ссылку на красивую персональную онлайн-галерею, защищенную паролем. Все кадры можно скачать в оригинальном качестве для печати и в оптимизированном формате для соцсетей. Доступ к галерее сохраняется бессрочно."
+    }
+  ]
+};
+
 class PriceManager {
   constructor() {
     this.prices = JSON.parse(JSON.stringify(DEFAULT_PRICES));
+    this.siteContent = JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT));
+
     this.secretTrigger = document.getElementById('admin-secret-trigger');
     this.authModal = document.getElementById('admin-auth-modal');
     this.authForm = document.getElementById('admin-auth-form');
@@ -784,11 +879,23 @@ class PriceManager {
     this.tripleClickCount = 0;
     this.tripleClickTimer = null;
     
+    // Zero-Flash Content Hydration from local cache
+    const cachedContent = localStorage.getItem('fotofeya_content');
+    if (cachedContent) {
+      try {
+        const parsedContent = JSON.parse(cachedContent);
+        this.mergeContent(parsedContent);
+        this.applyContentToDOM(this.siteContent);
+      } catch (e) {
+        console.warn('Failed to parse cached content:', e);
+      }
+    }
+
     this.init();
   }
 
   async init() {
-    // 1. Try local cache first for Zero-Flash hydration
+    // 1. Try local cache first for Zero-Flash hydration (prices)
     const cached = localStorage.getItem('fotofeya_prices');
     if (cached) {
       try {
@@ -800,17 +907,21 @@ class PriceManager {
       }
     }
 
-    // 2. Fetch fresh prices from backend
-    await this.fetchPrices();
+    // 2. Fetch fresh prices and site content from backend
+    await Promise.all([
+      this.fetchPrices(),
+      this.fetchContent()
+    ]);
 
     // 3. Bind admin secret triggers (Keyboard, Triple-tap, Hash)
     this.bindSecretTriggers();
 
-    // 4. Bind admin modals and actions
+    // 4. Bind admin modals, tabs, gallery, and CMS actions
     this.bindModalActions();
     this.bindTabs();
     this.bindVkSync();
     this.bindManualUpload();
+    this.bindCmsActions();
     document.getElementById('adm-gallery-save-btn')?.addEventListener('click', () => this.saveAdminGallery());
 
     // 5. Restore floating badge if admin already authenticated in this session
@@ -848,6 +959,25 @@ class PriceManager {
     }
   }
 
+  mergeContent(incoming) {
+    if (!incoming) return;
+    if (incoming.hero) {
+      this.siteContent.hero = Object.assign({}, this.siteContent.hero, incoming.hero);
+    }
+    if (incoming.about) {
+      this.siteContent.about = Object.assign({}, this.siteContent.about, incoming.about);
+    }
+    if (incoming.contacts) {
+      this.siteContent.contacts = Object.assign({}, this.siteContent.contacts, incoming.contacts);
+    }
+    if (Array.isArray(incoming.reviews)) {
+      this.siteContent.reviews = JSON.parse(JSON.stringify(incoming.reviews));
+    }
+    if (Array.isArray(incoming.faq)) {
+      this.siteContent.faq = JSON.parse(JSON.stringify(incoming.faq));
+    }
+  }
+
   async fetchPrices() {
     try {
       const res = await fetch('/api/prices', { cache: 'no-cache' });
@@ -860,6 +990,174 @@ class PriceManager {
     } catch (err) {
       // Offline fallback: already applied from local storage or defaults
       this.applyPricesToDOM(this.prices);
+    }
+  }
+
+  async fetchContent() {
+    try {
+      const res = await fetch('/api/content', { cache: 'no-cache' });
+      if (res.ok) {
+        const data = await res.json();
+        this.mergeContent(data);
+        localStorage.setItem('fotofeya_content', JSON.stringify(this.siteContent));
+        this.applyContentToDOM(this.siteContent);
+      }
+    } catch (err) {
+      // Offline fallback: already hydrated from local cache or defaults
+      this.applyContentToDOM(this.siteContent);
+    }
+  }
+
+  applyContentToDOM(c) {
+    if (!c) return;
+
+    // 1. Hero Section
+    if (c.hero) {
+      const badge = document.getElementById('hero-badge-text');
+      if (badge && c.hero.badge) badge.textContent = c.hero.badge;
+
+      const title = document.getElementById('hero-main-title');
+      if (title && c.hero.title) title.textContent = c.hero.title;
+
+      const sub = document.getElementById('hero-sub-text');
+      if (sub && c.hero.subtitle) sub.textContent = c.hero.subtitle;
+
+      const cover = document.getElementById('hero-cover-img');
+      if (cover && c.hero.coverImage) cover.src = c.hero.coverImage;
+
+      const geotag = document.getElementById('hero-geotag-text');
+      if (geotag && c.hero.bannerText) geotag.textContent = c.hero.bannerText;
+
+      if (Array.isArray(c.hero.stats)) {
+        c.hero.stats.forEach((st, idx) => {
+          const v = document.getElementById(`hero-stat-val-${idx + 1}`);
+          const l = document.getElementById(`hero-stat-lbl-${idx + 1}`);
+          if (v && st.value) v.textContent = st.value;
+          if (l && st.label) l.textContent = st.label;
+        });
+      }
+    }
+
+    // 2. About Section
+    if (c.about) {
+      const photo = document.getElementById('about-author-img');
+      if (photo && c.about.photo) photo.src = c.about.photo;
+
+      const name = document.getElementById('about-author-name');
+      if (name && c.about.name) name.textContent = c.about.name;
+
+      const role = document.getElementById('about-author-role');
+      if (role && c.about.role) role.textContent = c.about.role;
+
+      const secBadge = document.getElementById('about-section-badge');
+      if (secBadge && c.about.sectionBadge) secBadge.textContent = c.about.sectionBadge;
+
+      const secTitle = document.getElementById('about-section-title');
+      if (secTitle && c.about.sectionTitle) secTitle.textContent = c.about.sectionTitle;
+
+      const quote = document.getElementById('about-quote-text');
+      if (quote && c.about.quote) quote.textContent = c.about.quote;
+
+      if (Array.isArray(c.about.pillars)) {
+        c.about.pillars.forEach((p, idx) => {
+          const t = document.getElementById(`about-pillar-title-${idx + 1}`);
+          const d = document.getElementById(`about-pillar-desc-${idx + 1}`);
+          if (t && p.title) t.textContent = p.title;
+          if (d && p.description) d.textContent = p.description;
+        });
+      }
+    }
+
+    // 3. Contacts & Networks
+    if (c.contacts) {
+      const phoneTxt = c.contacts.phone;
+      const phoneDigits = c.contacts.phoneDigits || phoneTxt.replace(/[^\d+]/g, '');
+
+      const hPhoneTxt = document.getElementById('header-phone-text');
+      if (hPhoneTxt && phoneTxt) hPhoneTxt.textContent = phoneTxt;
+
+      const hPhoneLink = document.getElementById('header-phone-link');
+      if (hPhoneLink && phoneDigits) hPhoneLink.href = `tel:${phoneDigits}`;
+
+      const dPhoneTxt = document.getElementById('drawer-phone-text');
+      if (dPhoneTxt && phoneTxt) dPhoneTxt.textContent = phoneTxt;
+
+      const dPhoneLink = document.getElementById('drawer-phone-link');
+      if (dPhoneLink && phoneDigits) dPhoneLink.href = `tel:${phoneDigits}`;
+
+      const sPhoneLink = document.getElementById('sticky-phone-link');
+      if (sPhoneLink && phoneDigits) sPhoneLink.href = `tel:${phoneDigits}`;
+
+      if (c.contacts.whatsapp) {
+        const modalWa = document.getElementById('modal-wa-btn');
+        if (modalWa) modalWa.href = `https://wa.me/${c.contacts.whatsapp}`;
+        const calcWa = document.getElementById('calc-wa-btn');
+        if (calcWa) calcWa.href = `https://wa.me/${c.contacts.whatsapp}`;
+      }
+
+      if (c.contacts.vkGroupId) {
+        const modalVk = document.getElementById('modal-vk-btn');
+        if (modalVk) modalVk.href = `https://vk.com/im?sel=-${c.contacts.vkGroupId}`;
+      }
+    }
+
+    // 4. Reviews Swiper
+    if (Array.isArray(c.reviews) && c.reviews.length > 0) {
+      const wrapper = document.getElementById('reviews-swiper-wrapper');
+      if (wrapper) {
+        wrapper.innerHTML = c.reviews.map(r => {
+          const ratingStars = Array(r.rating || 5).fill('<i data-lucide="star" class="w-4 h-4 fill-current"></i>').join('');
+          return `
+            <div class="swiper-slide p-6 sm:p-7 rounded-2xl glass-panel border border-white/10 flex flex-col justify-between h-auto card-hover shadow-xl">
+              <div class="space-y-4">
+                <div class="flex items-center gap-1 text-accent-gold">
+                  ${ratingStars}
+                </div>
+                <p class="text-sm text-zinc-200 leading-relaxed italic">
+                  «${r.text}»
+                </p>
+              </div>
+              <div class="pt-6 border-t border-white/5 mt-6 flex items-center justify-between">
+                <div>
+                  <h4 class="text-sm font-semibold text-white">${r.author}</h4>
+                  <span class="text-xs text-zinc-400">${r.subtitle || ''}</span>
+                </div>
+                <span class="text-[11px] text-accent-rose-gold font-medium">${r.tag || ''}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        if (window.reviewsSwiperInstance) {
+          try {
+            window.reviewsSwiperInstance.update();
+          } catch (_) {}
+        }
+      }
+    }
+
+    // 5. FAQ Accordion
+    if (Array.isArray(c.faq) && c.faq.length > 0) {
+      const faqContainer = document.getElementById('faq-items-container');
+      if (faqContainer) {
+        faqContainer.innerHTML = c.faq.map(item => `
+          <div class="faq-item rounded-2xl glass-panel border border-white/10 overflow-hidden">
+            <button class="faq-trigger w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none">
+              <span class="text-sm sm:text-base font-semibold text-white">${item.question}</span>
+              <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-accent-rose-gold transition-transform duration-300"></i>
+            </button>
+            <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-zinc-300 leading-relaxed border-t border-white/5 pt-3">
+              ${item.answer}
+            </div>
+          </div>
+        `).join('');
+
+        initFaqAccordion();
+      }
+    }
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
     }
   }
 
@@ -922,7 +1220,7 @@ class PriceManager {
     const addonMap = {
       studio: { cb: 'calc-addon-cb-studio', badge: 'calc-badge-studio', label: 'calc-addon-name-studio' },
       travel: { cb: 'calc-addon-cb-travel', badge: 'calc-badge-travel', label: 'calc-addon-name-travel' },
-      express_delivery: { cb: 'calc-addon-cb-express', badge: 'calc-badge-express', label: 'calc-addon-name-express' },
+      express_delivery: { cb: 'calc-addon-cb-express', badge: 'calc-addon-badge-express', label: 'calc-addon-name-express' },
       photobook: { cb: 'calc-addon-cb-photobook', badge: 'calc-badge-photobook', label: 'calc-addon-name-photobook' }
     };
 
@@ -1029,6 +1327,9 @@ class PriceManager {
   openPriceModal() {
     if (!this.priceModal) return;
     this.populateEditorForm();
+    this.populateContentForm();
+    this.populateReviewsFaqForm();
+    this.populateContactsForm();
     this.priceModal.classList.remove('hidden');
     this.priceModal.classList.add('flex');
     if (window.lucide) {
@@ -1177,8 +1478,12 @@ class PriceManager {
       }
     });
 
-    // Price save form submission
+    // Price save form submission and direct button click
     this.priceForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await this.savePrices();
+    });
+    document.getElementById('admin-price-save')?.addEventListener('click', async (e) => {
       e.preventDefault();
       await this.savePrices();
     });
@@ -1309,33 +1614,57 @@ class PriceManager {
   bindTabs() {
     this.tabPrices = document.getElementById('admin-tab-prices');
     this.tabGallery = document.getElementById('admin-tab-gallery');
+    this.tabContent = document.getElementById('admin-tab-content');
+    this.tabReviewsFaq = document.getElementById('admin-tab-reviews-faq');
+    this.tabContacts = document.getElementById('admin-tab-contacts');
+
+    this.priceForm = document.getElementById('admin-price-form');
     this.galleryView = document.getElementById('admin-gallery-view');
+    this.contentView = document.getElementById('admin-content-view');
+    this.reviewsFaqView = document.getElementById('admin-reviews-faq-view');
+    this.contactsView = document.getElementById('admin-contacts-view');
 
     this.tabPrices?.addEventListener('click', () => this.switchTab('prices'));
     this.tabGallery?.addEventListener('click', () => this.switchTab('gallery'));
+    this.tabContent?.addEventListener('click', () => this.switchTab('content'));
+    this.tabReviewsFaq?.addEventListener('click', () => this.switchTab('reviews-faq'));
+    this.tabContacts?.addEventListener('click', () => this.switchTab('contacts'));
   }
 
   switchTab(tab) {
     this.activeTab = tab;
+    const tabMap = [
+      { id: 'prices', btn: this.tabPrices, view: this.priceForm },
+      { id: 'gallery', btn: this.tabGallery, view: this.galleryView },
+      { id: 'content', btn: this.tabContent, view: this.contentView },
+      { id: 'reviews-faq', btn: this.tabReviewsFaq, view: this.reviewsFaqView },
+      { id: 'contacts', btn: this.tabContacts, view: this.contactsView }
+    ];
+
+    tabMap.forEach(item => {
+      if (item.id === tab) {
+        item.btn?.classList.add('bg-accent-gold', 'text-black', 'shadow-md');
+        item.btn?.classList.remove('bg-white/5', 'text-zinc-300');
+        item.view?.classList.remove('hidden');
+      } else {
+        item.btn?.classList.remove('bg-accent-gold', 'text-black', 'shadow-md');
+        item.btn?.classList.add('bg-white/5', 'text-zinc-300');
+        item.view?.classList.add('hidden');
+      }
+    });
+
     if (tab === 'prices') {
-      this.tabPrices?.classList.add('bg-accent-gold', 'text-black', 'shadow-md');
-      this.tabPrices?.classList.remove('bg-white/5', 'text-zinc-300');
-      this.tabGallery?.classList.remove('bg-accent-gold', 'text-black', 'shadow-md');
-      this.tabGallery?.classList.add('bg-white/5', 'text-zinc-300');
-
-      this.priceForm?.classList.remove('hidden');
-      this.galleryView?.classList.add('hidden');
-    } else {
-      this.tabGallery?.classList.add('bg-accent-gold', 'text-black', 'shadow-md');
-      this.tabGallery?.classList.remove('bg-white/5', 'text-zinc-300');
-      this.tabPrices?.classList.remove('bg-accent-gold', 'text-black', 'shadow-md');
-      this.tabPrices?.classList.add('bg-white/5', 'text-zinc-300');
-
-      this.priceForm?.classList.add('hidden');
-      this.galleryView?.classList.remove('hidden');
-
+      this.populateEditorForm();
+    } else if (tab === 'gallery') {
       this.loadAdminGallery();
+    } else if (tab === 'content') {
+      this.populateContentForm();
+    } else if (tab === 'reviews-faq') {
+      this.populateReviewsFaqForm();
+    } else if (tab === 'contacts') {
+      this.populateContactsForm();
     }
+
     if (window.lucide) window.lucide.createIcons();
   }
 
@@ -1489,10 +1818,11 @@ class PriceManager {
       console.warn('Portfolio save fallback', err);
     }
 
-    // Always update local cache & live manager
-    localStorage.setItem('fotofeya_portfolio', JSON.stringify(this.adminPortfolioItems));
+    // Always update local cache & live manager (only active items in public cache)
+    const activeItems = this.adminPortfolioItems.filter(i => i.isActive !== false);
+    localStorage.setItem('fotofeya_portfolio', JSON.stringify(activeItems));
     if (window.portfolioManager) {
-      window.portfolioManager.setPortfolioData(this.adminPortfolioItems.filter(i => i.isActive !== false));
+      window.portfolioManager.setPortfolioData(activeItems);
     }
 
     if (saveBtn) {
@@ -1701,6 +2031,428 @@ class PriceManager {
         submitBtn.disabled = false;
         submitBtn.innerHTML = `<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i><span>Опубликовать в галерее</span>`;
         if (window.lucide) window.lucide.createIcons();
+      }
+    });
+  }
+
+  populateContentForm() {
+    const f = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.value = val;
+    };
+    const s = (id, src) => {
+      const el = document.getElementById(id);
+      if (el && src) el.src = src;
+    };
+
+    if (this.siteContent.hero) {
+      f('adm-hero-badge', this.siteContent.hero.badge);
+      f('adm-hero-title', this.siteContent.hero.title);
+      f('adm-hero-subtitle', this.siteContent.hero.subtitle);
+      f('adm-hero-cover-url', this.siteContent.hero.coverImage);
+      s('adm-hero-cover-preview', this.siteContent.hero.coverImage);
+      f('adm-hero-geotag', this.siteContent.hero.bannerText);
+    }
+
+    if (this.siteContent.about) {
+      f('adm-about-name', this.siteContent.about.name);
+      f('adm-about-role', this.siteContent.about.role);
+      f('adm-about-photo-url', this.siteContent.about.photo);
+      s('adm-about-photo-preview', this.siteContent.about.photo);
+      f('adm-about-title', this.siteContent.about.sectionTitle);
+      f('adm-about-quote', this.siteContent.about.quote);
+    }
+  }
+
+  populateReviewsFaqForm() {
+    // 1. Reviews editor
+    const rList = document.getElementById('adm-reviews-list');
+    if (rList && Array.isArray(this.siteContent.reviews)) {
+      if (this.siteContent.reviews.length === 0) {
+        rList.innerHTML = `<div class="p-4 text-center text-xs text-zinc-400 border border-dashed border-white/10 rounded-xl">Отзывов пока нет. Нажмите «Добавить отзыв» выше.</div>`;
+      } else {
+        rList.innerHTML = this.siteContent.reviews.map((r, idx) => `
+          <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2.5 relative group" data-idx="${idx}">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-semibold text-accent-gold">Отзыв #${idx + 1}</span>
+              <div class="flex items-center gap-1">
+                <button type="button" class="adm-rev-move-up p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Поднять выше" data-idx="${idx}">
+                  <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+                </button>
+                <button type="button" class="adm-rev-move-down p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Опустить ниже" data-idx="${idx}">
+                  <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                </button>
+                <button type="button" class="adm-rev-del p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-rose-400" title="Удалить отзыв" data-idx="${idx}">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <input type="text" class="adm-rev-author px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white placeholder-zinc-500" placeholder="Имя автора" value="${r.author || ''}" data-idx="${idx}" />
+              <input type="text" class="adm-rev-sub px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white placeholder-zinc-500" placeholder="Подзаголовок (Мама Алисы)" value="${r.subtitle || ''}" data-idx="${idx}" />
+              <input type="text" class="adm-rev-tag px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white placeholder-zinc-500" placeholder="Тег (Съемка: «Фея»)" value="${r.tag || ''}" data-idx="${idx}" />
+            </div>
+            <textarea class="adm-rev-text w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white placeholder-zinc-500 resize-none" rows="2" placeholder="Текст отзыва..." data-idx="${idx}">${r.text || ''}</textarea>
+          </div>
+        `).join('');
+
+        rList.querySelectorAll('.adm-rev-author').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const i = Number(inp.dataset.idx);
+            if (this.siteContent.reviews[i]) this.siteContent.reviews[i].author = inp.value;
+          });
+        });
+        rList.querySelectorAll('.adm-rev-sub').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const i = Number(inp.dataset.idx);
+            if (this.siteContent.reviews[i]) this.siteContent.reviews[i].subtitle = inp.value;
+          });
+        });
+        rList.querySelectorAll('.adm-rev-tag').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const i = Number(inp.dataset.idx);
+            if (this.siteContent.reviews[i]) this.siteContent.reviews[i].tag = inp.value;
+          });
+        });
+        rList.querySelectorAll('.adm-rev-text').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const i = Number(inp.dataset.idx);
+            if (this.siteContent.reviews[i]) this.siteContent.reviews[i].text = inp.value;
+          });
+        });
+
+        rList.querySelectorAll('.adm-rev-move-up').forEach(b => {
+          b.addEventListener('click', () => {
+            const i = Number(b.dataset.idx);
+            if (i > 0) {
+              const temp = this.siteContent.reviews[i];
+              this.siteContent.reviews[i] = this.siteContent.reviews[i - 1];
+              this.siteContent.reviews[i - 1] = temp;
+              this.populateReviewsFaqForm();
+            }
+          });
+        });
+        rList.querySelectorAll('.adm-rev-move-down').forEach(b => {
+          b.addEventListener('click', () => {
+            const i = Number(b.dataset.idx);
+            if (i < this.siteContent.reviews.length - 1) {
+              const temp = this.siteContent.reviews[i];
+              this.siteContent.reviews[i] = this.siteContent.reviews[i + 1];
+              this.siteContent.reviews[i + 1] = temp;
+              this.populateReviewsFaqForm();
+            }
+          });
+        });
+        rList.querySelectorAll('.adm-rev-del').forEach(b => {
+          b.addEventListener('click', () => {
+            const i = Number(b.dataset.idx);
+            if (confirm(`Удалить отзыв #${i + 1}?`)) {
+              this.siteContent.reviews.splice(i, 1);
+              this.populateReviewsFaqForm();
+            }
+          });
+        });
+      }
+    }
+
+    // 2. FAQ editor
+    const fList = document.getElementById('adm-faq-list');
+    if (fList && Array.isArray(this.siteContent.faq)) {
+      if (this.siteContent.faq.length === 0) {
+        fList.innerHTML = `<div class="p-4 text-center text-xs text-zinc-400 border border-dashed border-white/10 rounded-xl">Вопросов пока нет. Нажмите «Добавить вопрос» выше.</div>`;
+      } else {
+        fList.innerHTML = this.siteContent.faq.map((item, idx) => `
+          <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2 relative group" data-idx="${idx}">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-semibold text-accent-gold">Вопрос #${idx + 1}</span>
+              <div class="flex items-center gap-1">
+                <button type="button" class="adm-faq-move-up p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Поднять выше" data-idx="${idx}">
+                  <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+                </button>
+                <button type="button" class="adm-faq-move-down p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Опустить ниже" data-idx="${idx}">
+                  <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                </button>
+                <button type="button" class="adm-faq-del p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-rose-400" title="Удалить вопрос" data-idx="${idx}">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+            <input type="text" class="adm-faq-q w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white placeholder-zinc-500 font-semibold" placeholder="Текст вопроса..." value="${item.question || ''}" data-idx="${idx}" />
+            <textarea class="adm-faq-a w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white placeholder-zinc-500 resize-none" rows="2" placeholder="Подробный ответ..." data-idx="${idx}">${item.answer || ''}</textarea>
+          </div>
+        `).join('');
+
+        fList.querySelectorAll('.adm-faq-q').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const i = Number(inp.dataset.idx);
+            if (this.siteContent.faq[i]) this.siteContent.faq[i].question = inp.value;
+          });
+        });
+        fList.querySelectorAll('.adm-faq-a').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const i = Number(inp.dataset.idx);
+            if (this.siteContent.faq[i]) this.siteContent.faq[i].answer = inp.value;
+          });
+        });
+
+        fList.querySelectorAll('.adm-faq-move-up').forEach(b => {
+          b.addEventListener('click', () => {
+            const i = Number(b.dataset.idx);
+            if (i > 0) {
+              const temp = this.siteContent.faq[i];
+              this.siteContent.faq[i] = this.siteContent.faq[i - 1];
+              this.siteContent.faq[i - 1] = temp;
+              this.populateReviewsFaqForm();
+            }
+          });
+        });
+        fList.querySelectorAll('.adm-faq-move-down').forEach(b => {
+          b.addEventListener('click', () => {
+            const i = Number(b.dataset.idx);
+            if (i < this.siteContent.faq.length - 1) {
+              const temp = this.siteContent.faq[i];
+              this.siteContent.faq[i] = this.siteContent.faq[i + 1];
+              this.siteContent.faq[i + 1] = temp;
+              this.populateReviewsFaqForm();
+            }
+          });
+        });
+        fList.querySelectorAll('.adm-faq-del').forEach(b => {
+          b.addEventListener('click', () => {
+            const i = Number(b.dataset.idx);
+            if (confirm(`Удалить вопрос #${i + 1}?`)) {
+              this.siteContent.faq.splice(i, 1);
+              this.populateReviewsFaqForm();
+            }
+          });
+        });
+      }
+    }
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  populateContactsForm() {
+    const f = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.value = val;
+    };
+    if (this.siteContent.contacts) {
+      f('adm-contact-phone', this.siteContent.contacts.phone);
+      f('adm-contact-phone-digits', this.siteContent.contacts.phoneDigits);
+      f('adm-contact-wa', this.siteContent.contacts.whatsapp);
+      f('adm-contact-tg', this.siteContent.contacts.telegram);
+      f('adm-contact-vk-url', this.siteContent.contacts.vkGroupUrl);
+      f('adm-contact-vk-id', this.siteContent.contacts.vkGroupId);
+      f('adm-contact-city', this.siteContent.contacts.city);
+      f('adm-contact-hours', this.siteContent.contacts.workHours);
+    }
+  }
+
+  async uploadCmsImage(file, previewImgId, targetUrlInputId) {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Пожалуйста, выберите файл изображения (JPEG, PNG или WebP)', 'error');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('Размер файла превышает 10 МБ', 'error');
+      return;
+    }
+
+    const token = sessionStorage.getItem('fotofeya_admin_token') || '';
+    showToast('Загрузка изображения...', 'info');
+
+    try {
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const res = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          token,
+          base64,
+          filename: file.name
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.url) {
+        const urlInput = document.getElementById(targetUrlInputId);
+        if (urlInput) urlInput.value = data.url;
+
+        const previewImg = document.getElementById(previewImgId);
+        if (previewImg) previewImg.src = data.url;
+
+        showToast('✨ Фото успешно загружено и обновлено!', 'success');
+      } else {
+        showToast(data.error || 'Ошибка загрузки фото', 'error');
+      }
+    } catch (err) {
+      showToast('Сбой отправки файла на сервер', 'error');
+    }
+  }
+
+  async saveCmsContent(sectionName) {
+    const token = sessionStorage.getItem('fotofeya_admin_token') || '';
+
+    if (sectionName === 'content') {
+      const g = id => document.getElementById(id)?.value?.trim() || '';
+
+      this.siteContent.hero = {
+        ...this.siteContent.hero,
+        badge: g('adm-hero-badge') || this.siteContent.hero.badge,
+        title: g('adm-hero-title') || this.siteContent.hero.title,
+        subtitle: g('adm-hero-subtitle') || this.siteContent.hero.subtitle,
+        coverImage: g('adm-hero-cover-url') || this.siteContent.hero.coverImage,
+        bannerText: g('adm-hero-geotag') || this.siteContent.hero.bannerText
+      };
+
+      this.siteContent.about = {
+        ...this.siteContent.about,
+        name: g('adm-about-name') || this.siteContent.about.name,
+        role: g('adm-about-role') || this.siteContent.about.role,
+        photo: g('adm-about-photo-url') || this.siteContent.about.photo,
+        sectionTitle: g('adm-about-title') || this.siteContent.about.sectionTitle,
+        quote: g('adm-about-quote') || this.siteContent.about.quote
+      };
+    } else if (sectionName === 'contacts') {
+      const g = id => document.getElementById(id)?.value?.trim() || '';
+
+      this.siteContent.contacts = {
+        ...this.siteContent.contacts,
+        phone: g('adm-contact-phone') || this.siteContent.contacts.phone,
+        phoneDigits: g('adm-contact-phone-digits') || this.siteContent.contacts.phoneDigits,
+        whatsapp: g('adm-contact-wa') || this.siteContent.contacts.whatsapp,
+        telegram: g('adm-contact-tg') || this.siteContent.contacts.telegram,
+        vkGroupUrl: g('adm-contact-vk-url') || this.siteContent.contacts.vkGroupUrl,
+        vkGroupId: g('adm-contact-vk-id') || this.siteContent.contacts.vkGroupId,
+        city: g('adm-contact-city') || this.siteContent.contacts.city,
+        workHours: g('adm-contact-hours') || this.siteContent.contacts.workHours
+      };
+    }
+    // Note: reviews & faq are updated directly in this.siteContent via form inputs
+
+    let saved = false;
+    try {
+      const res = await fetch('/api/content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ token, content: this.siteContent })
+      });
+
+      if (res.ok) {
+        saved = true;
+      }
+    } catch (err) {
+      console.warn('Content save fallback to localStorage', err);
+    }
+
+    localStorage.setItem('fotofeya_content', JSON.stringify(this.siteContent));
+    this.applyContentToDOM(this.siteContent);
+
+    if (saved) {
+      showToast('🎉 Контент успешно обновлен на сервере и виден всем!', 'success');
+    } else {
+      showToast('✅ Контент сохранен локально!', 'success');
+    }
+  }
+
+  bindCmsActions() {
+    // 1. Content tab (Hero & About)
+    document.getElementById('adm-content-save-btn')?.addEventListener('click', () => {
+      this.saveCmsContent('content');
+    });
+
+    document.getElementById('adm-content-reset-btn')?.addEventListener('click', () => {
+      if (confirm('Сбросить тексты Главной и «Обо мне» к исходным заводским значениям?')) {
+        this.siteContent.hero = JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT.hero));
+        this.siteContent.about = JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT.about));
+        this.populateContentForm();
+        showToast('Тексты сброшены в форме. Нажмите «Сохранить тексты и фото».', 'info');
+      }
+    });
+
+    document.getElementById('adm-hero-cover-file')?.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (file) this.uploadCmsImage(file, 'adm-hero-cover-preview', 'adm-hero-cover-url');
+    });
+
+    document.getElementById('adm-hero-cover-url')?.addEventListener('input', (e) => {
+      const img = document.getElementById('adm-hero-cover-preview');
+      if (img && e.target.value.trim()) img.src = e.target.value.trim();
+    });
+
+    document.getElementById('adm-about-photo-file')?.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (file) this.uploadCmsImage(file, 'adm-about-photo-preview', 'adm-about-photo-url');
+    });
+
+    document.getElementById('adm-about-photo-url')?.addEventListener('input', (e) => {
+      const img = document.getElementById('adm-about-photo-preview');
+      if (img && e.target.value.trim()) img.src = e.target.value.trim();
+    });
+
+    // 2. Reviews & FAQ tab
+    document.getElementById('adm-reviews-faq-save-btn')?.addEventListener('click', () => {
+      this.saveCmsContent('reviews-faq');
+    });
+
+    document.getElementById('adm-reviews-faq-reset-btn')?.addEventListener('click', () => {
+      if (confirm('Сбросить отзывы и FAQ к исходным заводским значениям?')) {
+        this.siteContent.reviews = JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT.reviews));
+        this.siteContent.faq = JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT.faq));
+        this.populateReviewsFaqForm();
+        showToast('Отзывы и FAQ сброшены в форме. Нажмите «Сохранить отзывы и FAQ».', 'info');
+      }
+    });
+
+    document.getElementById('adm-add-review-btn')?.addEventListener('click', () => {
+      this.siteContent.reviews.push({
+        id: Date.now(),
+        author: 'Новый отзыв',
+        subtitle: 'Семейная фотопрогулка',
+        tag: 'Малоярославец',
+        rating: 5,
+        text: 'Потрясающая съемка и чудесные фотографии!'
+      });
+      this.populateReviewsFaqForm();
+    });
+
+    document.getElementById('adm-add-faq-btn')?.addEventListener('click', () => {
+      this.siteContent.faq.push({
+        id: Date.now(),
+        question: 'Новый вопрос от родителей?',
+        answer: 'Подробный и понятный ответ фотографа...'
+      });
+      this.populateReviewsFaqForm();
+    });
+
+    // 3. Contacts tab
+    document.getElementById('adm-contacts-save-btn')?.addEventListener('click', () => {
+      this.saveCmsContent('contacts');
+    });
+
+    document.getElementById('adm-contacts-reset-btn')?.addEventListener('click', () => {
+      if (confirm('Сбросить контактную информацию к исходным заводским значениям?')) {
+        this.siteContent.contacts = JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT.contacts));
+        this.populateContactsForm();
+        showToast('Контакты сброшены в форме. Нажмите «Сохранить контакты».', 'info');
       }
     });
   }

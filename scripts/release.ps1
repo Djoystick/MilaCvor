@@ -146,7 +146,7 @@ if (-not $SkipTelegram) {
 🌸 <b>Релиз цвор.рф (Фотофея Мила) v$newVersion УСПЕШНО ВЫКАТЕН!</b>
 
 ✨ <b>Quality Gate:</b> PASSED (LCP &lt; 1.4s, CLS 0.0001)
-🎨 <b>Fix:</b> Устранен срез бейджа «Хит сезона ✨»
+🎛️ <b>CMS:</b> Полнофункциональная админ-панель (5 вкладок: тексты, цены, фото, отзывы, FAQ, контакты)
 📱 <b>Mobile Sanity:</b> 375px No-Overflow ✓
 ☁️ <b>Yandex Cloud:</b> Deployed (tsvor-api v$newVersion, Node 22)
 🌐 <b>Боевой домен:</b> https://цвор.рф ($domainStatus)
