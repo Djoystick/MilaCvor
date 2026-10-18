@@ -443,6 +443,27 @@ function initBookingForm() {
         throw new Error(data.error || 'Ошибка при отправке заявки');
       }
 
+      // 3. Отправка email-уведомления через Web3Forms (на mila.tsvor@gmail.com)
+      try {
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            access_key: 'fe6b8b46-216d-42f5-8d48-f6a145daba9a',
+            subject: `🌸 Новая заявка на фотосессию: ${payload.name} (${payload.package})`,
+            from_name: 'Сайт цвор.рф',
+            'Имя': payload.name,
+            'Телефон': payload.phone,
+            'Тариф': payload.package,
+            'Дата': payload.date,
+            'Пожелания': payload.notes || '—'
+          })
+        }).catch(e => console.warn('Email dispatch warning:', e));
+      } catch (_) {}
+
       // Fill success modal info
       if (modalDetails) {
         modalDetails.innerHTML = `
