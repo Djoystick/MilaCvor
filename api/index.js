@@ -12,10 +12,6 @@ const PORTFOLIO_FILE = path.join(ROOT_DIR, 'data', 'portfolio.json');
 const CONTENT_FILE = path.join(ROOT_DIR, 'data', 'content.json');
 const LEADS_FILE = path.join(ROOT_DIR, 'data', 'leads.json');
 
-// Telegram Notification configuration (Optional environment variables)
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
-
 // Admin Password & Hash Configuration (Zero plaintext client exposure)
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'mila2026';
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex');
@@ -211,43 +207,10 @@ app.post('/api/booking', async (req, res) => {
     console.warn('Leads write warning:', err.message);
   }
 
-  // 2. Dispatch Telegram Bot notification if credentials configured
-  let tgSent = false;
-  if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-    try {
-      const tgText = `🌸 *Новая заявка на съемку с сайта цвор.рф!*\n\n` +
-        `👤 *Имя:* ${cleanName}\n` +
-        `📞 *Телефон:* [${cleanPhone}](tel:${digits})\n` +
-        `📦 *Тариф:* ${cleanPkg}\n` +
-        `📅 *Дата:* ${cleanDate}\n` +
-        `💬 *Пожелания:* ${cleanNotes || '—'}\n` +
-        `⏱ *Время:* ${new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}`;
-
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 6000);
-      const tgRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: tgText,
-          parse_mode: 'Markdown'
-        }),
-        signal: controller.signal
-      });
-      clearTimeout(timeout);
-      const tgData = await tgRes.json();
-      tgSent = Boolean(tgData && tgData.ok);
-    } catch (tgErr) {
-      console.warn('Telegram notification dispatch failed:', tgErr.message);
-    }
-  }
-
   return res.status(200).json({
     success: true,
     message: 'Заявка успешно зафиксирована! Мила свяжется с вами в ближайшее время.',
-    leadId: newLead.id,
-    telegramNotified: tgSent
+    leadId: newLead.id
   });
 });
 
