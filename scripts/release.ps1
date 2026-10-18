@@ -51,6 +51,15 @@ if ($Bump -ne "none") {
     Write-Host "`n📦 [ШАГ 2/6] Используется текущая версия: $newVersion" -ForegroundColor Yellow
 }
 
+# Автоматическая синхронизация версий ассетов (?v=X.X.X) в index.html для сброса кэша браузеров
+$indexPath = Join-Path $ProjectRoot "index.html"
+if (Test-Path $indexPath) {
+    $htmlContent = [System.IO.File]::ReadAllText($indexPath, [System.Text.Encoding]::UTF8)
+    $htmlContent = $htmlContent -replace '(?<=\.(css|js)\?v=)[0-9.]+', $newVersion
+    [System.IO.File]::WriteAllText($indexPath, $htmlContent, [System.Text.Encoding]::UTF8)
+    Write-Host "   ✅ Хэши ассетов в index.html синхронизированы с v$newVersion" -ForegroundColor Green
+}
+
 # ── ШАГ 3: Сборка POSIX ZIP для Yandex Cloud ──
 Write-Host "`n📦 [ШАГ 3/6] Сборка архива tsvor-function-posix.zip..." -ForegroundColor Yellow
 $zipPath = Join-Path $ProjectRoot "tsvor-function-posix.zip"
