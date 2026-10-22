@@ -130,7 +130,7 @@ async function runHarness() {
     page.on('console', msg => {
       if (msg.type() === 'error') {
         const text = msg.text();
-        if (!text.includes('favicon.ico') && !text.includes('yandex.ru')) {
+        if (!text.includes('favicon.ico') && !text.includes('yandex.ru') && !text.includes('web3forms.com')) {
           pageErrors.push(text);
         }
       }
@@ -143,7 +143,7 @@ async function runHarness() {
     page.on('requestfailed', req => {
       const url = req.url();
       const err = req.failure()?.errorText || '';
-      if (err !== 'net::ERR_ABORTED' && !url.includes('favicon.ico') && !url.includes('mc.yandex.ru') && !url.includes('google-analytics')) {
+      if (err !== 'net::ERR_ABORTED' && !url.includes('favicon.ico') && !url.includes('mc.yandex.ru') && !url.includes('google-analytics') && !url.includes('web3forms.com')) {
         failedRequests.push(`${req.method()} ${url} (${err || 'failed'})`);
       }
     });
