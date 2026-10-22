@@ -8,12 +8,13 @@ const zipFile = path.resolve('H:/Work/Сайт_Мила_Цвор_v1.9.7_Фина
 
 console.log('Syncing from', srcDir, 'to', dstDir);
 
-if (!fs.existsSync(dstDir)) {
-  fs.mkdirSync(dstDir, { recursive: true });
+if (fs.existsSync(dstDir)) {
+  fs.rmSync(dstDir, { recursive: true, force: true });
 }
+fs.mkdirSync(dstDir, { recursive: true });
 
 // Clean copy excluding unwanted files
-const ignoreList = ['.git', 'node_modules', '.test-artifacts', '.bak', '.log', 'tsvor-function-posix.zip', 'tsvor-deploy.zip'];
+const ignoreList = ['.git', 'node_modules', '.test-artifacts', '.bak', '.log', 'tsvor-function-posix.zip', 'tsvor-deploy.zip', '.env'];
 
 function copyRecursive(src, dst) {
   const items = fs.readdirSync(src);
