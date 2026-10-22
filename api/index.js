@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 const app = express();
 const ROOT_DIR = path.join(__dirname, '..');
@@ -12,56 +13,51 @@ const PORTFOLIO_FILE = path.join(ROOT_DIR, 'data', 'portfolio.json');
 const CONTENT_FILE = path.join(ROOT_DIR, 'data', 'content.json');
 const LEADS_FILE = path.join(ROOT_DIR, 'data', 'leads.json');
 
-// Admin Password & Hash Configuration (Zero plaintext client exposure)
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'mila2026';
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex');
-
-// VK Service Token from environment (with fallback for dev)
-const VK_SERVICE_TOKEN = (process.env.VK_SERVICE_TOKEN || '6aae6a7a6aae6a7a6aae6a7a9d69edbd7b66aae6aae6a7a0002bae5ba8df3e63de6749d').trim();
-
-// In-Memory Sessions & Rate Limit Store
-const activeSessions = new Map(); // token -> expiresAt
-const rateLimitStore = new Map(); // key -> { count, resetAt }
-
-function isRateLimited(key, maxLimit = 10, windowMs = 60 * 1000) {
-  const now = Date.now();
-  const entry = rateLimitStore.get(key) || { count: 0, resetAt: now + windowMs };
-  if (now > entry.resetAt) {
-    entry.count = 1;
-    entry.resetAt = now + windowMs;
-    rateLimitStore.set(key, entry);
-    return false;
-  }
-  entry.count++;
-  rateLimitStore.set(key, entry);
-  return entry.count > maxLimit;
+// Load environment variables from .env if present (local development)
+const envFile = path.join(ROOT_DIR, '.env');
+if (fs.existsSync(envFile)) {
+  try {
+    const envLines = fs.readFileSync(envFile, 'utf8').split('\n');
+    for (const line of envLines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx !== -1) {
+        const k = trimmed.slice(0, eqIdx).trim();
+        const v = trimmed.slice(eqIdx + 1).trim();
+        if (!process.env[k]) process.env[k] = v;
+      }
+    }
+  } catch (_) {}
 }
 
-// Timing-safe password and session verification
-function verifyAdminSecret(secret) {
-  if (!secret || typeof secret !== 'string') return false;
-  const clean = secret.trim();
-  const now = Date.now();
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'mila2026';
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex');
+const VK_SERVICE_TOKEN = (process.env.VK_SERVICE_TOKEN || '').trim();
 
-  // 1. Check active session tokens
-  if (activeSessions.has(clean)) {
-    if (activeSessions.get(clean) > now) return true;
-    activeSessions.delete(clean);
-  }
+function verifyAdminToken(token) {
+  if (!token || typeof token !== 'string') return false;
+  const clean = token.trim();
+  if (clean === ADMIN_PASSWORD) return true;
 
-  // 2. Timing-safe comparison with admin password hash
-  const inputHash = crypto.createHash('sha256').update(clean).digest('hex');
-  if (inputHash.length === ADMIN_PASSWORD_HASH.length) {
-    try {
-      return crypto.timingSafeEqual(Buffer.from(inputHash, 'utf8'), Buffer.from(ADMIN_PASSWORD_HASH, 'utf8'));
-    } catch (_) {
-      return false;
+  if (clean.includes('.')) {
+    const [tsStr, sig] = clean.split('.');
+    const ts = Number(tsStr);
+    const now = Date.now();
+    if (!isNaN(ts) && (now - ts < 24 * 3600 * 1000) && ts <= now + 60000) {
+      const expectedSig = crypto.createHmac('sha256', ADMIN_PASSWORD_HASH).update(String(ts)).digest('hex');
+      if (sig.length === expectedSig.length) {
+        try {
+          if (crypto.timingSafeEqual(Buffer.from(sig, 'utf8'), Buffer.from(expectedSig, 'utf8'))) {
+            return true;
+          }
+        } catch (_) {}
+      }
     }
   }
   return false;
 }
 
-// Admin Authentication Middleware
 function requireAdminAuth(req, res, next) {
   const authHeader = req.headers.authorization || '';
   const tokenHeader = req.headers['x-admin-token'] || '';
@@ -75,7 +71,7 @@ function requireAdminAuth(req, res, next) {
     candidate = String(req.body.token || req.body.password).trim();
   }
 
-  if (candidate && verifyAdminSecret(candidate)) {
+  if (candidate && verifyAdminToken(candidate)) {
     return next();
   }
   return res.status(401).json({ error: 'Неверные учетные данные администратора или срок сессии истек' });
@@ -117,37 +113,27 @@ app.use((req, res, next) => {
   next();
 });
 
-// ── AUTH LOGIN API (Protected from brute-force) ─────────────────────────────
+// Auth Login
 app.post('/api/auth/login', (req, res) => {
-  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
-  if (isRateLimited(`login:${clientIp}`, 5, 15 * 60 * 1000)) {
-    return res.status(429).json({ error: 'Слишком много попыток входа. Попробуйте снова через 15 минут.' });
-  }
-
   const { password } = req.body || {};
-  if (!password || !verifyAdminSecret(String(password))) {
+  if (!password || !verifyAdminToken(String(password))) {
     return res.status(401).json({ error: 'Неверный пароль администратора' });
   }
 
-  // Issue random secure session token valid for 4 hours
-  const sessionToken = crypto.randomBytes(32).toString('hex');
-  const ttlMs = 4 * 3600 * 1000;
-  activeSessions.set(sessionToken, Date.now() + ttlMs);
+  const timestamp = Date.now();
+  const signature = crypto.createHmac('sha256', ADMIN_PASSWORD_HASH).update(String(timestamp)).digest('hex');
+  const sessionToken = `${timestamp}.${signature}`;
 
   return res.status(200).json({
     success: true,
     token: sessionToken,
-    expiresIn: 14400
+    expiresIn: 86400
   });
 });
 
-// ── BOOKING LEADS API (Antispam, Logging & Telegram Alerts) ──────────────────
+// Booking Leads
 app.post('/api/booking', async (req, res) => {
   const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
-  if (isRateLimited(`booking:${clientIp}`, 5, 10 * 60 * 1000)) {
-    return res.status(429).json({ error: 'Слишком много запросов. Пожалуйста, подождите немного перед отправкой новой заявки.' });
-  }
-
   const { name, phone, package: pkg, date, notes } = req.body || {};
 
   const cleanName = (name && String(name).trim().slice(0, 100)) || '';
@@ -214,131 +200,101 @@ app.post('/api/booking', async (req, res) => {
   });
 });
 
-// ── SERVERLESS EROFS-SAFE STORAGE PROVIDER ──────────────────────────────────
-const TMP_DATA_DIR = path.join('/tmp', 'fotofeya_data');
-const TMP_PRICES_FILE = path.join(TMP_DATA_DIR, 'prices.json');
-const TMP_PORTFOLIO_FILE = path.join(TMP_DATA_DIR, 'portfolio.json');
-const TMP_CONTENT_FILE = path.join(TMP_DATA_DIR, 'content.json');
+// ── YANDEX OBJECT STORAGE (S3-compatible persistent store) ──────────────────
+const YC_S3_BUCKET = process.env.YC_S3_BUCKET || 'tsvor-site-data';
+const YC_S3_REGION = 'ru-central1';
+const YC_S3_ENDPOINT = 'https://storage.yandexcloud.net';
 
-let memoryPricesCache = null;
-let memoryPortfolioCache = null;
-let memoryContentCache = null;
+const s3 = new S3Client({
+  region: YC_S3_REGION,
+  endpoint: YC_S3_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.YC_S3_KEY_ID || '',
+    secretAccessKey: process.env.YC_S3_SECRET || ''
+  }
+});
 
-function loadStoredPrices() {
-  if (memoryPricesCache) return memoryPricesCache;
-  if (fs.existsSync(TMP_PRICES_FILE)) {
-    try {
-      memoryPricesCache = JSON.parse(fs.readFileSync(TMP_PRICES_FILE, 'utf8'));
-      return memoryPricesCache;
-    } catch (_) {}
+async function s3Get(key) {
+  try {
+    const cmd = new GetObjectCommand({ Bucket: YC_S3_BUCKET, Key: key });
+    const resp = await s3.send(cmd);
+    const chunks = [];
+    for await (const chunk of resp.Body) chunks.push(chunk);
+    return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+  } catch (err) {
+    if (err.name === 'NoSuchKey' || err.$metadata?.httpStatusCode === 404) return null;
+    throw err;
   }
-  if (fs.existsSync(PRICES_FILE)) {
-    try {
-      memoryPricesCache = JSON.parse(fs.readFileSync(PRICES_FILE, 'utf8'));
-      return memoryPricesCache;
-    } catch (_) {}
-  }
-  return null;
 }
 
-function persistStoredPrices(newPrices) {
-  memoryPricesCache = newPrices;
+async function s3Put(key, data) {
+  const cmd = new PutObjectCommand({
+    Bucket: YC_S3_BUCKET,
+    Key: key,
+    Body: JSON.stringify(data, null, 2),
+    ContentType: 'application/json'
+  });
+  await s3.send(cmd);
+}
+
+// Storage provider (Yandex Object Storage S3 with bundled fallback)
+const memoryStore = new Map();
+
+async function getStoredData(key, fallbackFile, defaultValue = null) {
+  if (memoryStore.has(key)) return memoryStore.get(key);
   try {
-    fs.writeFileSync(PRICES_FILE, JSON.stringify(newPrices, null, 2), 'utf8');
+    const s3Data = await s3Get(key);
+    if (s3Data) {
+      memoryStore.set(key, s3Data);
+      return s3Data;
+    }
+  } catch (_) {}
+  if (fallbackFile && fs.existsSync(fallbackFile)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(fallbackFile, 'utf8'));
+      memoryStore.set(key, data);
+      return data;
+    } catch (_) {}
+  }
+  return defaultValue;
+}
+
+async function setStoredData(key, data) {
+  memoryStore.set(key, data);
+  try {
+    await s3Put(key, data);
     return true;
   } catch (err) {
-    try {
-      if (!fs.existsSync(TMP_DATA_DIR)) {
-        fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
-      }
-      fs.writeFileSync(TMP_PRICES_FILE, JSON.stringify(newPrices, null, 2), 'utf8');
-      return true;
-    } catch (tmpErr) {
-      console.warn('Persistent storage warning (prices):', tmpErr.message);
-      return false;
-    }
+    console.warn(`S3 write warning (${key}):`, err.message);
+    return false;
   }
 }
 
-function loadStoredPortfolio() {
-  if (memoryPortfolioCache) return memoryPortfolioCache;
-  if (fs.existsSync(TMP_PORTFOLIO_FILE)) {
-    try {
-      memoryPortfolioCache = JSON.parse(fs.readFileSync(TMP_PORTFOLIO_FILE, 'utf8'));
-      return memoryPortfolioCache;
-    } catch (_) {}
+// Uploaded images streaming route (local disk or S3 Object Storage)
+app.get('/assets/images/uploads/:filename', async (req, res) => {
+  const filename = path.basename(req.params.filename);
+  const localFile = path.join(ROOT_DIR, 'assets', 'images', 'uploads', filename);
+  if (fs.existsSync(localFile)) {
+    return res.sendFile(localFile);
   }
-  if (fs.existsSync(PORTFOLIO_FILE)) {
-    try {
-      memoryPortfolioCache = JSON.parse(fs.readFileSync(PORTFOLIO_FILE, 'utf8'));
-      return memoryPortfolioCache;
-    } catch (_) {}
-  }
-  return [];
-}
-
-function persistStoredPortfolio(items) {
-  memoryPortfolioCache = items;
   try {
-    fs.writeFileSync(PORTFOLIO_FILE, JSON.stringify(items, null, 2), 'utf8');
-    return true;
-  } catch (err) {
-    try {
-      if (!fs.existsSync(TMP_DATA_DIR)) {
-        fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
-      }
-      fs.writeFileSync(TMP_PORTFOLIO_FILE, JSON.stringify(items, null, 2), 'utf8');
-      return true;
-    } catch (tmpErr) {
-      console.warn('Persistent storage warning (portfolio):', tmpErr.message);
-      return false;
-    }
+    const cmd = new GetObjectCommand({ Bucket: YC_S3_BUCKET, Key: `uploads/${filename}` });
+    const s3Obj = await s3.send(cmd);
+    res.setHeader('Content-Type', s3Obj.ContentType || 'image/jpeg');
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    s3Obj.Body.pipe(res);
+  } catch (_) {
+    return res.status(404).end();
   }
-}
+});
 
-function loadStoredContent() {
-  if (memoryContentCache) return memoryContentCache;
-  if (fs.existsSync(TMP_CONTENT_FILE)) {
-    try {
-      memoryContentCache = JSON.parse(fs.readFileSync(TMP_CONTENT_FILE, 'utf8'));
-      return memoryContentCache;
-    } catch (_) {}
-  }
-  if (fs.existsSync(CONTENT_FILE)) {
-    try {
-      memoryContentCache = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
-      return memoryContentCache;
-    } catch (_) {}
-  }
-  return null;
-}
-
-function persistStoredContent(newContent) {
-  memoryContentCache = newContent;
+// Site Content CMS API
+app.get('/api/content', async (req, res) => {
   try {
-    fs.writeFileSync(CONTENT_FILE, JSON.stringify(newContent, null, 2), 'utf8');
-    return true;
-  } catch (err) {
-    try {
-      if (!fs.existsSync(TMP_DATA_DIR)) {
-        fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
-      }
-      fs.writeFileSync(TMP_CONTENT_FILE, JSON.stringify(newContent, null, 2), 'utf8');
-      return true;
-    } catch (tmpErr) {
-      console.warn('Persistent storage warning (content):', tmpErr.message);
-      return false;
-    }
-  }
-}
-
-// ── SITE CONTENT CMS API ───────────────────────────────────────────────────
-app.get('/api/content', (req, res) => {
-  try {
-    const content = loadStoredContent();
+    const content = await getStoredData('content.json', CONTENT_FILE);
     if (content) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       return res.status(200).json(content);
     }
     return res.status(404).json({ error: 'content.json not found' });
@@ -347,23 +303,23 @@ app.get('/api/content', (req, res) => {
   }
 });
 
-app.post('/api/content', requireAdminAuth, (req, res) => {
+app.post('/api/content', requireAdminAuth, async (req, res) => {
   const { content } = req.body || {};
   if (content && typeof content === 'object') {
     content.lastUpdated = new Date().toISOString();
-    persistStoredContent(content);
+    await setStoredData('content.json', content);
     return res.status(200).json({ success: true, message: 'Контент сайта успешно обновлен' });
   }
   return res.status(400).json({ error: 'Не переданы данные контента' });
 });
 
-// ── PRICES API ──────────────────────────────────────────────────────────────
-app.get('/api/prices', (req, res) => {
+// Prices API
+app.get('/api/prices', async (req, res) => {
   try {
-    const prices = loadStoredPrices();
+    const prices = await getStoredData('prices.json', PRICES_FILE);
     if (prices) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       return res.status(200).json(prices);
     }
     return res.status(404).json({ error: 'prices.json not found' });
@@ -372,20 +328,20 @@ app.get('/api/prices', (req, res) => {
   }
 });
 
-app.post('/api/prices', requireAdminAuth, (req, res) => {
+app.post('/api/prices', requireAdminAuth, async (req, res) => {
   const { prices } = req.body || {};
   if (prices) {
     prices.lastUpdated = new Date().toISOString();
-    persistStoredPrices(prices);
+    await setStoredData('prices.json', prices);
     return res.status(200).json({ success: true, message: 'Прайс-лист успешно обновлен' });
   }
   return res.status(400).json({ error: 'Не переданы данные цен' });
 });
 
-// ── PORTFOLIO API ───────────────────────────────────────────────────────────
-app.get('/api/portfolio', (req, res) => {
+// Portfolio API
+app.get('/api/portfolio', async (req, res) => {
   try {
-    const items = loadStoredPortfolio();
+    const items = await getStoredData('portfolio.json', PORTFOLIO_FILE, []);
     const all = req.query.all === '1';
     const filtered = all ? items : items.filter(i => i.isActive !== false);
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -396,10 +352,10 @@ app.get('/api/portfolio', (req, res) => {
   }
 });
 
-app.post('/api/portfolio', requireAdminAuth, (req, res) => {
+app.post('/api/portfolio', requireAdminAuth, async (req, res) => {
   const { items } = req.body || {};
   if (Array.isArray(items)) {
-    persistStoredPortfolio(items);
+    await setStoredData('portfolio.json', items);
     return res.status(200).json({ success: true, message: 'Галерея успешно обновлена' });
   }
   return res.status(400).json({ error: 'Некорректный формат данных (ожидался массив)' });
@@ -567,7 +523,7 @@ function detectImageExtension(buffer) {
 }
 
 // ── MANUAL PHOTO UPLOAD OR EXTERNAL URL IMPORT ──────────────────────────────
-app.post('/api/portfolio/upload', requireAdminAuth, (req, res) => {
+app.post('/api/portfolio/upload', requireAdminAuth, async (req, res) => {
   const { base64, imageUrl, title, category, categoryLabel, description } = req.body || {};
 
   if (!base64 && !imageUrl) {
@@ -582,34 +538,29 @@ app.post('/api/portfolio/upload', requireAdminAuth, (req, res) => {
         return res.status(413).json({ error: 'Размер файла превышает допустимый лимит (максимум 10 МБ)' });
       }
 
-      const uploadDir = path.join(ROOT_DIR, 'assets', 'images', 'uploads');
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-
       const cleanBase64 = base64.replace(/^data:image\/[a-zA-Z0-9+]+;base64,/, '');
       const fileBuffer = Buffer.from(cleanBase64, 'base64');
 
-      // Strict validation of Magic Bytes (JPEG, PNG, WebP only)
       const detectedExt = detectImageExtension(fileBuffer);
       if (!detectedExt) {
         return res.status(400).json({ error: 'Недопустимый формат файла. Разрешены только форматы JPEG, PNG, WebP.' });
       }
 
-      // Safe cryptographic filename generation
+      const mimeTypes = { jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
       const randomSuffix = crypto.randomBytes(4).toString('hex');
       const uniqueName = `upload_${Date.now()}_${randomSuffix}.${detectedExt}`;
-      const filePath = path.join(uploadDir, uniqueName);
 
-      try {
-        fs.writeFileSync(filePath, fileBuffer);
-      } catch (wErr) {
-        // Read-only serverless fallback
-      }
+      await s3.send(new PutObjectCommand({
+        Bucket: YC_S3_BUCKET,
+        Key: `uploads/${uniqueName}`,
+        Body: fileBuffer,
+        ContentType: mimeTypes[detectedExt] || 'image/jpeg'
+      }));
+
       finalImageUrl = `assets/images/uploads/${uniqueName}`;
     }
 
-    let portfolio = loadStoredPortfolio();
+    let portfolio = await getStoredData('portfolio.json', PORTFOLIO_FILE, []);
 
     const newId = portfolio.length > 0 ? Math.max(...portfolio.map(p => Number(p.id) || 0)) + 1 : 1;
     const catLabels = {
@@ -633,7 +584,7 @@ app.post('/api/portfolio/upload', requireAdminAuth, (req, res) => {
     };
 
     portfolio.unshift(newItem);
-    persistStoredPortfolio(portfolio);
+    await setStoredData('portfolio.json', portfolio);
 
     return res.status(200).json({ success: true, item: newItem });
   } catch (err) {
@@ -641,8 +592,8 @@ app.post('/api/portfolio/upload', requireAdminAuth, (req, res) => {
   }
 });
 
-// ── UNIVERSAL IMAGE UPLOAD (For CMS Sections: Hero, About, Reviews) ─────────
-app.post('/api/upload-image', requireAdminAuth, (req, res) => {
+// Photo upload for CMS sections
+app.post('/api/upload-image', requireAdminAuth, async (req, res) => {
   const { base64 } = req.body || {};
   if (!base64 || typeof base64 !== 'string') {
     return res.status(400).json({ error: 'Не переданы данные изображения (base64)' });
@@ -650,11 +601,6 @@ app.post('/api/upload-image', requireAdminAuth, (req, res) => {
 
   if (base64.length > 14 * 1024 * 1024) {
     return res.status(413).json({ error: 'Размер файла превышает допустимый лимит (максимум 10 МБ)' });
-  }
-
-  const uploadDir = path.join(ROOT_DIR, 'assets', 'images', 'uploads');
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
   }
 
   const cleanBase64 = base64.replace(/^data:image\/[a-zA-Z0-9+]+;base64,/, '');
@@ -665,18 +611,23 @@ app.post('/api/upload-image', requireAdminAuth, (req, res) => {
     return res.status(400).json({ error: 'Недопустимый формат файла. Разрешены только форматы JPEG, PNG, WebP.' });
   }
 
+  const mimeTypes = { jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
   const randomSuffix = crypto.randomBytes(4).toString('hex');
   const uniqueName = `cms_${Date.now()}_${randomSuffix}.${detectedExt}`;
-  const filePath = path.join(uploadDir, uniqueName);
 
   try {
-    fs.writeFileSync(filePath, fileBuffer);
-  } catch (wErr) {
-    // Read-only serverless fallback
-  }
+    await s3.send(new PutObjectCommand({
+      Bucket: YC_S3_BUCKET,
+      Key: `uploads/${uniqueName}`,
+      Body: fileBuffer,
+      ContentType: mimeTypes[detectedExt] || 'image/jpeg'
+    }));
 
-  const finalUrl = `assets/images/uploads/${uniqueName}`;
-  return res.status(200).json({ success: true, url: finalUrl });
+    const finalUrl = `assets/images/uploads/${uniqueName}`;
+    return res.status(200).json({ success: true, url: finalUrl });
+  } catch (err) {
+    return res.status(500).json({ error: `Ошибка загрузки изображения: ${err.message}` });
+  }
 });
 
 // Static assets

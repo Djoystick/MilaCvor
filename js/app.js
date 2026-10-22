@@ -45,30 +45,23 @@ function initPhoneMask() {
   });
 }
 
-// 2. Interactive Cost Calculator
+// 2. Interactive Cost Calculator (Dynamic & Simplified)
 class CostCalculator {
   constructor() {
-    this.packageInputs = document.querySelectorAll('input[name="calc-package"]');
-    this.durationSelect = document.getElementById('calc-duration');
-    this.addonCheckboxes = document.querySelectorAll('.calc-addon');
+    this.packagesContainer = document.getElementById('calc-packages-container');
     this.totalDisplay = document.getElementById('calc-total');
     this.detailsDisplay = document.getElementById('calc-summary-text');
     this.bookBtn = document.getElementById('calc-book-btn');
     this.vkBtn = document.getElementById('calc-vk-btn');
 
-    this.packagePrices = {
-      fairy: { name: 'Сказочный образ 🧚', price: 4900, desc: 'Костюм, аквагрим, реквизит, подарок, 15 фото в ретуши' },
-      family: { name: 'Семейная прогулка 🌾', price: 4500, desc: 'До 5 человек, помощь с локацией, 25 фото в ретуши' },
-      portrait: { name: 'Женский арт-портрет ✨', price: 5000, desc: 'Индивидуальная стилизация, 20 фото в журнальной ретуши' },
-      express: { name: 'Экспресс / Мини-сет ⚡', price: 2900, desc: '30 минут, 1 образ, 10 фото в ретуши' }
-    };
+    this.packages = [
+      { id: 'fairy', name: 'Сказочный образ 🧚', price: 4900, desc: 'Костюм, грим и волшебный реквизит' },
+      { id: 'family', name: 'Семейная прогулка 🌾', price: 4500, desc: 'До 5 человек на природе или в городе' },
+      { id: 'portrait', name: 'Женский арт-портрет ✨', price: 5000, desc: 'Индивидуальная стилизация' },
+      { id: 'express', name: 'Экспресс / Мини-сет ⚡', price: 2900, desc: '30 минут, 1 образ' }
+    ];
 
-    this.durationPrices = {
-      standard: 0,
-      extra30: 1500,
-      extra60: 3000
-    };
-
+    this.selectedPackageId = 'fairy';
     this.currentTotal = 4900;
     this.init();
   }
@@ -76,185 +69,138 @@ class CostCalculator {
   init() {
     if (!this.totalDisplay) return;
 
-    this.packageInputs.forEach(input => {
-      input.addEventListener('change', () => this.calculate());
-    });
-
-    this.durationSelect?.addEventListener('change', () => this.calculate());
-
-    this.addonCheckboxes.forEach(cb => {
-      cb.addEventListener('change', () => this.calculate());
-    });
-
     this.vkBtn?.addEventListener('click', () => this.sendToVk());
     this.bookBtn?.addEventListener('click', () => this.transferToBooking());
 
+    this.bindPackageListeners();
     this.calculate();
   }
 
-  sendToVk() {
-    let selectedPkg = 'fairy';
-    this.packageInputs.forEach(inp => {
-      if (inp.checked) selectedPkg = inp.value;
+  bindPackageListeners() {
+    const inputs = document.querySelectorAll('input[name="calc-package"]');
+    inputs.forEach(input => {
+      input.addEventListener('change', () => {
+        if (input.checked) {
+          this.selectedPackageId = input.value;
+          this.calculate();
+        }
+      });
     });
+  }
 
-    const pkgData = this.packagePrices[selectedPkg] || this.packagePrices.fairy;
-    
-    // Duration text
-    let durationText = "Стандартная (по тарифу)";
-    if (this.durationSelect) {
-      const durVal = this.durationSelect.value;
-      const extra30 = (this.durationPrices && this.durationPrices.extra30 !== undefined) ? this.durationPrices.extra30 : 1500;
-      const extra60 = (this.durationPrices && this.durationPrices.extra60 !== undefined) ? this.durationPrices.extra60 : 3000;
-      if (durVal === '1.5') durationText = `1.5 часа (+${extra30.toLocaleString('ru-RU')} ₽)`;
-      else if (durVal === '2') durationText = `2 часа (+${extra60.toLocaleString('ru-RU')} ₽)`;
+  updatePackages(newPackages) {
+    if (Array.isArray(newPackages) && newPackages.length > 0) {
+      this.packages = JSON.parse(JSON.stringify(newPackages));
+      this.render();
+    }
+  }
+
+  updatePrices(pricesObj) {
+    if (pricesObj && Array.isArray(pricesObj.packages)) {
+      this.updatePackages(pricesObj.packages);
+    } else if (pricesObj && typeof pricesObj.packages === 'object') {
+      const arr = Object.entries(pricesObj.packages).map(([id, val]) => ({
+        id,
+        name: val.name || id,
+        price: Number(val.price) || 0,
+        desc: val.desc || ''
+      }));
+      this.updatePackages(arr);
+    }
+  }
+
+  render() {
+    if (!this.packagesContainer) return;
+
+    // Check if current selected ID is still in packages
+    const exists = this.packages.some(p => p.id === this.selectedPackageId);
+    if (!exists && this.packages.length > 0) {
+      this.selectedPackageId = this.packages[0].id;
     }
 
-    // Addons text
-    const selectedAddonNames = [];
-    this.addonCheckboxes.forEach(cb => {
-      if (cb.checked) {
-        const name = cb.getAttribute('data-name');
-        const cost = parseInt(cb.getAttribute('data-cost'), 10) || 0;
-        selectedAddonNames.push(`${name} (+${cost.toLocaleString('ru-RU')} ₽)`);
-      }
-    });
+    this.packagesContainer.innerHTML = this.packages.map((pkg, idx) => {
+      const isChecked = pkg.id === this.selectedPackageId || (!this.selectedPackageId && idx === 0);
+      const formattedPrice = (Number(pkg.price) || 0).toLocaleString('ru-RU') + ' ₽';
+      return `
+        <label class="p-4 rounded-2xl border border-white/10 bg-surface/80 cursor-pointer hover:border-accent-rose-gold/50 flex items-center justify-between transition-colors shadow-md">
+          <div class="flex items-center gap-3">
+            <input type="radio" name="calc-package" value="${pkg.id}" ${isChecked ? 'checked' : ''} class="w-4 h-4 text-accent-gold focus:ring-accent-gold" />
+            <div>
+              <span class="text-sm font-semibold text-white block">${pkg.name}</span>
+              <span class="text-xs text-zinc-400">${pkg.desc || 'Фотосессия под ключ'}</span>
+            </div>
+          </div>
+          <span class="text-xs font-mono font-semibold text-accent-gold">${formattedPrice}</span>
+        </label>
+      `;
+    }).join('');
 
-    const addonsText = selectedAddonNames.length > 0 ? selectedAddonNames.join(', ') : 'Без дополнительных опций';
+    this.bindPackageListeners();
+    this.calculate();
+  }
+
+  calculate() {
+    let checkedInput = document.querySelector('input[name="calc-package"]:checked');
+    if (!checkedInput && this.packages.length > 0) {
+      this.selectedPackageId = this.packages[0].id;
+    } else if (checkedInput) {
+      this.selectedPackageId = checkedInput.value;
+    }
+
+    const currentPkg = this.packages.find(p => p.id === this.selectedPackageId) || this.packages[0];
+    if (currentPkg) {
+      this.currentTotal = Number(currentPkg.price) || 0;
+      if (this.totalDisplay) {
+        this.totalDisplay.textContent = this.currentTotal.toLocaleString('ru-RU') + ' ₽';
+      }
+      if (this.detailsDisplay) {
+        this.detailsDisplay.textContent = currentPkg.name;
+      }
+    }
+  }
+
+  sendToVk() {
+    const currentPkg = this.packages.find(p => p.id === this.selectedPackageId) || this.packages[0];
+    const pkgName = currentPkg ? currentPkg.name : 'Сказочная фотосессия';
     const totalFormatted = this.currentTotal.toLocaleString('ru-RU') + ' ₽';
 
-    // Construct clear, structured message for VK
-    const messageText = `Здравствуйте, Мила! Хочу записаться на фотосессию через ваш сайт.\n\n✨ Выбранный расчет:\n• Формат: ${pkgData.name} (${pkgData.price.toLocaleString('ru-RU')} ₽)\n• Длительность: ${durationText}\n• Доп. опции: ${addonsText}\n💰 Итоговая стоимость: ${totalFormatted}\n\nПодскажите, пожалуйста, какие даты свободны для записи?`;
+    const messageText = `Здравствуйте, Мила! Хочу записаться на фотосессию через ваш сайт.\n\n✨ Выбранный тариф: ${pkgName}\n💰 Стоимость: ${totalFormatted}\n\nПодскажите, пожалуйста, какие даты свободны для записи?`;
 
-    // Copy to clipboard as a safety net
-    copyTextToClipboard(messageText);
+    if (typeof copyTextToClipboard === 'function') {
+      copyTextToClipboard(messageText);
+    }
+    if (typeof showToast === 'function') {
+      showToast('✨ Переходим в диалог ВКонтакте! Расчет скопирован в буфер.', 'success');
+    }
 
-    // Toast notification
-    showToast('✨ Переходим в диалог ВКонтакте! Расчет скопирован в буфер.', 'success');
-
-    // Direct redirect to VK Community Messages
     const encoded = encodeURIComponent(messageText);
     const vkUrl = `https://vk.com/im?sel=-240592099&message=${encoded}`;
     window.open(vkUrl, '_blank');
   }
 
-  calculate() {
-    let selectedPkg = 'fairy';
-    this.packageInputs.forEach(inp => {
-      if (inp.checked) selectedPkg = inp.value;
-    });
-
-    const pkgData = this.packagePrices[selectedPkg] || this.packagePrices.fairy;
-    let basePrice = pkgData.price;
-
-    // Duration extra
-    let durationExtra = 0;
-    let durationText = "Стандартная длительность";
-    if (this.durationSelect) {
-      const durVal = this.durationSelect.value;
-      const extra30 = (this.durationPrices && this.durationPrices.extra30 !== undefined) ? this.durationPrices.extra30 : 1500;
-      const extra60 = (this.durationPrices && this.durationPrices.extra60 !== undefined) ? this.durationPrices.extra60 : 3000;
-      if (durVal === '1.5') {
-        durationExtra = extra30;
-        durationText = `1.5 часа (+${extra30.toLocaleString('ru-RU')} ₽)`;
-      } else if (durVal === '2') {
-        durationExtra = extra60;
-        durationText = `2 часа (+${extra60.toLocaleString('ru-RU')} ₽)`;
-      }
-    }
-
-    // Addons
-    let addonsTotal = 0;
-    const selectedAddonNames = [];
-    this.addonCheckboxes.forEach(cb => {
-      if (cb.checked) {
-        const cost = parseInt(cb.getAttribute('data-cost'), 10) || 0;
-        addonsTotal += cost;
-        selectedAddonNames.push(cb.getAttribute('data-name'));
-      }
-    });
-
-    const newTotal = basePrice + durationExtra + addonsTotal;
-    this.animateNumber(this.currentTotal, newTotal);
-    this.currentTotal = newTotal;
-
-    // Update summary text
-    if (this.detailsDisplay) {
-      let summary = `${pkgData.name} • ${durationText}`;
-      if (selectedAddonNames.length > 0) {
-        summary += ` + ${selectedAddonNames.join(', ')}`;
-      }
-      this.detailsDisplay.textContent = summary;
-    }
-  }
-
-  animateNumber(start, end) {
-    if (!this.totalDisplay) return;
-    
-    // Quick number transition
-    const duration = 300;
-    const startTime = performance.now();
-
-    const update = (now) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const current = Math.round(start + (end - start) * ease);
-      
-      this.totalDisplay.textContent = current.toLocaleString('ru-RU') + ' ₽';
-
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      }
-    };
-
-    requestAnimationFrame(update);
-  }
-
   transferToBooking() {
-    let selectedPkg = 'fairy';
-    this.packageInputs.forEach(inp => {
-      if (inp.checked) selectedPkg = inp.value;
-    });
-
-    const pkgSelect = document.getElementById('booking-package');
-    if (pkgSelect) {
-      pkgSelect.value = selectedPkg;
-    }
-
-    const commentsField = document.getElementById('booking-notes');
-    if (commentsField && this.detailsDisplay) {
-      commentsField.value = `Расчет из калькулятора: ${this.detailsDisplay.textContent} (Итого: ${this.currentTotal.toLocaleString('ru-RU')} ₽)`;
-    }
-
-    // Scroll to booking form
     const bookingSection = document.getElementById('booking');
     if (bookingSection) {
       bookingSection.scrollIntoView({ behavior: 'smooth' });
-      setTimeout(() => {
-        document.getElementById('booking-name')?.focus();
-      }, 600);
-    }
-  }
-
-  updatePrices(prices) {
-    if (!prices) return;
-    if (prices.packages) {
-      for (const [key, pkg] of Object.entries(prices.packages)) {
-        if (this.packagePrices[key]) {
-          this.packagePrices[key].price = Number(pkg.price);
-          if (pkg.name) this.packagePrices[key].name = pkg.name;
+      const currentPkg = this.packages.find(p => p.id === this.selectedPackageId);
+      const pkgSelect = document.getElementById('booking-package');
+      if (pkgSelect && currentPkg) {
+        let matched = false;
+        for (let opt of pkgSelect.options) {
+          if (opt.value === currentPkg.id) {
+            pkgSelect.value = currentPkg.id;
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          const notes = document.getElementById('booking-notes');
+          if (notes && !notes.value.includes(currentPkg.name)) {
+            notes.value = `Выбранный тариф: ${currentPkg.name} (${this.currentTotal.toLocaleString('ru-RU')} ₽)\n` + notes.value;
+          }
         }
       }
     }
-    if (prices.duration) {
-      this.durationPrices = {
-        standard: 0,
-        extra30: Number(prices.duration.extra30) || 1500,
-        extra60: Number(prices.duration.extra60) || 3000
-      };
-    }
-    this.calculate();
   }
 }
 
@@ -763,34 +709,44 @@ function initMobileStickyBar() {
 
 // 12. Secret Admin Price Manager System
 const DEFAULT_PRICES = {
-  packages: {
-    fairy: { name: 'Сказочный образ 🧚', price: 4900, desc: 'Детский костюмированный фотопроект по созданию персональной сказки.' },
-    family: { name: 'Семейная прогулка 🌾', price: 4500, desc: 'Теплые искренние кадры родителей и детей на закате или в поле.' },
-    portrait: { name: 'Женский арт-портрет ✨', price: 5000, desc: 'Глубокие кинематографичные портреты, подчеркивающие вашу эстетику.' },
-    express: { name: 'Экспресс / Мини-сет ⚡', price: 2900, desc: 'Быстрая фотосессия для одного образа или обновления контента.' }
-  },
-  duration: {
-    standard: 0,
-    extra30: 1500,
-    extra60: 3000
-  },
-  addons: {
-    studio: { name: 'Аренда интерьерной студии', price: 1800 },
-    travel: { name: 'Выезд за город (Обнинск, Балабаново)', price: 1000 },
-    express_delivery: { name: 'Экспресс-отдача фото за 48 часов', price: 1500 },
-    photobook: { name: 'Премиум фотокнига 20×20 см', price: 3500 }
-  }
+  packages: [
+    {
+      id: 'fairy',
+      name: 'Сказочный образ 🧚',
+      price: 4900,
+      desc: 'Детский костюмированный фотопроект по созданию персональной сказки.'
+    },
+    {
+      id: 'family',
+      name: 'Семейная прогулка 🌾',
+      price: 4500,
+      desc: 'Теплые искренние кадры родителей и детей на природе или в городе.'
+    },
+    {
+      id: 'portrait',
+      name: 'Женский арт-портрет ✨',
+      price: 5000,
+      desc: 'Глубокие кинематографичные портреты, подчеркивающие вашу эстетику.'
+    },
+    {
+      id: 'express',
+      name: 'Экспресс / Мини-сет ⚡',
+      price: 2900,
+      desc: 'Быстрая фотосессия для одного образа или обновления контента.'
+    }
+  ],
+  lastUpdated: '2026-10-20T12:00:00.000Z'
 };
 
 const DEFAULT_SITE_CONTENT = {
   hero: {
     badge: "Авторский сказочный фотопроект в Малоярославце",
     title: "Подарите ребенку день, когда он станет главным героем собственной сказки",
-    subtitle: "Профессиональные детские и семейные фотосессии под ключ: сказочные костюмы, авторский аквагрим от фотографа, волшебный реквизит, памятный подарок и живая игра без заученных поз.",
+    subtitle: "Профессиональные детские и семейные фотосессии под ключ: сказочные костюмы, авторский аквагрим от фотографа, волшебный реквизит и живая игра без заученных поз.",
     coverImage: "assets/images/hero_cover.jpg",
     bannerText: "г. Малоярославец & выездные съемки в живописных локациях",
     stats: [
-      { value: "100%", label: "Образ под ключ с платьями и реквизитом" },
+      { value: "100%", label: "Образ под ключ с костюмами и реквизитом" },
       { value: "15+", label: "Авторских костюмов и крыльев бабочек" },
       { value: "48 ч", label: "Возможна экспресс-отдача снимков" },
       { value: "⭐ 5.0", label: "Официальный рейтинг ВКонтакте" }
@@ -805,21 +761,26 @@ const DEFAULT_SITE_CONTENT = {
     quote: "«Ребёнок чист. У него ещё нет того жизненного опыта, что есть у взрослого человека, — все чувства и эмоции как на ладони. Я всегда даю маленькому человеку возможность играть и никогда не ругаю за эти игры. Ему нужны любовь, интерес и искренняя радость — я даю это и получаю то же самое взамен. А взрослым я помогаю подсветить всё самое ценное и прекрасное в них, бережно и без стеснения».",
     pillars: [
       { title: "Фотограф в роли доброй феи", description: "Съемка строится как увлекательное путешествие, без принуждения и стресса." },
-      { title: "Образ & Аквагрим под ключ", description: "Использую профессиональные гипоаллергенные краски TAG, свои платья, крылья и венки." },
-      { title: "Подарок каждому малышу", description: "В финале ребенок получает памятный сюрприз из волшебного сундучка." },
+      { title: "Образ & Аквагрим под ключ", description: "Использую профессиональные гипоаллергенные краски на водной основе, костюмы, крылья и венки." },
+      { title: "Живые эмоции без напряжения", description: "Съемка строится через легкую увлекательную игру, где ребенок чувствует себя свободно." },
       { title: "Поддержка от начала до конца", description: "Помогу с выбором места, одежды, позами и передам снимки через защищенную онлайн-галерею." }
     ]
   },
   contacts: {
     phone: "+7 (953) 328-61-04",
     phoneDigits: "+79533286104",
-    telegram: "https://t.me/milatsvor",
-    whatsapp: "79533286104",
-    vkGroupUrl: "https://vk.ru/club_fotofeya_mila",
+    max: "",
+        vkGroupUrl: "https://vk.ru/club_fotofeya_mila",
     vkGroupId: "240592099",
     city: "г. Малоярославец & выездные съемки (Обнинск, Балабаново, Калуга)",
     workHours: "Ежедневно с 09:00 до 21:00"
   },
+  albums: [
+    { id: "fairy", title: "Сказочные образы 🧚" },
+    { id: "family", title: "Детские & Семейные 🌾" },
+    { id: "autumn", title: "Осенние истории 🍁" },
+    { id: "portrait", title: "Женский арт-портрет ✨" }
+  ],
   reviews: [
     {
       id: 1,
@@ -893,14 +854,7 @@ class PriceManager {
     this.priceReset = document.getElementById('admin-price-reset');
     this.logoutBtn = document.getElementById('admin-logout-btn');
     
-    this.floatingStatus = document.getElementById('admin-floating-status');
-    this.reopenBtn = document.getElementById('admin-reopen-btn');
-    this.quickExitBtn = document.getElementById('admin-quick-exit-btn');
-
-    this.tripleClickCount = 0;
-    this.tripleClickTimer = null;
-    
-    // Zero-Flash Content Hydration from local cache
+    // Initial cache hydration
     const cachedContent = localStorage.getItem('fotofeya_content');
     if (cachedContent) {
       try {
@@ -916,7 +870,6 @@ class PriceManager {
   }
 
   async init() {
-    // 1. Try local cache first for Zero-Flash hydration (prices)
     const cached = localStorage.getItem('fotofeya_prices');
     if (cached) {
       try {
@@ -928,16 +881,12 @@ class PriceManager {
       }
     }
 
-    // 2. Fetch fresh prices and site content from backend
     await Promise.all([
       this.fetchPrices(),
       this.fetchContent()
     ]);
 
-    // 3. Bind admin secret triggers (Keyboard, Triple-tap, Hash)
     this.bindSecretTriggers();
-
-    // 4. Bind admin modals, tabs, gallery, and CMS actions
     this.bindModalActions();
     this.bindTabs();
     this.bindVkSync();
@@ -945,38 +894,31 @@ class PriceManager {
     this.bindCmsActions();
     document.getElementById('adm-gallery-save-btn')?.addEventListener('click', () => this.saveAdminGallery());
 
-    // 5. Restore floating badge if admin already authenticated in this session
-    if (sessionStorage.getItem('fotofeya_admin_token')) {
-      this.showFloatingBadge();
-    }
-
-    // 6. Check URL hash (#admin) or query (?admin)
     if (window.location.hash === '#admin' || window.location.search.includes('admin')) {
       setTimeout(() => this.triggerAdminFlow(), 300);
     }
   }
 
+  normalizePackages(raw) {
+    if (Array.isArray(raw)) return raw;
+    if (raw && typeof raw === 'object') {
+      return Object.entries(raw).map(([id, val]) => ({
+        id,
+        name: val.name || id,
+        price: Number(val.price) || 0,
+        desc: val.desc || ''
+      }));
+    }
+    return DEFAULT_PRICES.packages;
+  }
+
   mergePrices(incoming) {
     if (!incoming) return;
     if (incoming.packages) {
-      for (const k in incoming.packages) {
-        if (this.prices.packages[k]) {
-          this.prices.packages[k].price = Number(incoming.packages[k].price) || this.prices.packages[k].price;
-          if (incoming.packages[k].name) this.prices.packages[k].name = incoming.packages[k].name;
-        }
-      }
+      this.prices.packages = this.normalizePackages(incoming.packages);
     }
-    if (incoming.duration) {
-      if (incoming.duration.extra30 !== undefined) this.prices.duration.extra30 = Number(incoming.duration.extra30);
-      if (incoming.duration.extra60 !== undefined) this.prices.duration.extra60 = Number(incoming.duration.extra60);
-    }
-    if (incoming.addons) {
-      for (const k in incoming.addons) {
-        if (this.prices.addons[k]) {
-          this.prices.addons[k].price = Number(incoming.addons[k].price) || this.prices.addons[k].price;
-          if (incoming.addons[k].name) this.prices.addons[k].name = incoming.addons[k].name;
-        }
-      }
+    if (incoming.lastUpdated) {
+      this.prices.lastUpdated = incoming.lastUpdated;
     }
   }
 
@@ -991,6 +933,11 @@ class PriceManager {
     if (incoming.contacts) {
       this.siteContent.contacts = Object.assign({}, this.siteContent.contacts, incoming.contacts);
     }
+    if (Array.isArray(incoming.albums)) {
+      this.siteContent.albums = JSON.parse(JSON.stringify(incoming.albums));
+    } else if (!this.siteContent.albums) {
+      this.siteContent.albums = JSON.parse(JSON.stringify(DEFAULT_SITE_CONTENT.albums || []));
+    }
     if (Array.isArray(incoming.reviews)) {
       this.siteContent.reviews = JSON.parse(JSON.stringify(incoming.reviews));
     }
@@ -1001,7 +948,7 @@ class PriceManager {
 
   async fetchPrices() {
     try {
-      const res = await fetch('/api/prices', { cache: 'no-cache' });
+      const res = await fetch('/api/prices?t=' + Date.now(), { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         this.mergePrices(data);
@@ -1016,7 +963,7 @@ class PriceManager {
 
   async fetchContent() {
     try {
-      const res = await fetch('/api/content', { cache: 'no-cache' });
+      const res = await fetch('/api/content?t=' + Date.now(), { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         this.mergeContent(data);
@@ -1029,7 +976,60 @@ class PriceManager {
     }
   }
 
+  
+  renderPortfolioFilters(albumsList) {
+    const container = document.getElementById('portfolio-filters');
+    if (!container || !Array.isArray(albumsList)) return;
+
+    let html = `<button data-filter="all" class="filter-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-accent-gold text-black border border-accent-gold">Все серии</button>`;
+
+    albumsList.forEach(alb => {
+      html += `<button data-filter="${alb.id}" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-white/5 text-zinc-300 border border-white/10 hover:border-accent-rose-gold/40">${alb.title}</button>`;
+    });
+
+    container.innerHTML = html;
+
+    // Re-bind filter buttons
+    container.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        container.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active', 'bg-accent-gold', 'text-black', 'border-accent-gold');
+          b.classList.add('bg-white/5', 'text-zinc-300', 'border-white/10');
+        });
+        btn.classList.add('active', 'bg-accent-gold', 'text-black', 'border-accent-gold');
+        btn.classList.remove('bg-white/5', 'text-zinc-300', 'border-white/10');
+
+        const filter = btn.dataset.filter;
+        if (window.portfolioManager && typeof window.portfolioManager.applyCategoryFilter === 'function') {
+          window.portfolioManager.currentCategory = filter;
+          window.portfolioManager.applyCategoryFilter();
+          window.portfolioManager.renderGrid();
+        } else {
+          // Standard DOM filtering fallback
+          document.querySelectorAll('.portfolio-card').forEach(card => {
+            const cat = card.getAttribute('data-category');
+            if (filter === 'all' || cat === filter) {
+              card.style.display = '';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        }
+      });
+    });
+
+    // Also sync category dropdowns in admin modal
+    const batchCat = document.getElementById('adm-vk-batch-category');
+    const uploadCat = document.getElementById('adm-upload-cat');
+    const optionsHtml = albumsList.map(a => `<option value="${a.id}">${a.title}</option>`).join('');
+    if (batchCat) batchCat.innerHTML = optionsHtml;
+    if (uploadCat) uploadCat.innerHTML = optionsHtml;
+  }
+
   applyContentToDOM(c) {
+    if (c && Array.isArray(c.albums)) {
+      this.renderPortfolioFilters(c.albums);
+    }
     if (!c) return;
 
     // 1. Hero Section
@@ -1091,6 +1091,29 @@ class PriceManager {
 
     // 3. Contacts & Networks
     if (c.contacts) {
+      const maxUrl = c.contacts.max?.trim();
+      const connectMax = document.getElementById('connect-max-btn');
+      const footerMax = document.getElementById('footer-max-link');
+      const modalMax = document.getElementById('modal-max-btn');
+
+      if (maxUrl) {
+        if (connectMax) {
+          connectMax.href = maxUrl;
+          connectMax.classList.remove('hidden');
+        }
+        if (footerMax) {
+          footerMax.href = maxUrl;
+          footerMax.classList.remove('hidden');
+        }
+        if (modalMax) {
+          modalMax.href = maxUrl;
+          modalMax.classList.remove('hidden');
+        }
+      } else {
+        if (connectMax) connectMax.classList.add('hidden');
+        if (footerMax) footerMax.classList.add('hidden');
+        if (modalMax) modalMax.classList.add('hidden');
+      }
       const phoneTxt = c.contacts.phone;
       const phoneDigits = c.contacts.phoneDigits || phoneTxt.replace(/[^\d+]/g, '');
 
@@ -1187,129 +1210,114 @@ class PriceManager {
   }
 
   applyPricesToDOM(prices) {
-    const fmt = this.formatPrice;
+    if (!prices) return;
+    prices.packages = this.normalizePackages(prices.packages);
 
-    // 1. Pricing cards in #pricing (Titles & Prices)
-    const tFairy = document.getElementById('price-card-title-fairy');
-    const tFamily = document.getElementById('price-card-title-family');
-    const tPortrait = document.getElementById('price-card-title-portrait');
-    const tExpress = document.getElementById('price-card-title-express');
-
-    if (tFairy && prices.packages.fairy.name) tFairy.textContent = prices.packages.fairy.name;
-    if (tFamily && prices.packages.family.name) tFamily.textContent = prices.packages.family.name;
-    if (tPortrait && prices.packages.portrait.name) tPortrait.textContent = prices.packages.portrait.name;
-    if (tExpress && prices.packages.express.name) tExpress.textContent = prices.packages.express.name;
-
-    const pFairy = document.getElementById('price-card-fairy');
-    const pFamily = document.getElementById('price-card-family');
-    const pPortrait = document.getElementById('price-card-portrait');
-    const pExpress = document.getElementById('price-card-express');
-
-    if (pFairy) pFairy.textContent = fmt(prices.packages.fairy.price);
-    if (pFamily) pFamily.textContent = fmt(prices.packages.family.price);
-    if (pPortrait) pPortrait.textContent = fmt(prices.packages.portrait.price);
-    if (pExpress) pExpress.textContent = fmt(prices.packages.express.price);
-
-    // 2. Calculator package radio titles and badges
-    const cNameFairy = document.getElementById('calc-name-fairy');
-    const cNameFamily = document.getElementById('calc-name-family');
-    const cNamePortrait = document.getElementById('calc-name-portrait');
-    const cNameExpress = document.getElementById('calc-name-express');
-
-    if (cNameFairy && prices.packages.fairy.name) cNameFairy.textContent = prices.packages.fairy.name;
-    if (cNameFamily && prices.packages.family.name) cNameFamily.textContent = prices.packages.family.name;
-    if (cNamePortrait && prices.packages.portrait.name) cNamePortrait.textContent = prices.packages.portrait.name;
-    if (cNameExpress && prices.packages.express.name) cNameExpress.textContent = prices.packages.express.name;
-
-    const bFairy = document.getElementById('calc-badge-fairy');
-    const bFamily = document.getElementById('calc-badge-family');
-    const bPortrait = document.getElementById('calc-badge-portrait');
-    const bExpress = document.getElementById('calc-badge-express');
-
-    if (bFairy) bFairy.textContent = fmt(prices.packages.fairy.price);
-    if (bFamily) bFamily.textContent = fmt(prices.packages.family.price);
-    if (bPortrait) bPortrait.textContent = fmt(prices.packages.portrait.price);
-    if (bExpress) bExpress.textContent = fmt(prices.packages.express.price);
-
-    // 3. Calculator duration options
-    const optExtra30 = document.getElementById('calc-opt-extra30');
-    const optExtra60 = document.getElementById('calc-opt-extra60');
-    if (optExtra30) optExtra30.textContent = `Продлить на 30 минут (+${fmt(prices.duration.extra30)})`;
-    if (optExtra60) optExtra60.textContent = `Продлить на 1 час (+${fmt(prices.duration.extra60)})`;
-
-    // 4. Calculator addons (names, checkboxes data-cost/data-name, and badge labels)
-    const addonMap = {
-      studio: { cb: 'calc-addon-cb-studio', badge: 'calc-badge-studio', label: 'calc-addon-name-studio' },
-      travel: { cb: 'calc-addon-cb-travel', badge: 'calc-badge-travel', label: 'calc-addon-name-travel' },
-      express_delivery: { cb: 'calc-addon-cb-express', badge: 'calc-addon-badge-express', label: 'calc-addon-name-express' },
-      photobook: { cb: 'calc-addon-cb-photobook', badge: 'calc-badge-photobook', label: 'calc-addon-name-photobook' }
-    };
-
-    for (const [key, mapping] of Object.entries(addonMap)) {
-      const addon = prices.addons[key];
-      if (!addon) continue;
-      const cb = document.getElementById(mapping.cb);
-      if (cb) {
-        cb.setAttribute('data-cost', addon.price);
-        if (addon.name) cb.setAttribute('data-name', addon.name);
-      }
-      const label = document.getElementById(mapping.label);
-      if (label && addon.name) {
-        label.textContent = addon.name;
-      }
-      const badge = document.getElementById(mapping.badge);
-      if (badge) {
-        badge.textContent = `+${fmt(addon.price)}`;
-      }
-    }
-
-    // 5. Booking select options
-    const bOptFairy = document.getElementById('booking-opt-fairy');
-    const bOptFamily = document.getElementById('booking-opt-family');
-    const bOptPortrait = document.getElementById('booking-opt-portrait');
-    const bOptExpress = document.getElementById('booking-opt-express');
-
-    if (bOptFairy) bOptFairy.textContent = `${prices.packages.fairy.name} (${fmt(prices.packages.fairy.price)})`;
-    if (bOptFamily) bOptFamily.textContent = `${prices.packages.family.name} (${fmt(prices.packages.family.price)})`;
-    if (bOptPortrait) bOptPortrait.textContent = `${prices.packages.portrait.name} (${fmt(prices.packages.portrait.price)})`;
-    if (bOptExpress) bOptExpress.textContent = `${prices.packages.express.name} (${fmt(prices.packages.express.price)})`;
-
-    // 6. Sync with CostCalculator
+    // 1. Sync with CostCalculator
     if (window.costCalculator && typeof window.costCalculator.updatePrices === 'function') {
       window.costCalculator.updatePrices(prices);
+    }
+
+    // 2. Render Section 5 Pricing Cards dynamically
+    this.renderPricingCards(prices.packages);
+
+    // 3. Update booking package select dropdown
+    const bSelect = document.getElementById('booking-package');
+    if (bSelect && Array.isArray(prices.packages)) {
+      bSelect.innerHTML = prices.packages.map(p => `<option value="${p.id}">${p.name} (${(Number(p.price) || 0).toLocaleString('ru-RU')} ₽)</option>`).join('');
+    }
+  }
+
+  renderPricingCards(packagesList) {
+    const track = document.getElementById('pricing-cards-track');
+    if (!track || !Array.isArray(packagesList) || packagesList.length === 0) return;
+
+    track.innerHTML = packagesList.map((pkg, idx) => {
+      const isFeatured = idx === 0;
+      const formattedPrice = (Number(pkg.price) || 0).toLocaleString('ru-RU') + ' ₽';
+      return `
+        <div class="pricing-snap-card w-[86vw] max-w-[325px] md:w-auto md:max-w-none p-5 sm:p-6 rounded-2xl glass-panel ${isFeatured ? 'border-2 border-accent-gold/40 shadow-2xl relative' : 'border border-white/10'} flex flex-col justify-between card-hover">
+          <div>
+            ${isFeatured ? `<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-gold/20 text-accent-gold text-[11px] font-semibold mb-3 border border-accent-gold/30"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>Хит сезона</span></div>` : ''}
+            <h3 class="font-serif text-lg sm:text-xl font-bold text-white mb-1.5">${pkg.name}</h3>
+            <p class="text-xs text-zinc-400 mb-4 line-clamp-2">${pkg.desc || 'Фотосессия под ключ'}</p>
+            
+            <div class="font-mono text-2xl sm:text-3xl font-bold ${isFeatured ? 'text-accent-gold' : 'text-white'} tabular-nums mb-4">
+              ${formattedPrice}
+            </div>
+
+            <ul class="space-y-2 text-xs text-zinc-300 border-t border-white/10 pt-3 mb-5">
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
+                <span>Индивидуальный сказочный подход</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
+                <span>Помощь в выборе локации и образа</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
+                <span>Детальная авторская ретушь лучших кадров</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-accent-rose-gold shrink-0"></i>
+                <span>Все удачные исходники в цветокоррекции</span>
+              </li>
+            </ul>
+          </div>
+
+          <button type="button" class="select-plan-btn w-full py-2.5 sm:py-3 rounded-xl ${isFeatured ? 'btn-gold' : 'btn-ghost'} text-xs font-semibold flex items-center justify-center gap-2" data-plan="${pkg.id}">
+            <span>Выбрать тариф</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    // Update mobile counter if element exists
+    const counter = document.getElementById('pricing-counter');
+    if (counter) counter.textContent = `1 / ${packagesList.length}`;
+
+    // Re-bind select-plan-btn clicks
+    track.querySelectorAll('.select-plan-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const plan = btn.getAttribute('data-plan');
+        const calcSection = document.getElementById('calculator');
+        if (calcSection) {
+          calcSection.scrollIntoView({ behavior: 'smooth' });
+          const radio = document.querySelector(`input[name="calc-package"][value="${plan}"]`);
+          if (radio) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change'));
+          }
+        }
+      });
+    });
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
     }
   }
 
   bindSecretTriggers() {
-    // A. Keyboard shortcuts: Ctrl+Shift+P or Alt+P
+    // 1. Keyboard shortcut: Ctrl+Shift+A or Ctrl+Shift+P
     window.addEventListener('keydown', (e) => {
-      const isCtrlShiftP = (e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'P' || e.key === 'p' || e.code === 'KeyP');
-      const isAltP = e.altKey && (e.key === 'P' || e.key === 'p' || e.code === 'KeyP');
-      if (isCtrlShiftP || isAltP) {
+      const isMatch = (e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a' || e.key === 'P' || e.key === 'p');
+      if (isMatch) {
         e.preventDefault();
         this.triggerAdminFlow();
       }
     });
 
-    // B. Footer copyright triple click
+    // 2. Footer copyright trigger (single discreet click)
     if (this.secretTrigger) {
       this.secretTrigger.addEventListener('click', (e) => {
         e.preventDefault();
-        this.tripleClickCount++;
-        clearTimeout(this.tripleClickTimer);
-        
-        if (this.tripleClickCount >= 3) {
-          this.tripleClickCount = 0;
-          this.triggerAdminFlow();
-        } else {
-          this.tripleClickTimer = setTimeout(() => {
-            this.tripleClickCount = 0;
-          }, 1200);
-        }
+        this.triggerAdminFlow();
       });
     }
 
-    // C. Hash change listener
+    // 3. Hash change listener (#admin)
     window.addEventListener('hashchange', () => {
       if (window.location.hash === '#admin') {
         this.triggerAdminFlow();
@@ -1320,7 +1328,6 @@ class PriceManager {
   triggerAdminFlow() {
     const token = sessionStorage.getItem('fotofeya_admin_token');
     if (token) {
-      this.showFloatingBadge();
       this.openPriceModal();
     } else {
       this.openAuthModal();
@@ -1348,6 +1355,7 @@ class PriceManager {
   openPriceModal() {
     if (!this.priceModal) return;
     this.populateEditorForm();
+    this.renderAdminAlbums();
     this.populateContentForm();
     this.populateReviewsFaqForm();
     this.populateContactsForm();
@@ -1364,64 +1372,201 @@ class PriceManager {
     this.priceModal.classList.remove('flex');
   }
 
-  showFloatingBadge() {
-    if (this.floatingStatus) {
-      this.floatingStatus.classList.remove('hidden');
-      this.floatingStatus.classList.add('flex');
-    }
-  }
-
-  hideFloatingBadge() {
-    if (this.floatingStatus) {
-      this.floatingStatus.classList.add('hidden');
-      this.floatingStatus.classList.remove('flex');
-    }
-  }
-
   populateEditorForm() {
-    const f = (id, val) => {
-      const el = document.getElementById(id);
-      if (el && val !== undefined) el.value = val;
-    };
-    // Packages (Names & Prices)
-    f('adm-name-fairy', this.prices.packages.fairy.name);
-    f('adm-price-fairy', this.prices.packages.fairy.price);
+    this.renderAdminPackages();
+  }
 
-    f('adm-name-family', this.prices.packages.family.name);
-    f('adm-price-family', this.prices.packages.family.price);
+  renderAdminPackages() {
+    const list = document.getElementById('adm-packages-list');
+    if (!list) return;
 
-    f('adm-name-portrait', this.prices.packages.portrait.name);
-    f('adm-price-portrait', this.prices.packages.portrait.price);
+    if (!Array.isArray(this.prices.packages) || this.prices.packages.length === 0) {
+      list.innerHTML = `<div class="p-4 text-center text-xs text-zinc-400 border border-dashed border-white/10 rounded-xl">Услуг пока нет. Нажмите «Добавить услугу» выше.</div>`;
+      return;
+    }
 
-    f('adm-name-express', this.prices.packages.express.name);
-    f('adm-price-express', this.prices.packages.express.price);
+    list.innerHTML = this.prices.packages.map((pkg, idx) => `
+      <div class="p-3.5 rounded-2xl bg-surface border border-white/10 space-y-2 relative group" data-idx="${idx}">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-xs font-semibold text-accent-gold">Услуга #${idx + 1}</span>
+          <div class="flex items-center gap-1">
+            <button type="button" class="adm-pkg-move-up p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Поднять выше" data-idx="${idx}">
+              <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+            </button>
+            <button type="button" class="adm-pkg-move-down p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Опустить ниже" data-idx="${idx}">
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+            </button>
+            <button type="button" class="adm-pkg-del p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-rose-400" title="Удалить услугу" data-idx="${idx}">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название услуги</label>
+            <input type="text" class="adm-pkg-name w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white" value="${pkg.name || ''}" data-idx="${idx}" />
+          </div>
+          <div>
+            <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Стоимость (₽)</label>
+            <input type="number" min="0" step="any" class="adm-pkg-price w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs font-mono text-accent-gold" value="${pkg.price || 0}" data-idx="${idx}" />
+          </div>
+        </div>
+        <div>
+          <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Краткое описание / состав</label>
+          <input type="text" class="adm-pkg-desc w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white" value="${pkg.desc || ''}" data-idx="${idx}" />
+        </div>
+      </div>
+    `).join('');
 
-    // Duration
-    f('adm-extra-30', this.prices.duration.extra30);
-    f('adm-extra-60', this.prices.duration.extra60);
+    // Bind live inputs
+    list.querySelectorAll('.adm-pkg-name').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const i = Number(inp.dataset.idx);
+        if (this.prices.packages[i]) this.prices.packages[i].name = inp.value.trim();
+      });
+    });
+    list.querySelectorAll('.adm-pkg-price').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const i = Number(inp.dataset.idx);
+        if (this.prices.packages[i]) this.prices.packages[i].price = Number(inp.value) || 0;
+      });
+    });
+    list.querySelectorAll('.adm-pkg-desc').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const i = Number(inp.dataset.idx);
+        if (this.prices.packages[i]) this.prices.packages[i].desc = inp.value.trim();
+      });
+    });
 
-    // Addons (Names & Prices)
-    f('adm-addon-name-studio', this.prices.addons.studio.name);
-    f('adm-addon-studio', this.prices.addons.studio.price);
+    // Move up/down/delete
+    list.querySelectorAll('.adm-pkg-move-up').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.idx);
+        if (i > 0) {
+          const temp = this.prices.packages[i];
+          this.prices.packages[i] = this.prices.packages[i - 1];
+          this.prices.packages[i - 1] = temp;
+          this.renderAdminPackages();
+        }
+      });
+    });
+    list.querySelectorAll('.adm-pkg-move-down').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.idx);
+        if (i < this.prices.packages.length - 1) {
+          const temp = this.prices.packages[i];
+          this.prices.packages[i] = this.prices.packages[i + 1];
+          this.prices.packages[i + 1] = temp;
+          this.renderAdminPackages();
+        }
+      });
+    });
+    list.querySelectorAll('.adm-pkg-del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.idx);
+        if (confirm(`Удалить услугу «${this.prices.packages[i]?.name || ''}»?`)) {
+          this.prices.packages.splice(i, 1);
+          this.renderAdminPackages();
+        }
+      });
+    });
 
-    f('adm-addon-name-travel', this.prices.addons.travel.name);
-    f('adm-addon-travel', this.prices.addons.travel.price);
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
 
-    f('adm-addon-name-express', this.prices.addons.express_delivery.name);
-    f('adm-addon-express', this.prices.addons.express_delivery.price);
+  renderAdminAlbums() {
+    const list = document.getElementById('adm-albums-list');
+    if (!list) return;
 
-    f('adm-addon-name-photobook', this.prices.addons.photobook.name);
-    f('adm-addon-photobook', this.prices.addons.photobook.price);
+    if (!Array.isArray(this.siteContent.albums) || this.siteContent.albums.length === 0) {
+      list.innerHTML = `<div class="p-3 text-center text-xs text-zinc-400 border border-dashed border-white/10 rounded-xl">Альбомов пока нет. Нажмите «Добавить альбом» выше.</div>`;
+      return;
+    }
+
+    list.innerHTML = this.siteContent.albums.map((alb, idx) => `
+      <div class="p-3 rounded-xl bg-surface border border-white/10 space-y-2 relative group" data-idx="${idx}">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-xs font-semibold text-accent-fairy-pink">Альбом #${idx + 1}</span>
+          <div class="flex items-center gap-1">
+            <button type="button" class="adm-alb-move-up p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Поднять выше" data-idx="${idx}">
+              <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+            </button>
+            <button type="button" class="adm-alb-move-down p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-white" title="Опустить ниже" data-idx="${idx}">
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+            </button>
+            <button type="button" class="adm-alb-del p-1.5 rounded-lg btn-ghost text-zinc-400 hover:text-rose-400" title="Удалить альбом" data-idx="${idx}">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Название альбома (на сайте)</label>
+            <input type="text" class="adm-alb-title w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs text-white" value="${alb.title || ''}" data-idx="${idx}" />
+          </div>
+          <div>
+            <label class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 block mb-1">Идентификатор (англ. тег)</label>
+            <input type="text" class="adm-alb-id w-full px-3 py-1.5 rounded-lg bg-black/40 border border-white/15 text-xs font-mono text-zinc-300" value="${alb.id || ''}" data-idx="${idx}" />
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // Bind live inputs
+    list.querySelectorAll('.adm-alb-title').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const i = Number(inp.dataset.idx);
+        if (this.siteContent.albums[i]) this.siteContent.albums[i].title = inp.value.trim();
+      });
+    });
+    list.querySelectorAll('.adm-alb-id').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const i = Number(inp.dataset.idx);
+        if (this.siteContent.albums[i]) this.siteContent.albums[i].id = inp.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+      });
+    });
+
+    // Move up/down/delete
+    list.querySelectorAll('.adm-alb-move-up').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.idx);
+        if (i > 0) {
+          const temp = this.siteContent.albums[i];
+          this.siteContent.albums[i] = this.siteContent.albums[i - 1];
+          this.siteContent.albums[i - 1] = temp;
+          this.renderAdminAlbums();
+        }
+      });
+    });
+    list.querySelectorAll('.adm-alb-move-down').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.idx);
+        if (i < this.siteContent.albums.length - 1) {
+          const temp = this.siteContent.albums[i];
+          this.siteContent.albums[i] = this.siteContent.albums[i + 1];
+          this.siteContent.albums[i + 1] = temp;
+          this.renderAdminAlbums();
+        }
+      });
+    });
+    list.querySelectorAll('.adm-alb-del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.idx);
+        if (confirm(`Удалить альбом «${this.siteContent.albums[i]?.title || ''}»?`)) {
+          this.siteContent.albums.splice(i, 1);
+          this.renderAdminAlbums();
+        }
+      });
+    });
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
   }
 
   bindModalActions() {
-    // Auth cancel
-    this.authCancel?.addEventListener('click', () => {
-      this.closeAuthModal();
-      if (window.location.hash === '#admin') {
-        history.replaceState(null, null, ' ');
-      }
-    });
 
     // Auth backdrop click
     this.authModal?.addEventListener('click', (e) => {
@@ -1474,15 +1619,6 @@ class PriceManager {
 
     // Price modal close
     this.priceClose?.addEventListener('click', () => this.closePriceModal());
-    this.priceModal?.addEventListener('click', (e) => {
-      if (e.target === this.priceModal) this.closePriceModal();
-    });
-
-    // Reopen price modal from floating status
-    this.reopenBtn?.addEventListener('click', () => this.openPriceModal());
-
-    // Quick exit from floating status
-    this.quickExitBtn?.addEventListener('click', () => this.logout());
 
     // Logout button in modal
     this.logoutBtn?.addEventListener('click', () => {
@@ -1518,70 +1654,8 @@ class PriceManager {
       saveBtn.innerHTML = `<span>Сохранение...</span>`;
     }
 
-    const gVal = (id, fallback) => {
-      const el = document.getElementById(id);
-      const v = parseInt(el?.value, 10);
-      return isNaN(v) ? fallback : v;
-    };
-
-    const gName = (id, fallback) => {
-      const el = document.getElementById(id);
-      const v = el?.value?.trim();
-      return v ? v : fallback;
-    };
-
-    const updated = {
-      packages: {
-        fairy: {
-          ...this.prices.packages.fairy,
-          name: gName('adm-name-fairy', this.prices.packages?.fairy?.name || 'Сказочный образ 🧚'),
-          price: gVal('adm-price-fairy', 4900)
-        },
-        family: {
-          ...this.prices.packages.family,
-          name: gName('adm-name-family', this.prices.packages?.family?.name || 'Семейная прогулка 🌾'),
-          price: gVal('adm-price-family', 4500)
-        },
-        portrait: {
-          ...this.prices.packages.portrait,
-          name: gName('adm-name-portrait', this.prices.packages?.portrait?.name || 'Женский арт-портрет ✨'),
-          price: gVal('adm-price-portrait', 5000)
-        },
-        express: {
-          ...this.prices.packages.express,
-          name: gName('adm-name-express', this.prices.packages?.express?.name || 'Экспресс / Мини-сет ⚡'),
-          price: gVal('adm-price-express', 2900)
-        }
-      },
-      duration: {
-        standard: 0,
-        extra30: gVal('adm-extra-30', 1500),
-        extra60: gVal('adm-extra-60', 3000)
-      },
-      addons: {
-        studio: {
-          ...this.prices.addons.studio,
-          name: gName('adm-addon-name-studio', this.prices.addons?.studio?.name || 'Аренда интерьерной студии'),
-          price: gVal('adm-addon-studio', 1800)
-        },
-        travel: {
-          ...this.prices.addons.travel,
-          name: gName('adm-addon-name-travel', this.prices.addons?.travel?.name || 'Выезд за пределы города (>15 км)'),
-          price: gVal('adm-addon-travel', 1000)
-        },
-        express_delivery: {
-          ...this.prices.addons.express_delivery,
-          name: gName('adm-addon-name-express', this.prices.addons?.express_delivery?.name || 'Срочная отдача за 48 часов'),
-          price: gVal('adm-addon-express', 1500)
-        },
-        photobook: {
-          ...this.prices.addons.photobook,
-          name: gName('adm-addon-name-photobook', this.prices.addons?.photobook?.name || 'Премиум фотокнига (20x20 см, 10 разворотов)'),
-          price: gVal('adm-addon-photobook', 3500)
-        }
-      },
-      lastUpdated: new Date().toISOString()
-    };
+    this.prices.packages = this.normalizePackages(this.prices.packages);
+    this.prices.lastUpdated = new Date().toISOString();
 
     const token = sessionStorage.getItem('fotofeya_admin_token') || '';
     let savedOnServer = false;
@@ -1593,14 +1667,16 @@ class PriceManager {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ token, prices: updated })
+        body: JSON.stringify({ token, prices: this.prices })
       });
 
       if (res.ok) {
         savedOnServer = true;
       } else if (res.status === 401) {
-        showToast('Ошибка авторизации. Войдите заново.', 'error');
-        this.logout();
+        if (typeof showToast === 'function') {
+          showToast('⚠️ Срок сессии истек. Пожалуйста, введите пароль администратора.', 'error');
+        }
+        this.openAuthModal();
         if (saveBtn) {
           saveBtn.disabled = false;
           saveBtn.innerHTML = originalText;
@@ -1611,12 +1687,8 @@ class PriceManager {
       console.warn('Backend not reachable, saving to local storage fallback', err);
     }
 
-    // Update state & localStorage
-    this.prices = updated;
-    localStorage.setItem('fotofeya_prices', JSON.stringify(updated));
-
-    // Update DOM across entire site immediately
-    this.applyPricesToDOM(updated);
+    localStorage.setItem('fotofeya_prices', JSON.stringify(this.prices));
+    this.applyPricesToDOM(this.prices);
 
     if (saveBtn) {
       saveBtn.disabled = false;
@@ -1626,9 +1698,9 @@ class PriceManager {
     this.closePriceModal();
 
     if (savedOnServer) {
-      showToast('🎉 Прайс-лист успешно обновлен на сервере и виден всем!', 'success');
+      showToast('🎉 Тарифы и услуги успешно обновлены на сервере и видны всем!', 'success');
     } else {
-      showToast('✅ Прайс-лист сохранен локально!', 'success');
+      showToast('✅ Тарифы сохранены локально!', 'success');
     }
   }
 
@@ -2169,7 +2241,9 @@ class PriceManager {
             const i = Number(b.dataset.idx);
             if (confirm(`Удалить отзыв #${i + 1}?`)) {
               this.siteContent.reviews.splice(i, 1);
+              localStorage.setItem('fotofeya_content', JSON.stringify(this.siteContent));
               this.populateReviewsFaqForm();
+              showToast('Отзыв удален из списка. Нажмите «Сохранить отзывы и FAQ».', 'info');
             }
           });
         });
@@ -2356,15 +2430,31 @@ class PriceManager {
         ...this.siteContent.contacts,
         phone: g('adm-contact-phone') || this.siteContent.contacts.phone,
         phoneDigits: g('adm-contact-phone-digits') || this.siteContent.contacts.phoneDigits,
-        whatsapp: g('adm-contact-wa') || this.siteContent.contacts.whatsapp,
-        telegram: g('adm-contact-tg') || this.siteContent.contacts.telegram,
+        max: g('adm-contact-max') || '',
         vkGroupUrl: g('adm-contact-vk-url') || this.siteContent.contacts.vkGroupUrl,
         vkGroupId: g('adm-contact-vk-id') || this.siteContent.contacts.vkGroupId,
         city: g('adm-contact-city') || this.siteContent.contacts.city,
         workHours: g('adm-contact-hours') || this.siteContent.contacts.workHours
       };
+    } else if (sectionName === 'reviews-faq') {
+      const rList = document.getElementById('adm-reviews-list');
+      if (rList && Array.isArray(this.siteContent.reviews)) {
+        rList.querySelectorAll('[data-idx]').forEach(card => {
+          const idx = Number(card.dataset.idx);
+          if (this.siteContent.reviews[idx]) {
+            const author = card.querySelector('.adm-rev-author')?.value;
+            const subtitle = card.querySelector('.adm-rev-sub')?.value;
+            const tag = card.querySelector('.adm-rev-tag')?.value;
+            const text = card.querySelector('.adm-rev-text')?.value;
+            if (author !== undefined) this.siteContent.reviews[idx].author = author.trim();
+            if (subtitle !== undefined) this.siteContent.reviews[idx].subtitle = subtitle.trim();
+            if (tag !== undefined) this.siteContent.reviews[idx].tag = tag.trim();
+            if (text !== undefined) this.siteContent.reviews[idx].text = text.trim();
+          }
+        });
+      }
     }
-    // Note: reviews & faq are updated directly in this.siteContent via form inputs
+    // Note: faq and albums are updated directly in this.siteContent via inputs
 
     let saved = false;
     try {
@@ -2379,6 +2469,12 @@ class PriceManager {
 
       if (res.ok) {
         saved = true;
+      } else if (res.status === 401) {
+        if (typeof showToast === 'function') {
+          showToast('⚠️ Срок сессии истек. Пожалуйста, введите пароль администратора.', 'error');
+        }
+        this.openAuthModal();
+        return;
       }
     } catch (err) {
       console.warn('Content save fallback to localStorage', err);
@@ -2388,13 +2484,41 @@ class PriceManager {
     this.applyContentToDOM(this.siteContent);
 
     if (saved) {
-      showToast('🎉 Контент успешно обновлен на сервере и виден всем!', 'success');
+      showToast('🎉 Изменения успешно сохранены на сервере и видны всем!', 'success');
     } else {
-      showToast('✅ Контент сохранен локально!', 'success');
+      showToast('⚠️ Сервер временно недоступен, сохранено локально в этом браузере', 'warning');
     }
   }
 
   bindCmsActions() {
+    document.getElementById('adm-add-package-btn')?.addEventListener('click', () => {
+      if (!Array.isArray(this.prices.packages)) this.prices.packages = [];
+      const newId = 'pkg_' + Date.now();
+      this.prices.packages.push({
+        id: newId,
+        name: 'Новая фотосессия ✨',
+        price: 3500,
+        desc: 'Индивидуальные условия съемки'
+      });
+      this.renderAdminPackages();
+      showToast('Добавлена новая услуга. Заполните данные и нажмите «Сохранить прайс».', 'info');
+    });
+
+    document.getElementById('adm-add-album-btn')?.addEventListener('click', () => {
+      if (!Array.isArray(this.siteContent.albums)) this.siteContent.albums = [];
+      const newId = 'album_' + Date.now();
+      this.siteContent.albums.push({
+        id: newId,
+        title: 'Новый альбом 🌸'
+      });
+      this.renderAdminAlbums();
+      showToast('Добавлен новый альбом. Укажите название и нажмите «Сохранить альбомы».', 'info');
+    });
+
+    document.getElementById('adm-albums-save-btn')?.addEventListener('click', () => {
+      this.saveCmsContent('albums');
+    });
+
     // 1. Content tab (Hero & About)
     document.getElementById('adm-content-save-btn')?.addEventListener('click', () => {
       this.saveCmsContent('content');
@@ -2480,7 +2604,6 @@ class PriceManager {
 
   logout() {
     sessionStorage.removeItem('fotofeya_admin_token');
-    this.hideFloatingBadge();
     this.closePriceModal();
     this.closeAuthModal();
     showToast('Сессия администратора завершена', 'info');

@@ -1,9 +1,38 @@
 # Changelog
 
+## [1.9.7] - 2026-10-22
+### Fixed & Refactored
+- **S3 Image Uploads** — File uploads from PC/phone are now written directly to Yandex Object Storage (S3) instead of read-only serverless filesystem. Added streaming route `/assets/images/uploads/:filename` to serve persistent photos with immutable cache.
+- **Admin Clean Trigger** — Replaced triple-click and pulsating floating widgets with standard clean URL entry (`#admin`), keyboard shortcut (`Ctrl+Shift+A`), and subtle footer copyright click.
+- **Code Cleanliness & Anti-Slop** — Unified 3 duplicated S3 storage methods into generic helpers in `api/index.js`, removed fake in-memory rate-limiter, simplified authentication, removed marketing jargon and theatrical comments.
+
+## [1.9.6] - 2026-10-22
+### Fixed
+- **CRITICAL: Persistent storage** — Migrated data store from ephemeral /tmp (lost on Yandex Cloud cold starts) to Yandex Object Storage (S3). Prices, reviews, contacts and all CMS data now survive across function restarts and are consistent across all devices.
+- **Mobile admin panel** — Added min-h-0 to modal flex container fixing scroll cutoff on mobile (price cards were hidden below viewport).
+
 Все важные изменения проекта фиксируются в этом файле.
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),
 и проект придерживается [Семантического версионирования](https://semver.org/lang/ru/).
+
+## [1.9.5] - 2026-10-20
+
+### 💬 Интеграция связи через МАКС и защита окна админки от случайного закрытия
+- **Интеграция кнопки «Связаться в МАКС»:** Добавлена поддержка прямой ссылки на МАКС во всех блоках сайта (быстрые кнопки формы бронирования, футер, модальное окно успешной записи).
+- **Поле ссылки МАКС в CMS:** В админ-панель (вкладка «Контакты & Сети») добавлено поле ввода ссылки на контакт/профиль МАКС с мгновенным сохранением на сервере. Если ссылка не указана, кнопка автоматически скрывается.
+- **Защита окна админ-панели:** Устранено закрытие окна редактора при случайном клике мышкой по фону (backdrop). Окно панели управления теперь закрывается строго по нажатию на кнопку «крестик» (`#admin-price-close`), исключая случайную потерю несохраненного ввода.
+
+## [1.9.4] - 2026-10-20
+
+### 🛡️ Устойчивость сессий администратора, динамические услуги и альбомы
+- **Serverless-устойчивая авторизация (`api/index.js`):** Замена in-memory сессий на криптографические stateless HMAC-SHA256 токены с 24-часовым TTL и fallback на мастер-пароль. Полное устранение сброса сессии («Сессия админа завершена») при ротации serverless-контейнеров Яндекс Облака.
+- **Гарантированное сохранение отзывов и FAQ:** Устранена потеря удаленных отзывов — обновленный список сохраняется напрямую на сервере с защитой от CDN/браузерного кэширования (`Cache-Control: no-cache, no-store`).
+- **Динамическое управление услугами (Тарифами):** В админ-панель добавлена полноценная возможность создания, редактирования, изменения порядка и удаления услуг/тарифов. Все изменения автоматически рендерятся на главной странице и в калькуляторе.
+- **Динамическое управление альбомами/галереями:** В админ-панель во вкладку «Галерея и VK» добавлена возможность создания, удаления и переименования альбомов/категорий с мгновенным обновлением чипов фильтрации на сайте.
+- **Упрощение онлайн-калькулятора:** Полностью удалены пункты 2 (длительность съемки) и 3 (дополнительные опции). Калькулятор рассчитывает точную стоимость выбранного пакета в 1 клик с отправкой в сообщения ВК.
+- **Чистка контактов:** Полностью удалены кнопки и упоминания Telegram и WhatsApp во всех блоках сайта, футере, модальном окне и админке; оставлены телефон, email и группа ВКонтакте.
+- **Коррекция контента и терминологии:** Полностью убраны упоминания «подарков малышу», марка красок TAG заменена на «профессиональные гипоаллергенные краски на водной основе», а формулировки «свои платья» заменены на «сказочные костюмы».
 
 ## [1.9.3] - 2026-10-18
 
